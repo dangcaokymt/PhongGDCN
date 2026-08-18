@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard Theo Dõi Nhiệm Vụ Phòng GDCN - 6 Rõ</title>
+<title>Trung Tâm Khởi Nghiệp Sáng Tạo - Phòng Giao Dịch Công Nghệ</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -33,16 +33,18 @@ body{
 }
 .header-title h1{
   margin:0;
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.15);
 }
 .header-title p{
-  margin: 4px 0 0 0;
-  font-size: 13px;
-  opacity: 0.9;
-  font-weight: 500;
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  opacity: 0.95;
+  font-weight: 600;
+  color: #e0f2fe;
+  letter-spacing: 0.3px;
 }
 .header-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 
@@ -220,8 +222,8 @@ tr:hover td{ background: #f0f9ff; }
 
 <div class="header">
   <div class="header-title">
-    <h1>📋 THEO DÕI NHIỆM VỤ PHÒNG GDCN</h1>
-    <p>Hệ thống giám sát nhiệm vụ công tác trực tuyến &bull; Định hướng 6 Rõ</p>
+    <h1>🚀 TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO</h1>
+    <p>📋 Phòng Giao dịch công nghệ &bull; Theo dõi nhiệm vụ công tác</p>
   </div>
   <div class="header-actions">
     <div id="sync-status">🟢 Dữ liệu đồng bộ Google Sheets</div>
@@ -292,10 +294,8 @@ tr:hover td{ background: #f0f9ff; }
 Chart.defaults.color = '#64748b';
 Chart.defaults.borderColor = '#f1f5f9';
 
-// Nguồn Google Sheet Online CSV
 const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
-// Dữ liệu trích xuất chuẩn hóa từ file Excel "6 rõ.xlsx" (Đã loại bỏ dòng phân loại tiêu đề phụ "6 rõ")
 const defaultData = [
   // Nhóm Techport
   { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Danh sách hồ sơ", months: "" },
@@ -353,7 +353,6 @@ function populateSelect(id, vals, defaultLabel) {
 }
 
 function renderCharts(rs) {
-  // Chart 1: Donut Chart - Nhóm công việc
   const groupCounts = { 'Nhóm Techport': 0, 'Nhóm Xúc tiến': 0, 'Nhóm Kết nối': 0 };
   rs.forEach(r => {
     if (groupCounts[r.group] !== undefined) groupCounts[r.group]++;
@@ -381,7 +380,6 @@ function renderCharts(rs) {
     }
   });
 
-  // Chart 2: Bar Chart - Phân bổ theo chuyên viên
   const staffCounts = {};
   rs.forEach(r => {
     let names = r.chuyenvien.split(',').map(s => s.trim());
@@ -438,23 +436,15 @@ function renderTable(rs) {
     <tr>
       <td style="font-weight:700;color:#64748b;text-align:center">${i + 1}</td>
       <td><span class="badge-group ${getGroupBadgeClass(r.group)}">${esc(r.group)}</span></td>
-      <td>
-        <div style="font-weight:700;color:#0f172a;font-size:13px">${esc(r.noidung)}</div>
-      </td>
-      <td>
-        ${r.sub && r.sub !== 'Chung' ? `<span class="badge-sub">📍 ${esc(r.sub)}</span>` : '<span style="color:#94a3b8">Chung</span>'}
-      </td>
-      <td>
-        ${r.chuyenvien.split(',').map(name => `<span class="badge-person" style="margin:2px;">👤 ${esc(name.trim())}</span>`).join(' ')}
-      </td>
+      <td><div style="font-weight:700;color:#0f172a;font-size:13px">${esc(r.noidung)}</div></td>
+      <td>${r.sub && r.sub !== 'Chung' ? `<span class="badge-sub">📍 ${esc(r.sub)}</span>` : '<span style="color:#94a3b8">Chung</span>'}</td>
+      <td>${r.chuyenvien.split(',').map(name => `<span class="badge-person" style="margin:2px;">👤 ${esc(name.trim())}</span>`).join(' ')}</td>
       <td><span style="font-weight:600;color:#334155">${esc(r.lanhdao || 'Võ Duy Khanh')}</span></td>
       <td style="font-size:12px;color:#64748b">
         <div><b>Chỉ đạo:</b> ${esc(r.chidao || 'Phó Giám đốc')}</div>
         <div><b>Phê duyệt:</b> ${esc(r.pheduyet || 'Giám đốc')}</div>
       </td>
-      <td>
-        <div class="badge-output">${esc(r.sanpham)}</div>
-      </td>
+      <td><div class="badge-output">${esc(r.sanpham)}</div></td>
       <td style="text-align:center">
         <span style="display:inline-block;padding:4px 8px;border-radius:6px;background:#f1f5f9;font-size:11px;color:#475569;font-weight:600">
           🗓️ T1 - T12
@@ -480,7 +470,6 @@ function applyFilter() {
   renderTable(res);
 }
 
-// Đồng bộ trực tiếp từ Google Sheets CSV
 async function syncGoogleSheets() {
   const statusEl = document.getElementById('sync-status');
   statusEl.innerHTML = '🔄 Đang kiểm tra Google Sheets...';
@@ -488,18 +477,9 @@ async function syncGoogleSheets() {
     const res = await fetch(GSHEET_CSV_URL);
     if (!res.ok) throw new Error('Không thể tải CSV');
     const csvText = await res.text();
-    
-    // Phân tích dòng CSV
-    const rows = csvText.split(/\r?\n/).map(line => {
-      // Đơn giản hóa split dấu phẩy bỏ qua quote
-      return line.split(',').map(c => c.replace(/^"|"$/g, '').trim());
-    });
-
-    // Lọc và bỏ dòng tiêu đề và dòng "6 rõ"
     statusEl.innerHTML = '🟢 Đã đồng bộ Google Sheets';
     applyFilter();
   } catch (err) {
-    console.log('GSheets sync fallback to local cache:', err);
     statusEl.innerHTML = '🟡 Đang hiển thị bản lưu Offline';
   }
 }
@@ -518,7 +498,6 @@ function initDashboard() {
   syncGoogleSheets();
 }
 
-// Xuất file Excel (.xls) Tiếng Việt đầy đủ
 function exportExcel() {
   if (!filteredItems.length) return alert('Không có dữ liệu để xuất!');
 
@@ -560,7 +539,7 @@ function exportExcel() {
 </head>
 <body>
 <table>
-  <tr><td colspan="10" class="header-title">BẢNG THEO DÕI NHIỆM VỤ PHÒNG GDCN</td></tr>
+  <tr><td colspan="10" class="header-title">TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO - PHÒNG GIAO DỊCH CÔNG NGHỆ</td></tr>
   <tr>
     <th class="header">STT</th>
     <th class="header">Nhóm công tác</th>
@@ -582,7 +561,7 @@ function exportExcel() {
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `TheoDoi_NhiemVu_GDCN_${new Date().toISOString().slice(0,10)}.xls`;
+  a.download = `NhiemVu_PhongGDCN_${new Date().toISOString().slice(0,10)}.xls`;
   document.body.appendChild(a);
   a.click();
   setTimeout(() => {
@@ -591,7 +570,6 @@ function exportExcel() {
   }, 200);
 }
 
-// Khởi tạo Dashboard
 initDashboard();
 </script>
 </body>
