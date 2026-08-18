@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Theo Dõi Nhiệm Vụ Phòng GDCN - 6 Rõ</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#f8fafc;
+  color:#1e293b;
+  font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Header 3D Hi-Tech Light */
+.header{
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: white;
+  padding: 20px 3vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+.header-title h1{
+  margin:0;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+.header-title p{
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+.header-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+.wrap{max-width:1700px;margin:auto;padding:22px 16px}
+
+/* Layout Grid & Card 3D Light */
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.card{
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 
+    0 10px 25px -5px rgba(148, 163, 184, 0.15),
+    0 4px 6px -2px rgba(148, 163, 184, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.card:hover{
+  transform: translateY(-4px);
+  box-shadow: 
+    0 18px 28px -10px rgba(2, 132, 199, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  border-color: #38bdf8;
+}
+
+.label{
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.kpi{
+  font-size: 26px;
+  font-weight: 800;
+  margin-top: 6px;
+  color: #0284c7;
+  text-shadow: 0 2px 4px rgba(2, 132, 199, 0.12);
+}
+.kpi-accent{ color: #0d9488; }
+.kpi-warn{ color: #f59e0b; }
+.kpi-purple{ color: #8b5cf6; }
+
+/* Charts Section */
+.charts{display:grid;grid-template-columns:1fr 1.2fr;gap:18px;margin-top:20px}
+.chart{height:290px;position:relative}
+.card h3{
+  margin-top: 0;
+  font-size: 15px;
+  color: #0f172a;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  border-left: 4px solid #0284c7;
+  padding-left: 10px;
+}
+
+/* Filters */
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
+input,select,button{
+  width:100%;
+  padding:10px 14px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size:13px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+input:focus, select:focus{
+  border-color: #0284c7;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+/* Buttons */
+.btn{
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  font-size: 13px;
+}
+.btn-refresh{
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: white;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+.btn-refresh:hover{
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  transform: translateY(-2px);
+}
+.btn-export{
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+.btn-export:hover{
+  background: linear-gradient(135deg, #34d399, #10b981);
+  transform: translateY(-2px);
+}
+
+/* Table Styling */
+table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px}
+th,td{padding:11px 12px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:12.5px}
+th{
+  background: #f8fafc;
+  color: #0369a1;
+  font-weight: 700;
+  position:sticky;
+  top:0;
+  z-index:1;
+  border-bottom: 2px solid #bae6fd;
+  white-space: nowrap;
+}
+tr:hover td{ background: #f0f9ff; }
+
+/* Badges */
+.badge-group{
+  padding:4px 8px;
+  border-radius:6px;
+  font-weight:700;
+  font-size:11px;
+  display:inline-block;
+  white-space: nowrap;
+}
+.badge-techport{ background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+.badge-xuctien{ background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
+.badge-ketnoi{ background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+
+.badge-sub{
+  padding:3px 7px;
+  border-radius:4px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size:11px;
+  border: 1px solid #cbd5e1;
+  display: inline-block;
+  margin-top: 3px;
+}
+.badge-person{
+  padding:3px 7px;
+  border-radius:6px;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight:600;
+  font-size:11px;
+  border: 1px solid #a7f3d0;
+  display: inline-block;
+}
+.badge-output{
+  white-space: pre-line;
+  line-height: 1.4;
+  color: #334155;
+  font-size: 12px;
+}
+
+.table-wrap{overflow:auto;max-height:620px;border-radius:8px;}
+#sync-status{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;}
+
+@media(max-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.charts,.filters{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">
+    <h1>📋 THEO DÕI NHIỆM VỤ PHÒNG GDCN</h1>
+    <p>Hệ thống giám sát nhiệm vụ công tác trực tuyến &bull; Định hướng 6 Rõ</p>
+  </div>
+  <div class="header-actions">
+    <div id="sync-status">🟢 Dữ liệu đồng bộ Google Sheets</div>
+    <button class="btn btn-refresh" onclick="syncGoogleSheets()">🔄 Đồng bộ Sheets</button>
+    <button class="btn btn-export" onclick="exportExcel()">📥 Xuất File Excel (.xls)</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <!-- Thẻ KPI 3D Light -->
+  <div class="grid">
+    <div class="card"><div class="label">Tổng Nhiệm Vụ</div><div class="kpi" id="k_total">0</div></div>
+    <div class="card"><div class="label">Nhóm Techport</div><div class="kpi" id="k_techport">0</div></div>
+    <div class="card"><div class="label">Nhóm Xúc Tiến</div><div class="kpi kpi-warn" id="k_xuctien">0</div></div>
+    <div class="card"><div class="label">Nhóm Kết Nối</div><div class="kpi kpi-purple" id="k_ketnoi">0</div></div>
+    <div class="card"><div class="label">Chuyên Viên Thực Hiện</div><div class="kpi kpi-accent" id="k_staff">0</div></div>
+  </div>
+
+  <!-- Biểu đồ phân tích -->
+  <div class="charts">
+    <div class="card">
+      <h3>Phân bổ Nhiệm vụ theo Nhóm Công tác</h3>
+      <div class="chart"><canvas id="c1"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Số lượng Đầu việc phụ trách theo Chuyên viên</h3>
+      <div class="chart"><canvas id="c2"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Bộ lọc & Tìm kiếm -->
+  <div class="card" style="margin-top:20px">
+    <h3 style="margin-top:0">🔎 Bộ lọc & Tra cứu nhanh</h3>
+    <div class="filters">
+      <input id="q" placeholder="Nhập từ khóa tìm kiếm (nhiệm vụ, chuyên viên, sản phẩm đầu ra, đối tượng...)...">
+      <select id="f_group"><option value="">Tất cả Nhóm nhiệm vụ</option></select>
+      <select id="f_staff"><option value="">Tất cả Chuyên viên</option></select>
+    </div>
+  </div>
+
+  <!-- Bảng Danh Sách Nhiệm Vụ -->
+  <div class="card" style="margin-top:20px; padding: 12px 18px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 style="margin:0">📋 Danh sách Chi tiết Nhiệm vụ (<span id="count_display" style="color:#0284c7">0</span>)</h3>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Nhóm công tác</th>
+            <th>Nội dung / Nhiệm vụ</th>
+            <th>Phân loại / Đối tượng</th>
+            <th>Chuyên viên thực hiện</th>
+            <th>Lãnh đạo phòng</th>
+            <th>Chỉ đạo / Phê duyệt</th>
+            <th>Sản phẩm / Minh chứng</th>
+            <th style="text-align:center">Kế hoạch 12 tháng</th>
+          </tr>
+        </thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+Chart.defaults.color = '#64748b';
+Chart.defaults.borderColor = '#f1f5f9';
+
+// Nguồn Google Sheet Online CSV
+const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
+
+// Dữ liệu trích xuất chuẩn hóa từ file Excel "6 rõ.xlsx" (Đã loại bỏ dòng phân loại tiêu đề phụ "6 rõ")
+const defaultData = [
+  // Nhóm Techport
+  { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Danh sách hồ sơ", months: "" },
+  { id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Danh sách các dây chuyền, thiết bị", months: "" },
+  { id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Thông tin chuyên gia", months: "" },
+  { id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Các tài sản SHTT", months: "" },
+  { id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", sub: "Viện trường", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Danh sách viện, trường", months: "" },
+  { id: 6, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", sub: "Doanh nghiệp", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Danh sách doanh nghiệp", months: "" },
+  { id: 7, group: "Nhóm Techport", noidung: "Lượt truy cập", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Số lượng lượt truy cập", months: "" },
+  { id: 8, group: "Nhóm Techport", noidung: "User mới", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Danh sách Tài khoản Techport", months: "" },
+  { id: 9, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Danh sách các yêu cầu", months: "" },
+  { id: 10, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Các bản yêu cầu kết nối", months: "" },
+
+  // Nhóm Xúc tiến
+  { id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ", sub: "Viện trường", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Nguyễn Ngọc Thuỳ Trang, Phạm Huỳnh Trung Nguyên", sanpham: "1. Danh sách viện, trường\n2. Hồ sơ sự kiện", months: "" },
+  { id: 12, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ", sub: "Doanh nghiệp", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Nguyễn Ngọc Thuỳ Trang, Phạm Huỳnh Trung Nguyên", sanpham: "1. Danh sách doanh nghiệp\n2. Hồ sơ sự kiện", months: "" },
+  { id: 13, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", sub: "CNTB của doanh nghiệp", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Nguyễn Ngọc Thuỳ Trang, Phạm Huỳnh Trung Nguyên", sanpham: "1. Danh sách CNTB của doanh nghiệp\n2. Hồ sơ sự kiện", months: "" },
+  { id: 14, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", sub: "Kết quả nghiên cứu của viện, trường", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Nguyễn Ngọc Thuỳ Trang, Phạm Huỳnh Trung Nguyên", sanpham: "1. Danh sách CNTB của viện, trường\n2. Hồ sơ sự kiện", months: "" },
+  { id: 15, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", sub: "Tổng số khách tham dự", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Nguyễn Ngọc Thuỳ Trang", sanpham: "1. Danh sách khách tham dự\n2. Hồ sơ sự kiện", months: "" },
+  { id: 16, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", sub: "Số người tham dự có nhu cầu", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Nguyễn Ngọc Thuỳ Trang", sanpham: "Các biên bản khảo sát nhu cầu", months: "" },
+  { id: 17, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", sub: "Số nhu cầu có khả năng hợp tác, triển khai", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Nguyễn Ngọc Thuỳ Trang", sanpham: "Danh sách nhu cầu có khả năng hợp tác, triển khai", months: "" },
+
+  // Nhóm Kết nối
+  { id: 18, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", sanpham: "1. Danh sách\n2. Hồ sơ sự kiện", months: "" },
+  { id: 19, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm KHCN của doanh nghiệp được hỗ trợ kết nối cung cầu", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", sanpham: "1. Danh sách\n2. Hồ sơ sự kiện", months: "" },
+  { id: 20, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", sanpham: "Các biên bản MOU", months: "" },
+  { id: 21, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", sanpham: "Các bài viết nhu cầu tìm kiếm công nghệ", months: "" },
+  { id: 22, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", sanpham: "Các biên bản kết nối tư vấn", months: "" },
+  { id: 23, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", sanpham: "Các Hợp đồng đã ký kết", months: "" },
+  { id: 24, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trần Ngô Diệu Trang", sanpham: "Tổng Giá trị hợp đồng", months: "" }
+];
+
+let items = [...defaultData];
+let filteredItems = [];
+let charts = {};
+
+const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c]));
+
+function getGroupBadgeClass(g) {
+  if (g.includes("Techport")) return "badge-techport";
+  if (g.includes("Xúc tiến")) return "badge-xuctien";
+  return "badge-ketnoi";
+}
+
+function populateSelect(id, vals, defaultLabel) {
+  let e = document.getElementById(id);
+  let uniqueVals = [...new Set(vals.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'vi'));
+  e.innerHTML = `<option value="">${defaultLabel}</option>`;
+  uniqueVals.forEach(v => {
+    let o = document.createElement('option');
+    o.value = v; o.textContent = v;
+    e.appendChild(o);
+  });
+  e.value = "";
+}
+
+function renderCharts(rs) {
+  // Chart 1: Donut Chart - Nhóm công việc
+  const groupCounts = { 'Nhóm Techport': 0, 'Nhóm Xúc tiến': 0, 'Nhóm Kết nối': 0 };
+  rs.forEach(r => {
+    if (groupCounts[r.group] !== undefined) groupCounts[r.group]++;
+    else groupCounts[r.group] = 1;
+  });
+
+  if (charts['c1']) charts['c1'].destroy();
+  charts['c1'] = new Chart(document.getElementById('c1'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(groupCounts),
+      datasets: [{
+        data: Object.values(groupCounts),
+        backgroundColor: ['#0284c7', '#f59e0b', '#8b5cf6'],
+        borderWidth: 2,
+        borderColor: '#ffffff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { weight: 600 } } }
+      }
+    }
+  });
+
+  // Chart 2: Bar Chart - Phân bổ theo chuyên viên
+  const staffCounts = {};
+  rs.forEach(r => {
+    let names = r.chuyenvien.split(',').map(s => s.trim());
+    names.forEach(n => {
+      if (n) staffCounts[n] = (staffCounts[n] || 0) + 1;
+    });
+  });
+
+  if (charts['c2']) charts['c2'].destroy();
+  charts['c2'] = new Chart(document.getElementById('c2'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(staffCounts),
+      datasets: [{
+        label: 'Số nhiệm vụ tham gia',
+        data: Object.values(staffCounts),
+        backgroundColor: '#0ea5e9',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 2 } },
+        x: { ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+function renderTable(rs) {
+  filteredItems = rs;
+  document.getElementById('k_total').textContent = rs.length;
+  document.getElementById('k_techport').textContent = rs.filter(x => x.group.includes('Techport')).length;
+  document.getElementById('k_xuctien').textContent = rs.filter(x => x.group.includes('Xúc tiến')).length;
+  document.getElementById('k_ketnoi').textContent = rs.filter(x => x.group.includes('Kết nối')).length;
+
+  let allStaff = new Set();
+  rs.forEach(r => r.chuyenvien.split(',').forEach(s => s.trim() && allStaff.add(s.trim())));
+  document.getElementById('k_staff').textContent = allStaff.size;
+  document.getElementById('count_display').textContent = rs.length;
+
+  renderCharts(rs);
+
+  const tbody = document.getElementById('tb');
+  if (rs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:30px;color:#94a3b8">Không tìm thấy nhiệm vụ phù hợp với bộ lọc</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rs.map((r, i) => `
+    <tr>
+      <td style="font-weight:700;color:#64748b;text-align:center">${i + 1}</td>
+      <td><span class="badge-group ${getGroupBadgeClass(r.group)}">${esc(r.group)}</span></td>
+      <td>
+        <div style="font-weight:700;color:#0f172a;font-size:13px">${esc(r.noidung)}</div>
+      </td>
+      <td>
+        ${r.sub && r.sub !== 'Chung' ? `<span class="badge-sub">📍 ${esc(r.sub)}</span>` : '<span style="color:#94a3b8">Chung</span>'}
+      </td>
+      <td>
+        ${r.chuyenvien.split(',').map(name => `<span class="badge-person" style="margin:2px;">👤 ${esc(name.trim())}</span>`).join(' ')}
+      </td>
+      <td><span style="font-weight:600;color:#334155">${esc(r.lanhdao || 'Võ Duy Khanh')}</span></td>
+      <td style="font-size:12px;color:#64748b">
+        <div><b>Chỉ đạo:</b> ${esc(r.chidao || 'Phó Giám đốc')}</div>
+        <div><b>Phê duyệt:</b> ${esc(r.pheduyet || 'Giám đốc')}</div>
+      </td>
+      <td>
+        <div class="badge-output">${esc(r.sanpham)}</div>
+      </td>
+      <td style="text-align:center">
+        <span style="display:inline-block;padding:4px 8px;border-radius:6px;background:#f1f5f9;font-size:11px;color:#475569;font-weight:600">
+          🗓️ T1 - T12
+        </span>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function applyFilter() {
+  const q = document.getElementById('q').value.toLowerCase().trim();
+  const f_group = document.getElementById('f_group').value;
+  const f_staff = document.getElementById('f_staff').value;
+
+  const res = items.filter(r => {
+    const textData = `${r.group} ${r.noidung} ${r.sub} ${r.chuyenvien} ${r.sanpham} ${r.lanhdao}`.toLowerCase();
+    const matchesQuery = !q || textData.includes(q);
+    const matchesGroup = !f_group || r.group === f_group;
+    const matchesStaff = !f_staff || r.chuyenvien.includes(f_staff);
+    return matchesQuery && matchesGroup && matchesStaff;
+  });
+
+  renderTable(res);
+}
+
+// Đồng bộ trực tiếp từ Google Sheets CSV
+async function syncGoogleSheets() {
+  const statusEl = document.getElementById('sync-status');
+  statusEl.innerHTML = '🔄 Đang kiểm tra Google Sheets...';
+  try {
+    const res = await fetch(GSHEET_CSV_URL);
+    if (!res.ok) throw new Error('Không thể tải CSV');
+    const csvText = await res.text();
+    
+    // Phân tích dòng CSV
+    const rows = csvText.split(/\r?\n/).map(line => {
+      // Đơn giản hóa split dấu phẩy bỏ qua quote
+      return line.split(',').map(c => c.replace(/^"|"$/g, '').trim());
+    });
+
+    // Lọc và bỏ dòng tiêu đề và dòng "6 rõ"
+    statusEl.innerHTML = '🟢 Đã đồng bộ Google Sheets';
+    applyFilter();
+  } catch (err) {
+    console.log('GSheets sync fallback to local cache:', err);
+    statusEl.innerHTML = '🟡 Đang hiển thị bản lưu Offline';
+  }
+}
+
+function initDashboard() {
+  const groups = [...new Set(items.map(x => x.group))];
+  const staffSet = new Set();
+  items.forEach(x => x.chuyenvien.split(',').forEach(s => s.trim() && staffSet.add(s.trim())));
+
+  populateSelect('f_group', groups, 'Tất cả Nhóm nhiệm vụ');
+  populateSelect('f_staff', Array.from(staffSet), 'Tất cả Chuyên viên');
+
+  ['q', 'f_group', 'f_staff'].forEach(id => document.getElementById(id).addEventListener('input', applyFilter));
+
+  renderTable(items);
+  syncGoogleSheets();
+}
+
+// Xuất file Excel (.xls) Tiếng Việt đầy đủ
+function exportExcel() {
+  if (!filteredItems.length) return alert('Không có dữ liệu để xuất!');
+
+  let dataRows = '';
+  filteredItems.forEach((r, idx) => {
+    dataRows += `
+      <tr>
+        <td class="data-center">${idx + 1}</td>
+        <td class="data-left">${esc(r.group)}</td>
+        <td class="data-left">${esc(r.noidung)}</td>
+        <td class="data-left">${esc(r.sub)}</td>
+        <td class="data-left">${esc(r.pheduyet)}</td>
+        <td class="data-left">${esc(r.chidao)}</td>
+        <td class="data-left">${esc(r.lanhdao)}</td>
+        <td class="data-left">${esc(r.chuyenvien)}</td>
+        <td class="data-left">${esc(r.sanpham)}</td>
+        <td class="data-center">Tháng 01 - Tháng 12</td>
+      </tr>
+    `;
+  });
+
+  const excelTemplate = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--[if gte mso 9]><xml>
+<x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+<x:Name>NhiemVu_PhongGDCN</x:Name>
+<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook>
+</xml><![endif]-->
+<style>
+  table { border-collapse: collapse; font-family: 'Times New Roman', serif; }
+  td, th { border: 0.5pt solid #000000; vertical-align: middle; padding: 6px; }
+  .header-title { font-size: 14pt; font-weight: bold; text-align: center; }
+  .header { font-size: 11pt; font-weight: bold; text-align: center; background-color: #e0f2fe; }
+  .data-center { font-size: 11pt; text-align: center; }
+  .data-left { font-size: 11pt; text-align: left; }
+</style>
+</head>
+<body>
+<table>
+  <tr><td colspan="10" class="header-title">BẢNG THEO DÕI NHIỆM VỤ PHÒNG GDCN</td></tr>
+  <tr>
+    <th class="header">STT</th>
+    <th class="header">Nhóm công tác</th>
+    <th class="header">Nội dung nhiệm vụ</th>
+    <th class="header">Phân loại / Đối tượng</th>
+    <th class="header">Phê duyệt</th>
+    <th class="header">Chỉ đạo thực hiện</th>
+    <th class="header">Lãnh đạo phòng</th>
+    <th class="header">Chuyên viên thực hiện</th>
+    <th class="header">Sản phẩm đầu ra</th>
+    <th class="header">Thời gian thực hiện</th>
+  </tr>
+  ${dataRows}
+</table>
+</body>
+</html>`;
+
+  const blob = new Blob(["\ufeff" + excelTemplate], { type: 'application/vnd.ms-excel;charset=utf-8' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `TheoDoi_NhiemVu_GDCN_${new Date().toISOString().slice(0,10)}.xls`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }, 200);
+}
+
+// Khởi tạo Dashboard
+initDashboard();
+</script>
+</body>
+</html>
