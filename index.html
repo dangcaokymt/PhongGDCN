@@ -204,7 +204,7 @@ input:focus, select:focus{
 
 /* Table */
 table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px}
-th,td{padding:10px 10px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:12px}
+th,td{padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:12px}
 th{
   background: #f8fafc;
   color: #0f172a;
@@ -244,11 +244,11 @@ tr:hover td{ background: #fff7ed; }
 .badge-support{
   padding:4px 8px;
   border-radius:6px;
-  background: #f0fdf4;
+  background: #eff6ff;
   color: #0284c7;
   font-weight:600;
   font-size:11px;
-  border: 1px solid #bae6fd;
+  border: 1px solid #bfdbfe;
   display: inline-block;
   white-space: nowrap;
 }
@@ -259,7 +259,7 @@ tr:hover td{ background: #fff7ed; }
 .month-cell {
   text-align: center;
   font-size: 11px;
-  min-width: 28px;
+  min-width: 26px;
 }
 .target-cell {
   text-align: center;
@@ -375,7 +375,7 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
 
-  <!-- Bảng Dữ Liệu Chi Tiết (Chuẩn xác 19 Nhiệm vụ - 2 Cột Chuyên Viên) -->
+  <!-- Bảng Dữ Liệu Chi Tiết (19 Nhiệm vụ - Đã tách 2 Cột Chuyên Viên Chủ Trì & Hỗ Trợ) -->
   <div class="card" style="margin-top:20px; padding: 12px 18px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
       <h3 style="margin:0">📋 Danh sách Chi tiết Nhiệm vụ (<span id="count_display" style="color:#f7941d">19</span>)</h3>
@@ -418,7 +418,7 @@ Chart.defaults.borderColor = '#f1f5f9';
 
 const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
-// 19 NHIỆM VỤ CHUẨN HÓA CÓ ĐẦY ĐỦ CHUYÊN VIÊN CHỦ TRÌ & HỖ TRỢ
+// 19 NHIỆM VỤ GỐC CHUẨN XÁC THEO ĐÚNG CỘT "NỘI DUNG"
 const tasks19 = [
   // 1. Nhóm Techport (9 nhiệm vụ)
   { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0) },
@@ -706,7 +706,7 @@ function parseCSV(text) {
   return rows;
 }
 
-// Đồng bộ Sheets tự động đọc Chuyên viên chủ trì, hỗ trợ và số liệu 12 tháng
+// BỘ ĐỌC GOOGLE SHEETS TỰ ĐỘNG NHẬN DIỆN VỊ TRÍ CỘT THEO TIÊU ĐỀ
 async function syncGoogleSheets() {
   const statusEl = document.getElementById('sync-status');
   statusEl.innerHTML = '🔄 Đang đồng bộ Sheets...';
@@ -716,22 +716,47 @@ async function syncGoogleSheets() {
     const csvText = await res.text();
     const rows = parseCSV(csvText);
 
-    // Cập nhật số liệu theo tên nhiệm vụ vào 19 mục cố định
+    // Tìm dòng tiêu đề chứa các tháng hoặc chỉ tiêu
+    let headerRowIdx = -1;
+    let targetColIdx = 8;
+    let m1ColIdx = 9;
+
+    for (let i = 0; i < rows.length; i++) {
+      let r = rows[i];
+      for (let j = 0; j < r.length; j++) {
+        let cell = (r[j] || '').toLowerCase().trim();
+        if (cell.includes("số lượng") || cell.includes("chỉ tiêu")) {
+          targetColIdx = j;
+          headerRowIdx = i;
+        }
+        if (cell.includes("tháng 01") || cell.includes("tháng 1")) {
+          m1ColIdx = j;
+          headerRowIdx = i;
+        }
+      }
+      if (headerRowIdx !== -1) break;
+    }
+
+    // Cập nhật đúng các cột vào 19 nhiệm vụ chuẩn hóa
     rows.forEach(r => {
-      let rowContent = r.join(' ').toLowerCase();
+      let rowStr = r.join(' ').toLowerCase();
       items.forEach(task => {
         let taskNameLower = task.noidung.toLowerCase().trim();
-        if (rowContent.includes(taskNameLower)) {
-          let mData = [];
-          for (let m = 9; m <= 20; m++) {
-            let val = Number((r[m] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
-            mData.push(val);
-          }
-          let tgt = Number((r[8] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
-          if (mData.some(x => x > 0)) task.months = mData;
+        if (rowStr.includes(taskNameLower)) {
+          // Đọc đúng cột chỉ tiêu
+          let tgt = Number((r[targetColIdx] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
           if (tgt > 0) task.target = tgt;
 
-          // Cập nhật chuyên viên chủ trì & hỗ trợ nếu có trên sheet
+          // Đọc đúng 12 tháng bắt đầu từ m1ColIdx
+          let mData = [];
+          for (let m = 0; m < 12; m++) {
+            let col = m1ColIdx + m;
+            let val = Number((r[col] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
+            mData.push(val);
+          }
+          if (mData.some(x => x > 0)) task.months = mData;
+
+          // Đọc Chuyên viên chủ trì & hỗ trợ nếu có trên dòng
           if (r[6] && r[6].trim()) task.lead = r[6].trim();
           if (r[7] && r[7].trim() && isNaN(Number(r[7]))) task.support = r[7].trim();
         }
