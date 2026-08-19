@@ -13,12 +13,12 @@ body{
   color:#1e293b;
   font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(247, 148, 29, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.05) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(247, 148, 29, 0.06) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.06) 0px, transparent 50%);
   background-attachment: fixed;
 }
 
-/* Header Tone Sáng Cao Cấp Làm Nổi Bật Logo Sihub */
+/* Header Tone Sáng Sang Trọng Làm Nổi Bật Logo Sihub */
 .header{
   background: #ffffff;
   color: #1e293b;
@@ -74,7 +74,7 @@ body{
 
 .wrap{max-width:1820px;margin:auto;padding:22px 16px}
 
-/* Grid & Cards KPI */
+/* Grid KPI */
 .grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:14px}
 .card{
   background: #ffffff;
@@ -137,7 +137,7 @@ body{
   flex-wrap: wrap;
 }
 
-/* Charts Section */
+/* Charts */
 .charts{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;margin-top:20px}
 .chart{height:300px;position:relative}
 .card h3{
@@ -539,21 +539,18 @@ function calculateKPIs(rs) {
 
   const getRate = (cur, tgt) => tgt > 0 ? ((cur / tgt) * 100).toFixed(1) : '100.0';
 
-  // Hiển thị KPI 1
   document.getElementById('k_req').textContent = reqCount.toLocaleString('vi-VN');
   document.getElementById('k_req_target').textContent = reqTarget.toLocaleString('vi-VN');
   let r1 = getRate(reqCount, reqTarget);
   document.getElementById('k_req_badge').textContent = r1 + '%';
   document.getElementById('k_req_badge').className = 'kpi-badge' + (r1 >= 100 ? ' completed' : '');
 
-  // Hiển thị KPI 2
   document.getElementById('k_conn').textContent = connCount.toLocaleString('vi-VN');
   document.getElementById('k_conn_target').textContent = connTarget.toLocaleString('vi-VN');
   let r2 = getRate(connCount, connTarget);
   document.getElementById('k_conn_badge').textContent = r2 + '%';
   document.getElementById('k_conn_badge').className = 'kpi-badge' + (r2 >= 100 ? ' completed' : '');
 
-  // Hiển thị KPI 3
   let supportTotal = supportVT + supportDN;
   document.getElementById('k_support').textContent = supportTotal.toLocaleString('vi-VN');
   document.getElementById('k_support_target').textContent = supportTarget.toLocaleString('vi-VN');
@@ -563,7 +560,6 @@ function calculateKPIs(rs) {
   document.getElementById('k_support_vt').textContent = supportVT.toLocaleString('vi-VN');
   document.getElementById('k_support_dn').textContent = supportDN.toLocaleString('vi-VN');
 
-  // Hiển thị KPI 4
   document.getElementById('k_contract').textContent = contractCount.toLocaleString('vi-VN');
   document.getElementById('k_contract_target').textContent = contractTarget.toLocaleString('vi-VN');
   let r4 = getRate(contractCount, contractTarget);
@@ -579,7 +575,6 @@ function calculateKPIs(rs) {
 }
 
 function renderCharts(rs, kpis) {
-  // Biểu đồ 1: Tỷ lệ hoàn thành & Đối sánh Thực hiện vs Chỉ tiêu
   const kpiLabels = ['1. Yêu cầu công nghệ', '2. Số lượng kết nối', '3. Hỗ trợ VT & DN', '4. Tổng số hợp đồng'];
   const curData = [kpis.req.cur, kpis.conn.cur, kpis.support.cur, kpis.contract.cur];
   const tgtData = [kpis.req.tgt, kpis.conn.tgt, kpis.support.tgt, kpis.contract.tgt];
@@ -626,7 +621,6 @@ function renderCharts(rs, kpis) {
     }
   });
 
-  // Biểu đồ 2: Phân bổ theo chuyên viên
   const staffCounts = {};
   rs.forEach(r => {
     let name = (r.chuyenvien || '').trim();
@@ -732,7 +726,6 @@ function parseCSV(text) {
   return rows;
 }
 
-// Đồng bộ Sheets tự động đọc cả Cột 8 (Chỉ tiêu) và Cột 9-20 (12 Tháng)
 async function syncGoogleSheets() {
   const statusEl = document.getElementById('sync-status');
   statusEl.innerHTML = '🔄 Đang đồng bộ Sheets...';
