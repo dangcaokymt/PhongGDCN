@@ -195,7 +195,7 @@ input:focus, select:focus{
 
 /* Table */
 table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px}
-th,td{padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:12px;vertical-align:middle;}
+th,td{padding:8px 8px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:12px;vertical-align:middle;}
 th{
   background: #f8fafc;
   color: #0f172a;
@@ -249,7 +249,7 @@ tr:hover td{ background: #fff7ed; }
 .month-cell {
   text-align: center;
   font-size: 11px;
-  min-width: 28px;
+  min-width: 26px;
 }
 .target-cell {
   text-align: center;
@@ -267,6 +267,10 @@ tr:hover td{ background: #fff7ed; }
   text-align: center;
   font-weight: 700;
   font-size: 11.5px;
+}
+
+.sub-row td {
+  background: #fafaf9;
 }
 
 @media(max-width:1200px){.grid{grid-template-columns:repeat(2,1fr)}}
@@ -363,10 +367,10 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
 
-  <!-- Bảng Dữ Liệu Chi Tiết -->
+  <!-- Bảng Dữ Liệu Chi Tiết (Phân cột Chủ trì bên trái, Hỗ trợ bên phải theo dòng riêng) -->
   <div class="card" style="margin-top:20px; padding: 12px 18px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <h3 style="margin:0">📋 Danh sách Chi tiết Nhiệm vụ (<span id="count_display" style="color:#f7941d">0</span> nhiệm vụ)</h3>
+      <h3 style="margin:0">📋 Danh sách Chi tiết Nhiệm vụ (<span id="count_display" style="color:#f7941d">0</span> đầu việc)</h3>
     </div>
     <div class="table-wrap">
       <table>
@@ -375,8 +379,8 @@ tr:hover td{ background: #fff7ed; }
             <th>STT</th>
             <th>Nhóm công tác</th>
             <th>Nội dung / Nhiệm vụ</th>
-            <th>Chuyên viên chủ trì</th>
-            <th>Chuyên viên hỗ trợ</th>
+            <th style="min-width:160px">Chuyên viên chủ trì</th>
+            <th style="min-width:160px">Chuyên viên hỗ trợ</th>
             <th style="text-align:center" class="target-cell">Chỉ tiêu</th>
             <th style="text-align:center">T1</th>
             <th style="text-align:center">T2</th>
@@ -407,33 +411,138 @@ Chart.defaults.borderColor = '#f1f5f9';
 const GSHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/gviz/tq?tqx=out:json&tq=";
 const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
-// DANH SÁCH NHIỆM VỤ CHUẨN ĐƯỢC KHÓA THEO ĐÚNG NHÓM (KHÔNG NHẦM TỪ KHÓA CHÉO)
+// DANH SÁCH NHIỆM VỤ GỐC VỚI HỖ TRỢ ĐA CHUYÊN VIÊN
 const defaultTasks = [
-  // 1. Nhóm Techport (9 nhiệm vụ)
-  { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "hồ sơ công nghệ" },
-  { id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "dây chuyền/thiết bị" },
-  { id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "chuyên gia tư vấn" },
-  { id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "tài sản trí tuệ" },
-  { id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "đơn vị cung ứng" },
-  { id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "lượt truy cập" },
-  { id: 7, group: "Nhóm Techport", noidung: "User mới", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "user mới" },
-  { id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "yêu cầu công nghệ tiếp nhận" },
-  { id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "lượt kết nối cung cầu" },
+  // 1. Nhóm Techport
+  {
+    id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", matchExact: "hồ sơ công nghệ",
+    lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+    supports: []
+  },
+  {
+    id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", matchExact: "dây chuyền/thiết bị",
+    lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+    supports: []
+  },
+  {
+    id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", matchExact: "chuyên gia tư vấn",
+    lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+    supports: []
+  },
+  {
+    id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", matchExact: "tài sản trí tuệ",
+    lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+    supports: []
+  },
+  {
+    id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", matchExact: "đơn vị cung ứng",
+    lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+    supports: []
+  },
+  {
+    id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập", matchExact: "lượt truy cập",
+    lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+    supports: []
+  },
+  {
+    id: 7, group: "Nhóm Techport", noidung: "User mới", matchExact: "user mới",
+    lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+    supports: []
+  },
+  {
+    id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận", matchExact: "yêu cầu công nghệ tiếp nhận",
+    lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+    supports: []
+  },
+  {
+    id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", matchExact: "lượt kết nối cung cầu",
+    lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+    supports: []
+  },
 
-  // 2. Nhóm Xúc tiến (3 nhiệm vụ)
-  { id: 10, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ tại các sự kiện", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), matchExact: "trưng bày công nghệ" },
-  { id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), matchExact: "triển lãm" },
-  { id: 12, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), matchExact: "người tham dự" },
+  // 2. Nhóm Xúc tiến
+  {
+    id: 10, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ tại các sự kiện", matchExact: "trưng bày công nghệ",
+    lead: { name: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", matchExact: "triển lãm",
+    lead: { name: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 12, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", matchExact: "người tham dự",
+    lead: { name: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) }
+    ]
+  },
 
-  // 3. Nhóm Kết nối (7+ nhiệm vụ)
-  { id: 13, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "kết quả nghiên cứu" },
-  { id: 14, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "sản phẩm khoa học" },
-  { id: 15, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "ghi nhớ mou" },
-  { id: 16, group: "Nhóm Kết nối", noidung: "Số yêu cầu công nghệ (Hợp tác & Kết nối ý tưởng)", lead: "Nguyễn Ngọc Thuỳ Trang", support: "-", target: 0, months: Array(12).fill(0), matchExact: "số yêu cầu công nghệ" },
-  { id: 17, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "nhu cầu tìm kiếm" },
-  { id: 18, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "kết nối (có biên bản)" },
-  { id: 19, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "hợp đồng sau kết nối" },
-  { id: 20, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "tổng giá trị hợp đồng" }
+  // 3. Nhóm Kết nối
+  {
+    id: 13, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu", matchExact: "kết quả nghiên cứu",
+    lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 14, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu", matchExact: "sản phẩm khoa học",
+    lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 15, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU", matchExact: "ghi nhớ mou",
+    lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 16, group: "Nhóm Kết nối", noidung: "Số yêu cầu công nghệ (Hợp tác & Kết nối ý tưởng)", matchExact: "số yêu cầu công nghệ",
+    lead: { name: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) },
+      { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+      { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+      { name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 17, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ", matchExact: "nhu cầu tìm kiếm",
+    lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 18, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)", matchExact: "kết nối (có biên bản)",
+    lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 19, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối", matchExact: "hợp đồng sau kết nối",
+    lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 20, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng", matchExact: "tổng giá trị hợp đồng",
+    lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+    supports: [
+      { name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  }
 ];
 
 let items = JSON.parse(JSON.stringify(defaultTasks));
@@ -472,8 +581,14 @@ function calculateKPIs(rs) {
   let contractCount = 0, contractTarget = 0;
 
   rs.forEach(r => {
-    let total = sumMonths(r.months);
-    let tgt = Number(r.target) || 0;
+    let leadTot = r.lead ? sumMonths(r.lead.months) : 0;
+    let suppTot = (r.supports || []).reduce((s, x) => s + sumMonths(x.months), 0);
+    let total = leadTot + suppTot;
+
+    let leadTgt = r.lead ? Number(r.lead.target) || 0 : 0;
+    let suppTgt = (r.supports || []).reduce((s, x) => s + (Number(x.target) || 0), 0);
+    let tgt = leadTgt + suppTgt;
+
     let nd = (r.noidung || '').toLowerCase();
 
     // 1. Tổng số yêu cầu công nghệ
@@ -581,7 +696,14 @@ function renderCharts(rs, kpis) {
 
   // Biểu đồ 2: THEO DÕI TIẾN ĐỘ HỢP ĐỒNG SAU KẾT NỐI (12 THÁNG)
   let contractTask = rs.find(r => (r.noidung || '').toLowerCase().includes("hợp đồng sau kết nối"));
-  let contractMonthly = contractTask ? contractTask.months : Array(12).fill(0);
+  let contractMonthly = Array(12).fill(0);
+  if (contractTask) {
+    for (let m = 0; m < 12; m++) {
+      let lVal = contractTask.lead ? contractTask.lead.months[m] || 0 : 0;
+      let sVal = (contractTask.supports || []).reduce((s, x) => s + (x.months[m] || 0), 0);
+      contractMonthly[m] = lVal + sVal;
+    }
+  }
   let monthLabels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
 
   if (charts['c_contract_chart']) charts['c_contract_chart'].destroy();
@@ -612,6 +734,7 @@ function renderCharts(rs, kpis) {
   });
 }
 
+// RENDER BẢNG: CHỦ TRÌ BÊN TRÁI HÀNG TRÊN, HỖ TRỢ BÊN PHẢI CÁC HÀNG DƯỚI
 function renderTable(rs) {
   filteredItems = rs;
   const kpis = calculateKPIs(rs);
@@ -624,27 +747,65 @@ function renderTable(rs) {
     return;
   }
 
-  tbody.innerHTML = rs.map((r, i) => {
-    const tot = sumMonths(r.months);
-    const tgt = Number(r.target) || 0;
-    const rate = tgt > 0 ? ((tot / tgt) * 100).toFixed(0) : '-';
-    const rateColor = tgt > 0 && tot >= tgt ? '#166534' : (tot > 0 ? '#ea580c' : '#94a3b8');
-    const monthCols = (r.months || Array(12).fill(0)).map(m => `<td class="month-cell">${m ? Number(m).toLocaleString('vi-VN') : '-'}</td>`).join('');
+  let html = '';
+  rs.forEach((r, i) => {
+    const supports = r.supports || [];
+    const rowCount = 1 + supports.length;
 
-    return `
+    // 1. HÀNG ĐẦU TIÊN: CHUYÊN VIÊN CHỦ TRÌ
+    const leadTot = sumMonths(r.lead ? r.lead.months : []);
+    const leadTgt = r.lead ? Number(r.lead.target) || 0 : 0;
+    const leadRate = leadTgt > 0 ? ((leadTot / leadTgt) * 100).toFixed(0) : '-';
+    const leadRateColor = leadTgt > 0 && leadTot >= leadTgt ? '#166534' : (leadTot > 0 ? '#ea580c' : '#94a3b8');
+    const leadMonthCols = (r.lead ? r.lead.months : Array(12).fill(0)).map(m => `<td class="month-cell">${m ? Number(m).toLocaleString('vi-VN') : '-'}</td>`).join('');
+
+    html += `
     <tr>
-      <td style="font-weight:700;color:#64748b;text-align:center">${i + 1}</td>
-      <td><span class="badge-group ${getGroupBadgeClass(r.group)}">${esc(r.group)}</span></td>
-      <td><div style="font-weight:700;color:#0f172a">${esc(r.noidung)}</div></td>
-      <td><span class="badge-lead">${esc(r.lead || 'Chưa phân công')}</span></td>
-      <td>${r.support && r.support !== '-' ? `<span class="badge-support">${esc(r.support)}</span>` : '<span style="color:#94a3b8">-</span>'}</td>
-      <td class="target-cell">${tgt ? tgt.toLocaleString('vi-VN') : '-'}</td>
-      ${monthCols}
-      <td class="total-cell">${tot ? tot.toLocaleString('vi-VN') : '0'}</td>
-      <td class="rate-cell" style="color:${rateColor}">${rate !== '-' ? rate + '%' : '-'}</td>
+      <td rowspan="${rowCount}" style="font-weight:700;color:#64748b;text-align:center;">${i + 1}</td>
+      <td rowspan="${rowCount}"><span class="badge-group ${getGroupBadgeClass(r.group)}">${esc(r.group)}</span></td>
+      <td rowspan="${rowCount}"><div style="font-weight:700;color:#0f172a;">${esc(r.noidung)}</div></td>
+      
+      <!-- Cột Chuyên viên chủ trì (Bên trái) -->
+      <td><span class="badge-lead">${esc(r.lead ? r.lead.name : 'Chưa phân công')}</span></td>
+      
+      <!-- Cột Chuyên viên hỗ trợ (Bên phải - Để trống ở dòng chủ trì) -->
+      <td><span style="color:#cbd5e1">-</span></td>
+
+      <!-- Dữ liệu tiến độ của riêng người chủ trì -->
+      <td class="target-cell">${leadTgt ? leadTgt.toLocaleString('vi-VN') : '-'}</td>
+      ${leadMonthCols}
+      <td class="total-cell">${leadTot ? leadTot.toLocaleString('vi-VN') : '0'}</td>
+      <td class="rate-cell" style="color:${leadRateColor}">${leadRate !== '-' ? leadRate + '%' : '-'}</td>
     </tr>
     `;
-  }).join('');
+
+    // 2. CÁC HÀNG TIẾP THEO: TỪNG CHUYÊN VIÊN HỖ TRỢ (DÒNG DƯỚI)
+    supports.forEach(supp => {
+      const suppTot = sumMonths(supp.months);
+      const suppTgt = Number(supp.target) || 0;
+      const suppRate = suppTgt > 0 ? ((suppTot / suppTgt) * 100).toFixed(0) : '-';
+      const suppRateColor = suppTgt > 0 && suppTot >= suppTgt ? '#166534' : (suppTot > 0 ? '#ea580c' : '#94a3b8');
+      const suppMonthCols = (supp.months || Array(12).fill(0)).map(m => `<td class="month-cell">${m ? Number(m).toLocaleString('vi-VN') : '-'}</td>`).join('');
+
+      html += `
+      <tr class="sub-row">
+        <!-- Cột Chuyên viên chủ trì: Để trống ở các dòng hỗ trợ phía dưới -->
+        <td></td>
+        
+        <!-- Cột Chuyên viên hỗ trợ: Hiển thị tên người hỗ trợ -->
+        <td><span class="badge-support">${esc(supp.name)}</span></td>
+
+        <!-- Dữ liệu tiến độ của riêng người hỗ trợ -->
+        <td class="target-cell">${suppTgt ? suppTgt.toLocaleString('vi-VN') : '-'}</td>
+        ${suppMonthCols}
+        <td class="total-cell">${suppTot ? suppTot.toLocaleString('vi-VN') : '0'}</td>
+        <td class="rate-cell" style="color:${suppRateColor}">${suppRate !== '-' ? suppRate + '%' : '-'}</td>
+      </tr>
+      `;
+    });
+  });
+
+  tbody.innerHTML = html;
 }
 
 function applyFilter() {
@@ -653,10 +814,13 @@ function applyFilter() {
   const f_staff = document.getElementById('f_staff').value;
 
   const res = items.filter(r => {
-    const textData = `${r.group} ${r.noidung} ${r.lead} ${r.support}`.toLowerCase();
+    const leadName = r.lead ? r.lead.name : '';
+    const suppNames = (r.supports || []).map(x => x.name).join(' ');
+    const textData = `${r.group} ${r.noidung} ${leadName} ${suppNames}`.toLowerCase();
+
     const matchesQuery = !q || textData.includes(q);
     const matchesGroup = !f_group || r.group === f_group;
-    const matchesStaff = !f_staff || (r.lead && r.lead.includes(f_staff)) || (r.support && r.support.includes(f_staff));
+    const matchesStaff = !f_staff || leadName.includes(f_staff) || suppNames.includes(f_staff);
     return matchesQuery && matchesGroup && matchesStaff;
   });
 
@@ -684,7 +848,7 @@ function parseCSV(text) {
   return rows;
 }
 
-// BỘ ĐỒNG BỘ GOOGLE SHEETS KHÓA THEO NHÓM
+// BỘ ĐỒNG BỘ GOOGLE SHEETS
 async function syncGoogleSheets() {
   try {
     const gvizRes = await fetch(GSHEET_GVIZ_URL + encodeURIComponent('SELECT *') + '&_t=' + Date.now(), { cache: 'no-store' });
@@ -713,7 +877,7 @@ async function syncGoogleSheets() {
   }
 }
 
-// Hàm khớp dữ liệu chính xác theo từng Nhóm công tác
+// CẬP NHẬT DỮ LIỆU TỪ GOOGLE SHEETS VÀO ĐÚNG HÀNG CHỦ TRÌ VÀ HỖ TRỢ
 function applyScopedRows(rows) {
   if (!rows || rows.length === 0) return false;
 
@@ -742,7 +906,6 @@ function applyScopedRows(rows) {
     if (rowStr.includes("nhóm xúc tiến")) currentGroup = "Nhóm Xúc tiến";
     if (rowStr.includes("nhóm kết nối")) currentGroup = "Nhóm Kết nối";
 
-    // Tìm nhiệm vụ khớp chính xác với dòng trong đúng Nhóm
     items.forEach(task => {
       if (task.group === currentGroup && rowStr.includes(task.matchExact)) {
         let tgt = Number(String(r[targetColIdx] || '0').replace(/[^0-9.-]+/g, '')) || 0;
@@ -752,15 +915,14 @@ function applyScopedRows(rows) {
           mData.push(val);
         }
 
-        if (tgt > 0) task.target = tgt;
-        if (mData.some(x => x > 0)) task.months = mData;
-
-        // Chỉ cập nhật tên chuyên viên nếu tìm thấy trên Google Sheets trong đúng nhóm
-        if (r[6] && String(r[6]).trim() && !String(r[6]).includes("thu thập") && !String(r[6]).includes("sự kiện")) {
-          task.lead = String(r[6]).trim();
-        }
-        if (r[7] && String(r[7]).trim() && isNaN(Number(r[7])) && !String(r[7]).includes("thu thập")) {
-          task.support = String(r[7]).trim();
+        // Kiểm tra xem dòng này của Chủ trì hay Hỗ trợ nào
+        let matchedSupport = (task.supports || []).find(s => rowStr.includes(s.name.toLowerCase()));
+        if (matchedSupport) {
+          if (tgt > 0) matchedSupport.target = tgt;
+          if (mData.some(x => x > 0)) matchedSupport.months = mData;
+        } else if (task.lead) {
+          if (tgt > 0) task.lead.target = tgt;
+          if (mData.some(x => x > 0)) task.lead.months = mData;
         }
       }
     });
@@ -775,8 +937,10 @@ function updateFilters() {
   const groups = [...new Set(items.map(x => x.group))];
   const staffSet = new Set();
   items.forEach(x => {
-    if (x.lead && x.lead !== '-') staffSet.add(x.lead.trim());
-    if (x.support && x.support !== '-') staffSet.add(x.support.trim());
+    if (x.lead && x.lead.name && x.lead.name !== '-') staffSet.add(x.lead.name.trim());
+    (x.supports || []).forEach(s => {
+      if (s.name && s.name !== '-') staffSet.add(s.name.trim());
+    });
   });
 
   populateSelect('f_group', groups, 'Tất cả Nhóm nhiệm vụ');
@@ -797,24 +961,45 @@ function exportExcel() {
 
   let dataRows = '';
   filteredItems.forEach((r, idx) => {
-    let tot = sumMonths(r.months);
-    let tgt = r.target || 0;
-    let rate = tgt > 0 ? ((tot / tgt) * 100).toFixed(0) + '%' : '-';
-    let monthTds = (r.months || Array(12).fill(0)).map(m => `<td class="data-center">${m || 0}</td>`).join('');
+    let leadTot = sumMonths(r.lead ? r.lead.months : []);
+    let leadTgt = r.lead ? Number(r.lead.target) || 0 : 0;
+    let leadRate = leadTgt > 0 ? ((leadTot / leadTgt) * 100).toFixed(0) + '%' : '-';
+    let leadMonthTds = (r.lead ? r.lead.months : Array(12).fill(0)).map(m => `<td class="data-center">${m || 0}</td>`).join('');
 
     dataRows += `
       <tr>
         <td class="data-center">${idx + 1}</td>
         <td class="data-left">${esc(r.group)}</td>
         <td class="data-left">${esc(r.noidung)}</td>
-        <td class="data-left">${esc(r.lead)}</td>
-        <td class="data-left">${esc(r.support)}</td>
-        <td class="data-center">${tgt}</td>
-        ${monthTds}
-        <td class="data-center">${tot}</td>
-        <td class="data-center">${rate}</td>
+        <td class="data-left">${esc(r.lead ? r.lead.name : '')}</td>
+        <td class="data-left"></td>
+        <td class="data-center">${leadTgt}</td>
+        ${leadMonthTds}
+        <td class="data-center">${leadTot}</td>
+        <td class="data-center">${leadRate}</td>
       </tr>
     `;
+
+    (r.supports || []).forEach(supp => {
+      let suppTot = sumMonths(supp.months);
+      let suppTgt = Number(supp.target) || 0;
+      let suppRate = suppTgt > 0 ? ((suppTot / suppTgt) * 100).toFixed(0) + '%' : '-';
+      let suppMonthTds = (supp.months || Array(12).fill(0)).map(m => `<td class="data-center">${m || 0}</td>`).join('');
+
+      dataRows += `
+        <tr>
+          <td class="data-center"></td>
+          <td class="data-left"></td>
+          <td class="data-left"></td>
+          <td class="data-left"></td>
+          <td class="data-left">${esc(supp.name)}</td>
+          <td class="data-center">${suppTgt}</td>
+          ${suppMonthTds}
+          <td class="data-center">${suppTot}</td>
+          <td class="data-center">${suppRate}</td>
+        </tr>
+      `;
+    });
   });
 
   const excelTemplate = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
