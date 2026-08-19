@@ -407,33 +407,33 @@ Chart.defaults.borderColor = '#f1f5f9';
 const GSHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/gviz/tq?tqx=out:json&tq=";
 const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
-// DANH SÁCH NHIỆM VỤ CHUẨN HÓA (ĐƯỢC GỘP CHUẨN XÁC, KHÔNG BỊ TÁCH THÀNH 60 DÒNG)
+// DANH SÁCH NHIỆM VỤ CHUẨN ĐƯỢC KHÓA THEO ĐÚNG NHÓM (KHÔNG NHẦM TỪ KHÓA CHÉO)
 const defaultTasks = [
   // 1. Nhóm Techport (9 nhiệm vụ)
-  { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["hồ sơ công nghệ"] },
-  { id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["dây chuyền", "thiết bị"] },
-  { id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["chuyên gia tư vấn"] },
-  { id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["tài sản trí tuệ", "shtt"] },
-  { id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["đơn vị cung ứng"] },
-  { id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["lượt truy cập"] },
-  { id: 7, group: "Nhóm Techport", noidung: "User mới", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["user mới", "tài khoản techport"] },
-  { id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["yêu cầu công nghệ tiếp nhận"] },
-  { id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["lượt kết nối cung cầu"] },
+  { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "hồ sơ công nghệ" },
+  { id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "dây chuyền/thiết bị" },
+  { id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "chuyên gia tư vấn" },
+  { id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "tài sản trí tuệ" },
+  { id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "đơn vị cung ứng" },
+  { id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "lượt truy cập" },
+  { id: 7, group: "Nhóm Techport", noidung: "User mới", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "user mới" },
+  { id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "yêu cầu công nghệ tiếp nhận" },
+  { id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), matchExact: "lượt kết nối cung cầu" },
 
   // 2. Nhóm Xúc tiến (3 nhiệm vụ)
-  { id: 10, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), keys: ["trưng bày công nghệ"] },
-  { id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), keys: ["triển lãm", "cntb"] },
-  { id: 12, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), keys: ["người tham dự"] },
+  { id: 10, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ tại các sự kiện", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), matchExact: "trưng bày công nghệ" },
+  { id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), matchExact: "triển lãm" },
+  { id: 12, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), matchExact: "người tham dự" },
 
   // 3. Nhóm Kết nối (7+ nhiệm vụ)
-  { id: 13, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["kết quả nghiên cứu"] },
-  { id: 14, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["sản phẩm khoa học", "sản phẩm khcn"] },
-  { id: 15, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["mou", "ghi nhớ"] },
-  { id: 16, group: "Nhóm Kết nối", noidung: "Số yêu cầu công nghệ (Hợp tác & Kết nối ý tưởng)", lead: "Nguyễn Ngọc Thuỳ Trang", support: "-", target: 0, months: Array(12).fill(0), keys: ["số yêu cầu công nghệ", "hợp tác công nghệ", "kết nối ý tưởng"] },
-  { id: 17, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["nhu cầu tìm kiếm"] },
-  { id: 18, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["kết nối (có biên bản)", "biên bản kết nối"] },
-  { id: 19, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["hợp đồng sau kết nối"] },
-  { id: 20, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["tổng giá trị hợp đồng"] }
+  { id: 13, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "kết quả nghiên cứu" },
+  { id: 14, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "sản phẩm khoa học" },
+  { id: 15, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "ghi nhớ mou" },
+  { id: 16, group: "Nhóm Kết nối", noidung: "Số yêu cầu công nghệ (Hợp tác & Kết nối ý tưởng)", lead: "Nguyễn Ngọc Thuỳ Trang", support: "-", target: 0, months: Array(12).fill(0), matchExact: "số yêu cầu công nghệ" },
+  { id: 17, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "nhu cầu tìm kiếm" },
+  { id: 18, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "kết nối (có biên bản)" },
+  { id: 19, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "hợp đồng sau kết nối" },
+  { id: 20, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), matchExact: "tổng giá trị hợp đồng" }
 ];
 
 let items = JSON.parse(JSON.stringify(defaultTasks));
@@ -684,7 +684,7 @@ function parseCSV(text) {
   return rows;
 }
 
-// BỘ ĐỒNG BỘ GOOGLE SHEETS KHÔNG TẠO DÒNG TRÙNG LẶP
+// BỘ ĐỒNG BỘ GOOGLE SHEETS KHÓA THEO NHÓM
 async function syncGoogleSheets() {
   try {
     const gvizRes = await fetch(GSHEET_GVIZ_URL + encodeURIComponent('SELECT *') + '&_t=' + Date.now(), { cache: 'no-store' });
@@ -694,7 +694,7 @@ async function syncGoogleSheets() {
       const data = JSON.parse(jsonStr);
       if (data && data.table && data.table.rows) {
         const gRows = data.table.rows.map(r => (r.c || []).map(cell => cell ? (cell.v ?? cell.f ?? '') : ''));
-        if (applyMatchedRows(gRows)) return;
+        if (applyScopedRows(gRows)) return;
       }
     }
   } catch (err) {
@@ -706,15 +706,15 @@ async function syncGoogleSheets() {
     if (csvRes.ok) {
       const csvTxt = await csvRes.text();
       const csvRows = parseCSV(csvTxt);
-      applyMatchedRows(csvRows);
+      applyScopedRows(csvRows);
     }
   } catch (err) {
     console.log("CSV sync fallback:", err);
   }
 }
 
-// Khớp số liệu chính xác vào các nhiệm vụ chuẩn hóa
-function applyMatchedRows(rows) {
+// Hàm khớp dữ liệu chính xác theo từng Nhóm công tác
+function applyScopedRows(rows) {
   if (!rows || rows.length === 0) return false;
 
   let targetColIdx = -1;
@@ -733,15 +733,18 @@ function applyMatchedRows(rows) {
   if (targetColIdx === -1) targetColIdx = 8;
   if (m1ColIdx === -1) m1ColIdx = 9;
 
-  let updatedCount = 0;
+  let currentGroup = "Nhóm Techport";
 
-  items.forEach(task => {
-    // Tìm dòng trên Google Sheet khớp với từ khóa của nhiệm vụ
-    rows.forEach(r => {
-      let rowContent = r.map(x => String(x || '').toLowerCase()).join(' ');
-      let matched = task.keys.some(k => rowContent.includes(k));
+  rows.forEach(r => {
+    let rowStr = r.map(x => String(x || '').trim()).join(' ').toLowerCase();
 
-      if (matched) {
+    if (rowStr.includes("nhóm techport")) currentGroup = "Nhóm Techport";
+    if (rowStr.includes("nhóm xúc tiến")) currentGroup = "Nhóm Xúc tiến";
+    if (rowStr.includes("nhóm kết nối")) currentGroup = "Nhóm Kết nối";
+
+    // Tìm nhiệm vụ khớp chính xác với dòng trong đúng Nhóm
+    items.forEach(task => {
+      if (task.group === currentGroup && rowStr.includes(task.matchExact)) {
         let tgt = Number(String(r[targetColIdx] || '0').replace(/[^0-9.-]+/g, '')) || 0;
         let mData = [];
         for (let m = 0; m < 12; m++) {
@@ -752,22 +755,20 @@ function applyMatchedRows(rows) {
         if (tgt > 0) task.target = tgt;
         if (mData.some(x => x > 0)) task.months = mData;
 
-        // Cập nhật chuyên viên chủ trì nếu có tên hợp lệ
+        // Chỉ cập nhật tên chuyên viên nếu tìm thấy trên Google Sheets trong đúng nhóm
         if (r[6] && String(r[6]).trim() && !String(r[6]).includes("thu thập") && !String(r[6]).includes("sự kiện")) {
           task.lead = String(r[6]).trim();
         }
         if (r[7] && String(r[7]).trim() && isNaN(Number(r[7])) && !String(r[7]).includes("thu thập")) {
           task.support = String(r[7]).trim();
         }
-
-        updatedCount++;
       }
     });
   });
 
   updateFilters();
   applyFilter();
-  return updatedCount > 0;
+  return true;
 }
 
 function updateFilters() {
