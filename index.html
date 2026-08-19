@@ -18,7 +18,7 @@ body{
   background-attachment: fixed;
 }
 
-/* Header Tone Sáng Sang Trọng */
+/* Header Tone Sáng */
 .header{
   background: #ffffff;
   color: #1e293b;
@@ -183,15 +183,6 @@ input:focus, select:focus{
   transition: all 0.2s ease;
   font-size: 13px;
 }
-.btn-refresh{
-  background: linear-gradient(135deg, #f7941d, #ea580c);
-  color: white;
-  box-shadow: 0 4px 12px rgba(247, 148, 29, 0.25);
-}
-.btn-refresh:hover{
-  background: linear-gradient(135deg, #fb923c, #f7941d);
-  transform: translateY(-2px);
-}
 .btn-export{
   background: linear-gradient(135deg, #059669, #047857);
   color: white;
@@ -254,7 +245,6 @@ tr:hover td{ background: #fff7ed; }
 }
 
 .table-wrap{overflow:auto;max-height:640px;border-radius:8px;}
-#sync-status{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;color:#059669;}
 
 .month-cell {
   text-align: center;
@@ -296,8 +286,6 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
   <div class="header-actions">
-    <div id="sync-status">🟢 Dữ liệu trực tuyến sẵn sàng</div>
-    <button class="btn btn-refresh" onclick="syncGoogleSheets(true)">🔄 Làm mới ngay</button>
     <button class="btn btn-export" onclick="exportExcel()">📥 Xuất File Excel (.xls)</button>
   </div>
 </div>
@@ -416,8 +404,9 @@ tr:hover td{ background: #fff7ed; }
 Chart.defaults.color = '#64748b';
 Chart.defaults.borderColor = '#f1f5f9';
 
-// Nguồn Google Sheet Online CSV
-const GSHEET_BASE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
+// Endpoint Google Sheets trực tiếp hỗ trợ Realtime GViz API & CSV
+const GSHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/gviz/tq?tqx=out:json&tq=";
+const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
 // 19 NHIỆM VỤ GỐC CHUẨN HÓA
 const tasks19 = [
@@ -695,74 +684,83 @@ function parseCSV(text) {
   return rows;
 }
 
-// ĐỒNG BỘ GOOGLE SHEETS LIVE - TỰ ĐỘNG CẬP NHẬT TỨC THÌ KHI CÓ THAY ĐỔI TRÊN SHEETS
-async function syncGoogleSheets(manual = false) {
-  const statusEl = document.getElementById('sync-status');
-  if (manual) statusEl.innerHTML = '🔄 Đang đồng bộ Sheets...';
-  
+// BỘ ĐỌC GOOGLE SHEETS KÉP (GVIZ REALTIME + CSV NO-CACHE)
+async function syncGoogleSheets() {
+  // Cách 1: Thử nghiệm GViz API (Thời gian thực không bị trễ cache)
   try {
-    // Thêm tham số ngẫu nhiên để chống trình duyệt lưu cache
-    const liveUrl = GSHEET_BASE_URL + '&_nocache=' + Date.now();
-    const res = await fetch(liveUrl, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Không thể kết nối Sheets');
-    const csvText = await res.text();
-    const rows = parseCSV(csvText);
-
-    // Tự động tìm vị trí cột Chỉ tiêu, Tháng 01, Chuyên viên
-    let targetColIdx = -1;
-    let m1ColIdx = -1;
-    let leadColIdx = -1;
-    let suppColIdx = -1;
-
-    for (let i = 0; i < rows.length; i++) {
-      let r = rows[i];
-      for (let j = 0; j < r.length; j++) {
-        let cell = (r[j] || '').toLowerCase().trim();
-        if (cell.includes("số lượng") || cell.includes("chỉ tiêu")) targetColIdx = j;
-        if (cell.includes("tháng 01") || cell.includes("tháng 1")) m1ColIdx = j;
-        if (cell.includes("chủ trì")) leadColIdx = j;
-        if (cell.includes("hỗ trợ")) suppColIdx = j;
+    const gvizRes = await fetch(GSHEET_GVIZ_URL + encodeURIComponent('SELECT *') + '&_t=' + Date.now(), { cache: 'no-store' });
+    if (gvizRes.ok) {
+      const txt = await gvizRes.text();
+      const jsonStr = txt.replace(/^[/*\s]*google\.visualization\.Query\.setResponse\(/, '').replace(/\);?[\s*]*$/, '');
+      const data = JSON.parse(jsonStr);
+      if (data && data.table && data.table.rows) {
+        const gRows = data.table.rows.map(r => (r.c || []).map(cell => cell ? (cell.v ?? cell.f ?? '') : ''));
+        if (applyExtractedRows(gRows)) return;
       }
-      if (m1ColIdx !== -1) break;
     }
-
-    if (targetColIdx === -1) targetColIdx = 8;
-    if (m1ColIdx === -1) m1ColIdx = 9;
-
-    // Cập nhật số liệu chuẩn xác vào 19 nhiệm vụ
-    rows.forEach(r => {
-      let rowContent = r.join(' ').toLowerCase();
-      items.forEach(task => {
-        let taskNameLower = task.noidung.toLowerCase().trim();
-        if (rowContent.includes(taskNameLower)) {
-          let tgt = Number((r[targetColIdx] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
-          let mData = [];
-          for (let m = 0; m < 12; m++) {
-            let val = Number((r[m1ColIdx + m] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
-            mData.push(val);
-          }
-
-          task.target = tgt;
-          task.months = mData;
-
-          // Cập nhật tên chuyên viên nếu tìm thấy cột
-          if (leadColIdx !== -1 && r[leadColIdx] && r[leadColIdx].trim()) {
-            task.lead = r[leadColIdx].trim();
-          }
-          if (suppColIdx !== -1 && r[suppColIdx] && r[suppColIdx].trim()) {
-            task.support = r[suppColIdx].trim();
-          }
-        }
-      });
-    });
-
-    const now = new Date();
-    const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
-    statusEl.innerHTML = `🟢 Đã đồng bộ Google Sheets (${timeStr})`;
-    applyFilter();
   } catch (err) {
-    statusEl.innerHTML = '🟢 Dữ liệu trực tuyến sẵn sàng';
+    console.log("GViz fallback to CSV:", err);
   }
+
+  // Cách 2: Trích xuất trực tiếp từ CSV không qua cache
+  try {
+    const csvRes = await fetch(GSHEET_CSV_URL + '&_t=' + Date.now(), { cache: 'no-store' });
+    if (csvRes.ok) {
+      const csvTxt = await csvRes.text();
+      const csvRows = parseCSV(csvTxt);
+      applyExtractedRows(csvRows);
+    }
+  } catch (err) {
+    console.log("CSV sync fallback:", err);
+  }
+}
+
+function applyExtractedRows(rows) {
+  if (!rows || rows.length === 0) return false;
+
+  let targetColIdx = -1;
+  let m1ColIdx = -1;
+
+  for (let i = 0; i < rows.length; i++) {
+    let r = rows[i];
+    for (let j = 0; j < r.length; j++) {
+      let cell = String(r[j] || '').toLowerCase().trim();
+      if (cell.includes("số lượng") || cell.includes("chỉ tiêu")) targetColIdx = j;
+      if (cell.includes("tháng 01") || cell.includes("tháng 1")) m1ColIdx = j;
+    }
+    if (targetColIdx !== -1 && m1ColIdx !== -1) break;
+  }
+
+  if (targetColIdx === -1) targetColIdx = 8;
+  if (m1ColIdx === -1) m1ColIdx = 9;
+
+  let hasUpdated = false;
+  rows.forEach(r => {
+    let rowContent = r.map(x => String(x || '').toLowerCase()).join(' ');
+    items.forEach(task => {
+      let taskNameLower = task.noidung.toLowerCase().trim();
+      if (rowContent.includes(taskNameLower)) {
+        let tgt = Number(String(r[targetColIdx] || '0').replace(/[^0-9.-]+/g, '')) || 0;
+        let mData = [];
+        for (let m = 0; m < 12; m++) {
+          let val = Number(String(r[m1ColIdx + m] || '0').replace(/[^0-9.-]+/g, '')) || 0;
+          mData.push(val);
+        }
+
+        task.target = tgt;
+        task.months = mData;
+
+        // Cập nhật chuyên viên chủ trì & hỗ trợ nếu có trên dòng
+        if (r[6] && String(r[6]).trim()) task.lead = String(r[6]).trim();
+        if (r[7] && String(r[7]).trim() && isNaN(Number(r[7]))) task.support = String(r[7]).trim();
+
+        hasUpdated = true;
+      }
+    });
+  });
+
+  applyFilter();
+  return hasUpdated;
 }
 
 function initDashboard() {
@@ -780,13 +778,11 @@ function initDashboard() {
 
   renderTable(items);
   
-  // Đồng bộ lần đầu khi tải trang
-  syncGoogleSheets(true);
+  // Tải đồng bộ tức thì
+  syncGoogleSheets();
 
-  // TỰ ĐỘNG ĐỒNG BỘ LẠI MỖI 30 GIÂY ĐỂ ĐÓN SỐ LIỆU MỚI TỪ GOOGLE SHEETS
-  setInterval(() => {
-    syncGoogleSheets(false);
-  }, 30000);
+  // Tự động quét lại sau mỗi 15 giây ngầm trong trang
+  setInterval(syncGoogleSheets, 15000);
 }
 
 function exportExcel() {
