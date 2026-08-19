@@ -357,15 +357,14 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
 
-  <!-- BIỂU ĐỒ -->
+  <!-- BIỂU ĐỒ HOÀN TOÀN MỚI -->
   <div class="charts">
     <div class="card">
       <h3>Tiến độ Thực hiện vs Chỉ tiêu Giao (4 Khối Chỉ Số)</h3>
       <div class="chart"><canvas id="c1"></canvas></div>
     </div>
-    <!-- BIỂU ĐỒ THAY THẾ: TỔNG SỐ HỢP ĐỒNG SAU KẾT NỐI -->
     <div class="card">
-      <h3>Theo Dõi Tiến Độ Hợp Đồng Sau Kết Nối (12 Tháng)</h3>
+      <h3>Theo Dõi Số Lượng Hợp Đồng Sau Kết Nối (12 Tháng)</h3>
       <div class="chart"><canvas id="c_contract_chart"></canvas></div>
     </div>
   </div>
@@ -380,7 +379,7 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
 
-  <!-- Bảng Dữ Liệu Chi Tiết (Phân lập rõ ràng khối lượng Chuyên viên chủ trì & Chuyên viên hỗ trợ) -->
+  <!-- Bảng Dữ Liệu Chi Tiết (19 nhiệm vụ chuẩn hóa phân lập rõ khối lượng) -->
   <div class="card" style="margin-top:20px; padding: 12px 18px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
       <h3 style="margin:0">📋 Danh sách Chi tiết Nhiệm vụ & Khối Lượng Từng Chuyên Viên (<span id="count_display" style="color:#f7941d">19</span> nhiệm vụ)</h3>
@@ -425,7 +424,7 @@ Chart.defaults.borderColor = '#f1f5f9';
 
 const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
-// 19 NHIỆM VỤ GỐC PHÂN LẬP RÕ RÀNG KHỐI LƯỢNG GIỮA CHUYÊN VIÊN CHỦ TRÌ & HỖ TRỢ
+// 19 NHIỆM VỤ GỐC CHUẨN HÓA
 const tasks19 = [
   // 1. Nhóm Techport (9 nhiệm vụ)
   {
@@ -718,7 +717,6 @@ function renderCharts(rs, kpis) {
   });
 }
 
-// RENDER BẢNG PHÂN LẬP RÕ KHỐI LƯỢNG CHỦ TRÌ & HỖ TRỢ
 function renderTable(rs) {
   filteredItems = rs;
   const kpis = calculateKPIs(rs);
@@ -820,7 +818,7 @@ function parseCSV(text) {
   return rows;
 }
 
-// BỘ ĐỌC GOOGLE SHEETS THÔNG MINH - ĐỌC ĐÚNG CỘT CHỈ TIÊU & TỪNG THÁNG
+// ĐỒNG BỘ SHEETS TỰ ĐỘNG CẬP NHẬT TỪ GOOGLE SHEETS
 async function syncGoogleSheets() {
   const statusEl = document.getElementById('sync-status');
   statusEl.innerHTML = '🔄 Đang đồng bộ Sheets...';
@@ -830,9 +828,8 @@ async function syncGoogleSheets() {
     const csvText = await res.text();
     const rows = parseCSV(csvText);
 
-    // Tự động tìm vị trí cột "Chỉ tiêu / Số lượng" và cột "Tháng 01"
-    let targetColIdx = 8;
-    let m1ColIdx = 9;
+    let targetColIdx = -1;
+    let m1ColIdx = -1;
 
     for (let i = 0; i < rows.length; i++) {
       let r = rows[i];
@@ -845,10 +842,12 @@ async function syncGoogleSheets() {
           m1ColIdx = j;
         }
       }
-      if (m1ColIdx !== 9) break;
+      if (targetColIdx !== -1 && m1ColIdx !== -1) break;
     }
 
-    // Cập nhật số liệu chuẩn xác
+    if (targetColIdx === -1) targetColIdx = 8;
+    if (m1ColIdx === -1) m1ColIdx = 9;
+
     rows.forEach(r => {
       let rowContent = r.join(' ').toLowerCase();
       items.forEach(task => {
@@ -861,14 +860,13 @@ async function syncGoogleSheets() {
             mData.push(val);
           }
 
-          // Kiểm tra xem dòng này của Chuyên viên chủ trì hay hỗ trợ
           let staffCell = rowContent;
           if (task.support && task.support.name && staffCell.includes(task.support.name.toLowerCase())) {
-            if (tgt > 0) task.support.target = tgt;
-            if (mData.some(x => x > 0)) task.support.months = mData;
+            task.support.target = tgt;
+            task.support.months = mData;
           } else if (task.lead) {
-            if (tgt > 0) task.lead.target = tgt;
-            if (mData.some(x => x > 0)) task.lead.months = mData;
+            task.lead.target = tgt;
+            task.lead.months = mData;
           }
         }
       });
@@ -962,7 +960,7 @@ function exportExcel() {
 </head>
 <body>
 <table>
-  <tr><td colspan="19" class="header-title">TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ</td></tr>
+  <tr><td colspan="20" class="header-title">TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ</td></tr>
   <tr>
     <th class="header">STT</th>
     <th class="header">Nhóm công tác</th>
