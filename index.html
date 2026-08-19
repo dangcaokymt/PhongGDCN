@@ -430,42 +430,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// 20 ĐẦU VIỆC CHUẨN VỚI DANH SÁCH TỪ KHÓA ĐA DẠNG
-const defaultTasks = [
-  // 1. Nhóm Techport (9 nhiệm vụ)
-  { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", keys: ["hosocongnghe"], lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }, supports: [] },
-  { id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", keys: ["daychuyen", "thietbi"], lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }, supports: [] },
-  { id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", keys: ["chuyengiatuvan"], lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }, supports: [] },
-  { id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", keys: ["taisantritue", "shtt"], lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }, supports: [] },
-  { id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", keys: ["donvicungung"], lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }, supports: [] },
-  { id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập", keys: ["luottruycap"], lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }, supports: [] },
-  { id: 7, group: "Nhóm Techport", noidung: "User mới", keys: ["usermoi", "taikhoantechport"], lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }, supports: [] },
-  { id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận", keys: ["yeucaucongnghetiepnhan", "tiepnhanyeucau"], lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }, supports: [] },
-  { id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", keys: ["luotketnoicungcau"], lead: { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }, supports: [] },
-
-  // 2. Nhóm Xúc tiến (3 nhiệm vụ)
-  { id: 10, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ tại các sự kiện", keys: ["trungbaycongnghe", "luottrungbay"], lead: { name: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) }, supports: [{ name: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) }] },
-  { id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", keys: ["trienlam", "cntb"], lead: { name: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) }, supports: [{ name: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) }] },
-  { id: 12, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", keys: ["nguoithamdu", "khachthamdu"], lead: { name: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) }, supports: [{ name: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) }] },
-
-  // 3. Nhóm Kết nối (8 nhiệm vụ)
-  { id: 13, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu", keys: ["ketquanghiencuu", "vientruong"], lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) }, supports: [{ name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }] },
-  { id: 14, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu", keys: ["sanphamkhoahoc", "sanphamkhcn", "doanhnghiep"], lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) }, supports: [{ name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }] },
-  { id: 15, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU", keys: ["mou", "ghinho"], lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) }, supports: [{ name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }] },
-  { id: 16, group: "Nhóm Kết nối", noidung: "Số yêu cầu công nghệ (Hợp tác & Kết nối ý tưởng)", keys: ["soyeucaucongnghe", "hoptaccongnghe", "ketnoiyngtuong"], lead: { name: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) }, supports: [
-      { name: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) },
-      { name: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
-      { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
-      { name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
-    ] 
-  },
-  { id: 17, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ", keys: ["nhucautimkiem", "timkiemcongnghe"], lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) }, supports: [{ name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }] },
-  { id: 18, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)", keys: ["ketnoicobienban", "soluongketnoi"], lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) }, supports: [{ name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }] },
-  { id: 19, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối", keys: ["hopdongsauketnoi", "soluonghopdong"], lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) }, supports: [{ name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }] },
-  { id: 20, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng", keys: ["tonggiatrihopdong", "giatrihopdong"], lead: { name: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) }, supports: [{ name: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }] }
-];
-
-let items = JSON.parse(JSON.stringify(defaultTasks));
+let items = [];
 let filteredItems = [];
 let charts = {};
 
@@ -501,13 +466,8 @@ function calculateKPIs(rs) {
   let contractCount = 0, contractTarget = 0;
 
   rs.forEach(r => {
-    let leadTot = r.lead ? sumMonths(r.lead.months) : 0;
-    let suppTot = (r.supports || []).reduce((s, x) => s + sumMonths(x.months), 0);
-    let total = leadTot + suppTot;
-
-    let leadTgt = r.lead ? Number(r.lead.target) || 0 : 0;
-    let suppTgt = (r.supports || []).reduce((s, x) => s + (Number(x.target) || 0), 0);
-    let tgt = leadTgt + suppTgt;
+    let total = (r.rows || []).reduce((s, row) => s + sumMonths(row.months), 0);
+    let tgt = (r.rows || []).reduce((s, row) => s + (Number(row.target) || 0), 0);
 
     let nd = normalizeText(r.noidung);
 
@@ -605,11 +565,11 @@ function renderCharts(rs, kpis) {
   let contractTask = rs.find(r => normalizeText(r.noidung).includes("hopdongsauketnoi"));
   let contractMonthly = Array(12).fill(0);
   if (contractTask) {
-    for (let m = 0; m < 12; m++) {
-      let lVal = contractTask.lead ? (contractTask.lead.months[m] || 0) : 0;
-      let sVal = (contractTask.supports || []).reduce((s, x) => s + (x.months[m] || 0), 0);
-      contractMonthly[m] = lVal + sVal;
-    }
+    (contractTask.rows || []).forEach(row => {
+      for (let m = 0; m < 12; m++) {
+        contractMonthly[m] += (row.months[m] || 0);
+      }
+    });
   }
   let monthLabels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
 
@@ -641,6 +601,7 @@ function renderCharts(rs, kpis) {
   });
 }
 
+// RENDER BẢNG: 100% THEO ĐÚNG HÀNG & CỘT TỪ GOOGLE SHEETS
 function renderTable(rs) {
   filteredItems = rs;
   const kpis = calculateKPIs(rs);
@@ -654,51 +615,49 @@ function renderTable(rs) {
   }
 
   let html = '';
-  rs.forEach((r, i) => {
-    const supports = r.supports || [];
-    const rowCount = 1 + supports.length;
+  rs.forEach((task, i) => {
+    const rows = task.rows || [];
+    const rowCount = Math.max(rows.length, 1);
 
-    // 1. DÒNG CHUYÊN VIÊN CHỦ TRÌ
-    const leadTot = sumMonths(r.lead ? r.lead.months : []);
-    const leadTgt = r.lead ? Number(r.lead.target) || 0 : 0;
-    const leadRate = leadTgt > 0 ? ((leadTot / leadTgt) * 100).toFixed(0) : '-';
-    const leadRateColor = leadTgt > 0 && leadTot >= leadTgt ? '#166534' : (leadTot > 0 ? '#ea580c' : '#94a3b8');
-    const leadMonthCols = (r.lead ? r.lead.months : Array(12).fill(0)).map(m => `<td class="month-cell">${m ? Number(m).toLocaleString('vi-VN') : '-'}</td>`).join('');
+    rows.forEach((r, rIdx) => {
+      const tot = sumMonths(r.months);
+      const tgt = Number(r.target) || 0;
+      const rate = tgt > 0 ? ((tot / tgt) * 100).toFixed(0) : '-';
+      const rateColor = tgt > 0 && tot >= tgt ? '#166534' : (tot > 0 ? '#ea580c' : '#94a3b8');
+      const monthCols = (r.months || Array(12).fill(0)).map(m => `<td class="month-cell">${m ? Number(m).toLocaleString('vi-VN') : '-'}</td>`).join('');
 
-    html += `
-    <tr>
-      <td rowspan="${rowCount}" style="font-weight:700;color:#64748b;text-align:center;">${i + 1}</td>
-      <td rowspan="${rowCount}"><span class="badge-group ${getGroupBadgeClass(r.group)}">${esc(r.group)}</span></td>
-      <td rowspan="${rowCount}"><div style="font-weight:700;color:#0f172a;">${esc(r.noidung)}</div></td>
-      
-      <td><span class="badge-lead">${esc(r.lead ? r.lead.name : 'Chưa phân công')}</span></td>
-      <td></td>
+      const leadCol = r.isLead && r.staffName ? `<span class="badge-lead">${esc(r.staffName)}</span>` : '';
+      const suppCol = !r.isLead && r.staffName ? `<span class="badge-support">${esc(r.staffName)}</span>` : '';
 
-      <td class="target-cell">${leadTgt ? leadTgt.toLocaleString('vi-VN') : '-'}</td>
-      ${leadMonthCols}
-      <td class="total-cell">${leadTot ? leadTot.toLocaleString('vi-VN') : '0'}</td>
-      <td class="rate-cell" style="color:${leadRateColor}">${leadRate !== '-' ? leadRate + '%' : '-'}</td>
-    </tr>
-    `;
+      if (rIdx === 0) {
+        html += `
+        <tr>
+          <td rowspan="${rowCount}" style="font-weight:700;color:#64748b;text-align:center;">${i + 1}</td>
+          <td rowspan="${rowCount}"><span class="badge-group ${getGroupBadgeClass(task.group)}">${esc(task.group)}</span></td>
+          <td rowspan="${rowCount}"><div style="font-weight:700;color:#0f172a;">${esc(task.noidung)}</div></td>
+          
+          <td>${leadCol}</td>
+          <td>${suppCol}</td>
 
-    // 2. CÁC DÒNG CHUYÊN VIÊN HỖ TRỢ
-    supports.forEach(supp => {
-      const suppTot = sumMonths(supp.months);
-      const suppTgt = Number(supp.target) || 0;
-      const suppRate = suppTgt > 0 ? ((suppTot / suppTgt) * 100).toFixed(0) : '-';
-      const suppRateColor = suppTgt > 0 && suppTot >= suppTgt ? '#166534' : (suppTot > 0 ? '#ea580c' : '#94a3b8');
-      const suppMonthCols = (supp.months || Array(12).fill(0)).map(m => `<td class="month-cell">${m ? Number(m).toLocaleString('vi-VN') : '-'}</td>`).join('');
+          <td class="target-cell">${tgt ? tgt.toLocaleString('vi-VN') : '-'}</td>
+          ${monthCols}
+          <td class="total-cell">${tot ? tot.toLocaleString('vi-VN') : '0'}</td>
+          <td class="rate-cell" style="color:${rateColor}">${rate !== '-' ? rate + '%' : '-'}</td>
+        </tr>
+        `;
+      } else {
+        html += `
+        <tr class="sub-row">
+          <td>${leadCol}</td>
+          <td>${suppCol}</td>
 
-      html += `
-      <tr class="sub-row">
-        <td></td>
-        <td><span class="badge-support">${esc(supp.name)}</span></td>
-        <td class="target-cell">${suppTgt ? suppTgt.toLocaleString('vi-VN') : '-'}</td>
-        ${suppMonthCols}
-        <td class="total-cell">${suppTot ? suppTot.toLocaleString('vi-VN') : '0'}</td>
-        <td class="rate-cell" style="color:${suppRateColor}">${suppRate !== '-' ? suppRate + '%' : '-'}</td>
-      </tr>
-      `;
+          <td class="target-cell">${tgt ? tgt.toLocaleString('vi-VN') : '-'}</td>
+          ${monthCols}
+          <td class="total-cell">${tot ? tot.toLocaleString('vi-VN') : '0'}</td>
+          <td class="rate-cell" style="color:${rateColor}">${rate !== '-' ? rate + '%' : '-'}</td>
+        </tr>
+        `;
+      }
     });
   });
 
@@ -710,14 +669,13 @@ function applyFilter() {
   const f_group = document.getElementById('f_group').value;
   const f_staff = document.getElementById('f_staff').value;
 
-  const res = items.filter(r => {
-    const leadName = r.lead ? r.lead.name : '';
-    const suppNames = (r.supports || []).map(x => x.name).join(' ');
-    const textData = `${r.group} ${r.noidung} ${leadName} ${suppNames}`.toLowerCase();
+  const res = items.filter(task => {
+    const staffNames = (task.rows || []).map(r => r.staffName).join(' ');
+    const textData = `${task.group} ${task.noidung} ${staffNames}`.toLowerCase();
 
     const matchesQuery = !q || textData.includes(q);
-    const matchesGroup = !f_group || r.group === f_group;
-    const matchesStaff = !f_staff || leadName.includes(f_staff) || suppNames.includes(f_staff);
+    const matchesGroup = !f_group || task.group === f_group;
+    const matchesStaff = !f_staff || staffNames.includes(f_staff);
     return matchesQuery && matchesGroup && matchesStaff;
   });
 
@@ -745,7 +703,7 @@ function parseCSV(text) {
   return rows;
 }
 
-// BỘ ĐỒNG BỘ NỀN VỮNG CHẮC
+// BỘ ĐỌC GOOGLE SHEETS 1:1 THEO THỨ TỰ HÀNG & CỘT
 async function syncGoogleSheets() {
   try {
     const gvizRes = await fetch(GSHEET_GVIZ_URL + encodeURIComponent('SELECT *') + '&_t=' + Date.now(), { cache: 'no-store' });
@@ -758,7 +716,7 @@ async function syncGoogleSheets() {
           if (!cell) return '';
           return (cell.v !== null && cell.v !== undefined) ? cell.v : (cell.f || '');
         }));
-        if (applySequentialData(gRows)) return;
+        if (buildTasksFromSpreadsheet(gRows)) return;
       }
     }
   } catch (err) {
@@ -770,39 +728,45 @@ async function syncGoogleSheets() {
     if (csvRes.ok) {
       const csvTxt = await csvRes.text();
       const csvRows = parseCSV(csvTxt);
-      applySequentialData(csvRows);
+      buildTasksFromSpreadsheet(csvRows);
     }
   } catch (err) {
     console.log("CSV sync fallback:", err);
   }
 }
 
-// THUẬT TOÁN PHÂN TÍCH TUẦN TỰ: ĐẢM BẢO LẤY 100% SỐ LIỆU TẤT CẢ CÁC HÀNG VÀ ĐẦU VIỆC
-function applySequentialData(rows) {
+// XÂY DỰNG BẢNG DỮ LIỆU ĐỘNG TỪ GOOGLE SHEETS (1:1 VỚI TRANG TÍNH)
+function buildTasksFromSpreadsheet(rows) {
   if (!rows || rows.length === 0) return false;
 
-  // Dò tìm vị trí cột Chỉ tiêu và 12 cột Tháng 01..Tháng 12
+  let leadColIdx = -1;
+  let suppColIdx = -1;
   let targetColIdx = -1;
   let monthCols = Array(12).fill(-1);
 
-  for (let i = 0; i < Math.min(rows.length, 10); i++) {
+  // Tìm các cột tiêu đề
+  for (let i = 0; i < Math.min(rows.length, 6); i++) {
     let r = rows[i];
     for (let j = 0; j < r.length; j++) {
-      let cellNorm = normalizeText(r[j]);
-      if (cellNorm.includes("soluong") || cellNorm.includes("chitieu")) {
-        targetColIdx = j;
-      }
+      let norm = normalizeText(r[j]);
+      if (norm.includes("chutri")) leadColIdx = j;
+      if (norm.includes("hotro")) suppColIdx = j;
+      if (norm.includes("soluong") || norm.includes("chitieu")) targetColIdx = j;
+
       for (let m = 1; m <= 12; m++) {
-        let mKey1 = "thang" + (m < 10 ? "0" + m : m);
-        let mKey2 = "thang" + m;
-        let mKey3 = "t" + m;
-        if (cellNorm === mKey1 || cellNorm === mKey2 || cellNorm === mKey3) {
+        let k1 = "thang" + (m < 10 ? "0" + m : m);
+        let k2 = "thang" + m;
+        let k3 = "t" + m;
+        if (norm === k1 || norm === k2 || norm === k3) {
           monthCols[m - 1] = j;
         }
       }
     }
   }
 
+  // Dự phòng chỉ số cột nếu Google Sheets gộp ô tiêu đề
+  if (leadColIdx === -1) leadColIdx = 6;
+  if (suppColIdx === -1) suppColIdx = 7;
   if (targetColIdx === -1) targetColIdx = 8;
   if (monthCols[0] === -1) {
     let startM = targetColIdx + 1;
@@ -810,68 +774,103 @@ function applySequentialData(rows) {
   }
 
   let currentGroup = "Nhóm Techport";
-  let activeTask = null;
-  let updatedCount = 0;
+  let extractedTasks = [];
+  let currentTask = null;
 
   for (let i = 0; i < rows.length; i++) {
     let r = rows[i];
     let rowRaw = r.map(x => String(x || '').trim()).join(' ');
     let rowNorm = normalizeText(rowRaw);
 
+    // Bỏ qua dòng tiêu đề trang tính
     if (rowNorm.includes("theodoinhiemvu") || rowNorm.includes("roviec") || (rowNorm.includes("thang01") && rowNorm.includes("thang02"))) {
       continue;
     }
 
-    if (rowNorm.includes("nhomtechport")) currentGroup = "Nhóm Techport";
-    if (rowNorm.includes("nhomxuctien")) currentGroup = "Nhóm Xúc tiến";
-    if (rowNorm.includes("nhomketnoi")) currentGroup = "Nhóm Kết nối";
+    // Nhận diện chuyển Nhóm
+    if (rowNorm.includes("nhomtechport")) { currentGroup = "Nhóm Techport"; }
+    if (rowNorm.includes("nhomxuctien")) { currentGroup = "Nhóm Xúc tiến"; }
+    if (rowNorm.includes("nhomketnoi")) { currentGroup = "Nhóm Kết nối"; }
 
-    // 1. Kiểm tra xem dòng này có mở ra một Đầu việc mới không
-    let matchedNewTask = items.find(task => {
-      if (task.group !== currentGroup) return false;
-      return task.keys.some(k => rowNorm.includes(k));
-    });
+    // Tìm tên đầu việc ở các cột đầu (Cột 1, 2, 3)
+    let c1 = String(r[1] || '').trim();
+    let c2 = String(r[2] || '').trim();
+    let taskNameCandidate = (c1.startsWith("Nhóm") ? c2 : c1) || c2;
 
-    if (matchedNewTask) {
-      activeTask = matchedNewTask;
+    // Tìm tên chuyên viên chủ trì & hỗ trợ trên dòng này
+    let leadVal = String(r[leadColIdx] || '').trim();
+    let suppVal = String(r[suppColIdx] || '').trim();
+
+    // Lọc bỏ chuỗi mô tả không phải tên người
+    if (leadVal.toLowerCase().includes("thu thập") || leadVal.toLowerCase().includes("sự kiện") || leadVal.toLowerCase().includes("danh sách")) {
+      leadVal = '';
+    }
+    if (suppVal.toLowerCase().includes("thu thập") || suppVal.toLowerCase().includes("sự kiện") || suppVal.toLowerCase().includes("danh sách")) {
+      suppVal = '';
     }
 
-    // 2. Nếu đang nằm trong ngữ cảnh của một đầu việc hợp lệ, trích xuất chỉ tiêu và 12 tháng
-    if (activeTask) {
-      let tgt = parseNumeric(r[targetColIdx]);
-      let mData = [];
-      for (let m = 0; m < 12; m++) {
-        let col = monthCols[m];
-        let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
-        mData.push(val);
-      }
+    let tgt = parseNumeric(r[targetColIdx]);
+    let mData = [];
+    for (let m = 0; m < 12; m++) {
+      let col = monthCols[m];
+      let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
+      mData.push(val);
+    }
 
-      // Nhận diện dòng này thuộc chuyên viên nào
-      let matchedSupport = (activeTask.supports || []).find(s => rowNorm.includes(normalizeText(s.name)));
-      if (matchedSupport) {
-        if (tgt > 0) matchedSupport.target = tgt;
-        if (mData.some(x => x > 0)) matchedSupport.months = mData;
-        updatedCount++;
-      } else if (activeTask.lead) {
-        if (tgt > 0) activeTask.lead.target = tgt;
-        if (mData.some(x => x > 0)) activeTask.lead.months = mData;
-        updatedCount++;
-      }
+    let hasData = (tgt > 0 || mData.some(x => x > 0) || leadVal !== '' || suppVal !== '');
+
+    // Nếu dòng này có TÊN ĐẦU VIỆC MỚI
+    if (taskNameCandidate && !taskNameCandidate.startsWith("Nhóm ") && !taskNameCandidate.includes("Lãnh đạo") && !taskNameCandidate.includes("Phê duyệt")) {
+      currentTask = {
+        id: extractedTasks.length + 1,
+        group: currentGroup,
+        noidung: taskNameCandidate,
+        rows: []
+      };
+      extractedTasks.push(currentTask);
+
+      // Thêm dòng đầu tiên (chủ trì hoặc hỗ trợ) vào đầu việc mới này
+      let isLeadRow = leadVal !== '' || (suppVal === '');
+      let staff = leadVal || suppVal || (currentGroup === 'Nhóm Techport' ? 'Trịnh Mai Hương' : 'Chưa phân công');
+
+      currentTask.rows.push({
+        isLead: isLeadRow,
+        staffName: staff,
+        target: tgt,
+        months: mData
+      });
+    } 
+    // Nếu dòng này là DÒNG CON (chuyên viên hỗ trợ phụ) thuộc đầu việc hiện tại
+    else if (currentTask && hasData) {
+      let isLeadRow = leadVal !== '';
+      let staff = suppVal || leadVal || 'Chuyên viên hỗ trợ';
+
+      currentTask.rows.push({
+        isLead: isLeadRow,
+        staffName: staff,
+        target: tgt,
+        months: mData
+      });
     }
   }
 
-  updateFilters();
-  applyFilter();
-  return updatedCount > 0;
+  if (extractedTasks.length >= 10) {
+    items = extractedTasks;
+    updateFilters();
+    renderTable(items);
+    return true;
+  }
+  return false;
 }
 
 function updateFilters() {
   const groups = [...new Set(items.map(x => x.group))];
   const staffSet = new Set();
-  items.forEach(x => {
-    if (x.lead && x.lead.name && x.lead.name !== '-') staffSet.add(x.lead.name.trim());
-    (x.supports || []).forEach(s => {
-      if (s.name && s.name !== '-') staffSet.add(s.name.trim());
+  items.forEach(task => {
+    (task.rows || []).forEach(r => {
+      if (r.staffName && r.staffName !== '-' && r.staffName !== 'Chưa phân công') {
+        staffSet.add(r.staffName.trim());
+      }
     });
   });
 
@@ -882,8 +881,6 @@ function updateFilters() {
 function initDashboard() {
   ['q', 'f_group', 'f_staff'].forEach(id => document.getElementById(id).addEventListener('input', applyFilter));
 
-  updateFilters();
-  renderTable(items);
   syncGoogleSheets();
   setInterval(syncGoogleSheets, 15000);
 }
@@ -892,43 +889,27 @@ function exportExcel() {
   if (!filteredItems.length) return alert('Không có dữ liệu để xuất!');
 
   let dataRows = '';
-  filteredItems.forEach((r, idx) => {
-    let leadTot = sumMonths(r.lead ? r.lead.months : []);
-    let leadTgt = r.lead ? Number(r.lead.target) || 0 : 0;
-    let leadRate = leadTgt > 0 ? ((leadTot / leadTgt) * 100).toFixed(0) + '%' : '-';
-    let leadMonthTds = (r.lead ? r.lead.months : Array(12).fill(0)).map(m => `<td class="data-center">${m || 0}</td>`).join('');
+  filteredItems.forEach((task, idx) => {
+    (task.rows || []).forEach((r, rIdx) => {
+      let tot = sumMonths(r.months);
+      let tgt = r.target || 0;
+      let rate = tgt > 0 ? ((tot / tgt) * 100).toFixed(0) + '%' : '-';
+      let monthTds = (r.months || Array(12).fill(0)).map(m => `<td class="data-center">${m || 0}</td>`).join('');
 
-    dataRows += `
-      <tr>
-        <td class="data-center">${idx + 1}</td>
-        <td class="data-left">${esc(r.group)}</td>
-        <td class="data-left">${esc(r.noidung)}</td>
-        <td class="data-left">${esc(r.lead ? r.lead.name : '')}</td>
-        <td class="data-left"></td>
-        <td class="data-center">${leadTgt}</td>
-        ${leadMonthTds}
-        <td class="data-center">${leadTot}</td>
-        <td class="data-center">${leadRate}</td>
-      </tr>
-    `;
-
-    (r.supports || []).forEach(supp => {
-      let suppTot = sumMonths(supp.months);
-      let suppTgt = Number(supp.target) || 0;
-      let suppRate = suppTgt > 0 ? ((suppTot / suppTgt) * 100).toFixed(0) + '%' : '-';
-      let suppMonthTds = (supp.months || Array(12).fill(0)).map(m => `<td class="data-center">${m || 0}</td>`).join('');
+      let leadName = r.isLead ? r.staffName : '';
+      let suppName = !r.isLead ? r.staffName : '';
 
       dataRows += `
         <tr>
-          <td class="data-center"></td>
-          <td class="data-left"></td>
-          <td class="data-left"></td>
-          <td class="data-left"></td>
-          <td class="data-left">${esc(supp.name)}</td>
-          <td class="data-center">${suppTgt}</td>
-          ${suppMonthTds}
-          <td class="data-center">${suppTot}</td>
-          <td class="data-center">${suppRate}</td>
+          <td class="data-center">${rIdx === 0 ? idx + 1 : ''}</td>
+          <td class="data-left">${rIdx === 0 ? esc(task.group) : ''}</td>
+          <td class="data-left">${rIdx === 0 ? esc(task.noidung) : ''}</td>
+          <td class="data-left">${esc(leadName)}</td>
+          <td class="data-left">${esc(suppName)}</td>
+          <td class="data-center">${tgt}</td>
+          ${monthTds}
+          <td class="data-center">${tot}</td>
+          <td class="data-center">${rate}</td>
         </tr>
       `;
     });
