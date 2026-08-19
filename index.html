@@ -35,34 +35,34 @@ body{
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
 }
 
-/* Khung hiển thị Logo Sihub */
+/* Logo nền trong suốt */
 .logo-container {
-  background: #ffffff;
-  padding: 6px 10px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .logo-container img {
-  height: 52px;
+  height: 58px;
   width: auto;
   object-fit: contain;
   display: block;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
 }
 
-/* Tiêu đề 2 đơn vị bằng nhau màu cam Sihub #f7941d */
+/* Tiêu đề 2 dòng bằng nhau màu cam SIHUB #f7941d */
 .header-title h1{
   margin: 0;
   font-size: 19px;
   font-weight: 800;
   letter-spacing: 0.6px;
   color: #f7941d;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   text-transform: uppercase;
 }
 .header-title h2{
@@ -71,7 +71,7 @@ body{
   font-weight: 800;
   letter-spacing: 0.6px;
   color: #f7941d;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   text-transform: uppercase;
 }
 
@@ -251,8 +251,7 @@ tr:hover td{ background: #f0f9ff; }
 <div class="header">
   <div class="header-left">
     <div class="logo-container">
-      <!-- Thay đổi tên file logo nếu cần -->
-      <img src="logo-sihub.png" onerror="this.src='logo-sihub.png'; this.onerror=null;" alt="SIHUB Logo">
+      <img src="logo-sihub.png" onerror="this.src='logo Sihub mau tieng viet.png'; this.onerror=null;" alt="SIHUB Logo">
     </div>
     <div class="header-title">
       <h1>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH</h1>
@@ -328,10 +327,8 @@ tr:hover td{ background: #f0f9ff; }
 Chart.defaults.color = '#64748b';
 Chart.defaults.borderColor = '#f1f5f9';
 
-// Link Google Sheets đã xuất bản CSV
 const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
-// Dữ liệu nội bộ dự phòng chuẩn xác từ File (đã bỏ dòng "6 rõ")
 const localData = [
   // 1. Nhóm Techport
   { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", sub: "Chung", pheduyet: "Giám đốc Trung tâm", chidao: "Phó Giám đốc phụ trách", lanhdao: "Võ Duy Khanh", chuyenvien: "Trịnh Mai Hương", sanpham: "Danh sách hồ sơ" },
