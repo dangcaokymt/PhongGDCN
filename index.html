@@ -297,7 +297,7 @@ tr:hover td{ background: #fff7ed; }
   </div>
   <div class="header-actions">
     <div id="sync-status">🟢 Dữ liệu trực tuyến sẵn sàng</div>
-    <button class="btn btn-refresh" onclick="syncGoogleSheets()">🔄 Đồng bộ Sheets</button>
+    <button class="btn btn-refresh" onclick="syncGoogleSheets(true)">🔄 Làm mới ngay</button>
     <button class="btn btn-export" onclick="exportExcel()">📥 Xuất File Excel (.xls)</button>
   </div>
 </div>
@@ -375,7 +375,7 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
 
-  <!-- Bảng Dữ Liệu Chi Tiết (19 nhiệm vụ - Đã tách 2 Cột Chuyên Viên Chủ Trì & Hỗ Trợ) -->
+  <!-- Bảng Dữ Liệu Chi Tiết (19 nhiệm vụ chuẩn hóa) -->
   <div class="card" style="margin-top:20px; padding: 12px 18px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
       <h3 style="margin:0">📋 Danh sách Chi tiết Nhiệm vụ (<span id="count_display" style="color:#f7941d">19</span> nhiệm vụ)</h3>
@@ -416,9 +416,10 @@ tr:hover td{ background: #fff7ed; }
 Chart.defaults.color = '#64748b';
 Chart.defaults.borderColor = '#f1f5f9';
 
-const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
+// Nguồn Google Sheet Online CSV
+const GSHEET_BASE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
-// 19 NHIỆM VỤ GỐC CHUẨN HÓA VỚI 2 CỘT CHUYÊN VIÊN RIÊNG BIỆT
+// 19 NHIỆM VỤ GỐC CHUẨN HÓA
 const tasks19 = [
   // 1. Nhóm Techport (9 nhiệm vụ)
   { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0) },
@@ -694,37 +695,41 @@ function parseCSV(text) {
   return rows;
 }
 
-// BỘ ĐỌC GOOGLE SHEETS THÔNG MINH - TỰ ĐỘNG CẬP NHẬT TỪ GOOGLE SHEETS
-async function syncGoogleSheets() {
+// ĐỒNG BỘ GOOGLE SHEETS LIVE - TỰ ĐỘNG CẬP NHẬT TỨC THÌ KHI CÓ THAY ĐỔI TRÊN SHEETS
+async function syncGoogleSheets(manual = false) {
   const statusEl = document.getElementById('sync-status');
-  statusEl.innerHTML = '🔄 Đang đồng bộ Sheets...';
+  if (manual) statusEl.innerHTML = '🔄 Đang đồng bộ Sheets...';
+  
   try {
-    const res = await fetch(GSHEET_CSV_URL);
-    if (!res.ok) throw new Error('Không thể tải CSV');
+    // Thêm tham số ngẫu nhiên để chống trình duyệt lưu cache
+    const liveUrl = GSHEET_BASE_URL + '&_nocache=' + Date.now();
+    const res = await fetch(liveUrl, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Không thể kết nối Sheets');
     const csvText = await res.text();
     const rows = parseCSV(csvText);
 
-    // Tự động tìm vị trí cột "Chỉ tiêu / Số lượng" và cột "Tháng 01"
+    // Tự động tìm vị trí cột Chỉ tiêu, Tháng 01, Chuyên viên
     let targetColIdx = -1;
     let m1ColIdx = -1;
+    let leadColIdx = -1;
+    let suppColIdx = -1;
 
     for (let i = 0; i < rows.length; i++) {
       let r = rows[i];
       for (let j = 0; j < r.length; j++) {
         let cell = (r[j] || '').toLowerCase().trim();
-        if (cell.includes("số lượng") || cell.includes("chỉ tiêu")) {
-          targetColIdx = j;
-        }
-        if (cell.includes("tháng 01") || cell.includes("tháng 1")) {
-          m1ColIdx = j;
-        }
+        if (cell.includes("số lượng") || cell.includes("chỉ tiêu")) targetColIdx = j;
+        if (cell.includes("tháng 01") || cell.includes("tháng 1")) m1ColIdx = j;
+        if (cell.includes("chủ trì")) leadColIdx = j;
+        if (cell.includes("hỗ trợ")) suppColIdx = j;
       }
-      if (targetColIdx !== -1 && m1ColIdx !== -1) break;
+      if (m1ColIdx !== -1) break;
     }
 
     if (targetColIdx === -1) targetColIdx = 8;
     if (m1ColIdx === -1) m1ColIdx = 9;
 
+    // Cập nhật số liệu chuẩn xác vào 19 nhiệm vụ
     rows.forEach(r => {
       let rowContent = r.join(' ').toLowerCase();
       items.forEach(task => {
@@ -740,14 +745,20 @@ async function syncGoogleSheets() {
           task.target = tgt;
           task.months = mData;
 
-          // Cập nhật tên chuyên viên chủ trì & hỗ trợ nếu có trên dòng
-          if (r[6] && r[6].trim()) task.lead = r[6].trim();
-          if (r[7] && r[7].trim() && isNaN(Number(r[7]))) task.support = r[7].trim();
+          // Cập nhật tên chuyên viên nếu tìm thấy cột
+          if (leadColIdx !== -1 && r[leadColIdx] && r[leadColIdx].trim()) {
+            task.lead = r[leadColIdx].trim();
+          }
+          if (suppColIdx !== -1 && r[suppColIdx] && r[suppColIdx].trim()) {
+            task.support = r[suppColIdx].trim();
+          }
         }
       });
     });
 
-    statusEl.innerHTML = '🟢 Đã đồng bộ Google Sheets';
+    const now = new Date();
+    const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
+    statusEl.innerHTML = `🟢 Đã đồng bộ Google Sheets (${timeStr})`;
     applyFilter();
   } catch (err) {
     statusEl.innerHTML = '🟢 Dữ liệu trực tuyến sẵn sàng';
@@ -768,7 +779,14 @@ function initDashboard() {
   ['q', 'f_group', 'f_staff'].forEach(id => document.getElementById(id).addEventListener('input', applyFilter));
 
   renderTable(items);
-  syncGoogleSheets();
+  
+  // Đồng bộ lần đầu khi tải trang
+  syncGoogleSheets(true);
+
+  // TỰ ĐỘNG ĐỒNG BỘ LẠI MỖI 30 GIÂY ĐỂ ĐÓN SỐ LIỆU MỚI TỪ GOOGLE SHEETS
+  setInterval(() => {
+    syncGoogleSheets(false);
+  }, 30000);
 }
 
 function exportExcel() {
