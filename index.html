@@ -222,7 +222,7 @@ tr:hover td{ background: #fff7ed; }
 .badge-ketnoi{ background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
 
 .badge-lead{
-  padding:4px 8px;
+  padding:3px 7px;
   border-radius:6px;
   background: #ecfdf5;
   color: #047857;
@@ -233,7 +233,7 @@ tr:hover td{ background: #fff7ed; }
   white-space: nowrap;
 }
 .badge-support{
-  padding:4px 8px;
+  padding:3px 7px;
   border-radius:6px;
   background: #eff6ff;
   color: #0284c7;
@@ -407,19 +407,36 @@ Chart.defaults.borderColor = '#f1f5f9';
 const GSHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/gviz/tq?tqx=out:json&tq=";
 const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
-// Danh sách tên chuyên viên chuẩn để tự động nhận diện chính xác
-const KNOWN_STAFF = [
-  "Trịnh Mai Hương",
-  "Nguyễn Ngọc Thuỳ Trang",
-  "Nguyễn Ngọc Thùy Trang",
-  "Phạm Huỳnh Trung Nguyên",
-  "Trần Ngô Diệu Trang",
-  "Phạm Minh Công",
-  "Nguyễn Thị Hiền Lương",
-  "Võ Duy Khanh"
+// DANH SÁCH NHIỆM VỤ CHUẨN HÓA (ĐƯỢC GỘP CHUẨN XÁC, KHÔNG BỊ TÁCH THÀNH 60 DÒNG)
+const defaultTasks = [
+  // 1. Nhóm Techport (9 nhiệm vụ)
+  { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["hồ sơ công nghệ"] },
+  { id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["dây chuyền", "thiết bị"] },
+  { id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["chuyên gia tư vấn"] },
+  { id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["tài sản trí tuệ", "shtt"] },
+  { id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["đơn vị cung ứng"] },
+  { id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["lượt truy cập"] },
+  { id: 7, group: "Nhóm Techport", noidung: "User mới", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["user mới", "tài khoản techport"] },
+  { id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["yêu cầu công nghệ tiếp nhận"] },
+  { id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", lead: "Trịnh Mai Hương", support: "-", target: 0, months: Array(12).fill(0), keys: ["lượt kết nối cung cầu"] },
+
+  // 2. Nhóm Xúc tiến (3 nhiệm vụ)
+  { id: 10, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), keys: ["trưng bày công nghệ"] },
+  { id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), keys: ["triển lãm", "cntb"] },
+  { id: 12, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", lead: "Nguyễn Ngọc Thuỳ Trang", support: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0), keys: ["người tham dự"] },
+
+  // 3. Nhóm Kết nối (7+ nhiệm vụ)
+  { id: 13, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["kết quả nghiên cứu"] },
+  { id: 14, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["sản phẩm khoa học", "sản phẩm khcn"] },
+  { id: 15, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["mou", "ghi nhớ"] },
+  { id: 16, group: "Nhóm Kết nối", noidung: "Số yêu cầu công nghệ (Hợp tác & Kết nối ý tưởng)", lead: "Nguyễn Ngọc Thuỳ Trang", support: "-", target: 0, months: Array(12).fill(0), keys: ["số yêu cầu công nghệ", "hợp tác công nghệ", "kết nối ý tưởng"] },
+  { id: 17, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["nhu cầu tìm kiếm"] },
+  { id: 18, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["kết nối (có biên bản)", "biên bản kết nối"] },
+  { id: 19, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["hợp đồng sau kết nối"] },
+  { id: 20, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng", lead: "Trần Ngô Diệu Trang", support: "Phạm Minh Công", target: 0, months: Array(12).fill(0), keys: ["tổng giá trị hợp đồng"] }
 ];
 
-let items = [];
+let items = JSON.parse(JSON.stringify(defaultTasks));
 let filteredItems = [];
 let charts = {};
 
@@ -434,15 +451,6 @@ function getGroupBadgeClass(g) {
 function sumMonths(arr) {
   if (!arr || !Array.isArray(arr)) return 0;
   return arr.reduce((a, b) => a + (Number(b) || 0), 0);
-}
-
-// Kiểm tra một chuỗi có phải là tên chuyên viên hợp lệ không
-function isPersonName(str) {
-  if (!str) return false;
-  let s = str.trim();
-  if (s === '-' || s === '' || s.length > 35) return false;
-  if (s.toLowerCase().includes("thu thập") || s.toLowerCase().includes("sự kiện") || s.toLowerCase().includes("danh sách") || s.toLowerCase().includes("hồ sơ")) return false;
-  return KNOWN_STAFF.some(k => s.toLowerCase().includes(k.toLowerCase())) || /^[A-ZÀ-Ỹ][a-zà-ỹ]+(\s[A-ZÀ-Ỹ][a-zà-ỹ]+){1,4}$/.test(s);
 }
 
 function populateSelect(id, vals, defaultLabel) {
@@ -676,7 +684,7 @@ function parseCSV(text) {
   return rows;
 }
 
-// BỘ ĐỒNG BỘ ĐỘNG THÔNG MINH - SỬA TRIỆT ĐỂ LỖI DÒNG 17
+// BỘ ĐỒNG BỘ GOOGLE SHEETS KHÔNG TẠO DÒNG TRÙNG LẶP
 async function syncGoogleSheets() {
   try {
     const gvizRes = await fetch(GSHEET_GVIZ_URL + encodeURIComponent('SELECT *') + '&_t=' + Date.now(), { cache: 'no-store' });
@@ -686,7 +694,7 @@ async function syncGoogleSheets() {
       const data = JSON.parse(jsonStr);
       if (data && data.table && data.table.rows) {
         const gRows = data.table.rows.map(r => (r.c || []).map(cell => cell ? (cell.v ?? cell.f ?? '') : ''));
-        if (processDynamicRows(gRows)) return;
+        if (applyMatchedRows(gRows)) return;
       }
     }
   } catch (err) {
@@ -698,18 +706,17 @@ async function syncGoogleSheets() {
     if (csvRes.ok) {
       const csvTxt = await csvRes.text();
       const csvRows = parseCSV(csvTxt);
-      processDynamicRows(csvRows);
+      applyMatchedRows(csvRows);
     }
   } catch (err) {
     console.log("CSV sync fallback:", err);
   }
 }
 
-// Hàm phân tích dữ liệu dòng: Tự động sửa lỗi lệch ô mô tả
-function processDynamicRows(rows) {
+// Khớp số liệu chính xác vào các nhiệm vụ chuẩn hóa
+function applyMatchedRows(rows) {
   if (!rows || rows.length === 0) return false;
 
-  let headerRowIdx = -1;
   let targetColIdx = -1;
   let m1ColIdx = -1;
 
@@ -720,99 +727,47 @@ function processDynamicRows(rows) {
       if (cell.includes("số lượng") || cell.includes("chỉ tiêu")) targetColIdx = j;
       if (cell.includes("tháng 01") || cell.includes("tháng 1")) m1ColIdx = j;
     }
-    if (m1ColIdx !== -1) {
-      headerRowIdx = i;
-      break;
-    }
+    if (m1ColIdx !== -1) break;
   }
 
   if (targetColIdx === -1) targetColIdx = 8;
   if (m1ColIdx === -1) m1ColIdx = 9;
 
-  let currentGroup = "Nhóm Techport";
-  let extractedItems = [];
+  let updatedCount = 0;
 
-  for (let i = 0; i < rows.length; i++) {
-    let r = rows[i];
-    let rowStr = r.map(x => String(x || '').trim()).join(' ');
-    let rowStrLower = rowStr.toLowerCase();
+  items.forEach(task => {
+    // Tìm dòng trên Google Sheet khớp với từ khóa của nhiệm vụ
+    rows.forEach(r => {
+      let rowContent = r.map(x => String(x || '').toLowerCase()).join(' ');
+      let matched = task.keys.some(k => rowContent.includes(k));
 
-    // Bỏ qua tiêu đề
-    if (rowStrLower.includes("theo dõi nhiệm vụ") || 
-        rowStrLower.includes("rõ việc") || 
-        rowStrLower.includes("phê duyệt") ||
-        (rowStrLower.includes("tháng 01") && rowStrLower.includes("tháng 02"))) {
-      continue;
-    }
+      if (matched) {
+        let tgt = Number(String(r[targetColIdx] || '0').replace(/[^0-9.-]+/g, '')) || 0;
+        let mData = [];
+        for (let m = 0; m < 12; m++) {
+          let val = Number(String(r[m1ColIdx + m] || '0').replace(/[^0-9.-]+/g, '')) || 0;
+          mData.push(val);
+        }
 
-    // Nhận diện nhóm
-    let c1 = String(r[1] || '').trim();
-    let c2 = String(r[2] || '').trim();
-    if (c1.includes("Nhóm Techport") || c2.includes("Nhóm Techport")) currentGroup = "Nhóm Techport";
-    if (c1.includes("Nhóm Xúc tiến") || c2.includes("Nhóm Xúc tiến")) currentGroup = "Nhóm Xúc tiến";
-    if (c1.includes("Nhóm Kết nối") || c2.includes("Nhóm Kết nối")) currentGroup = "Nhóm Kết nối";
+        if (tgt > 0) task.target = tgt;
+        if (mData.some(x => x > 0)) task.months = mData;
 
-    // Phân tách nội dung và chuyên viên thực tế
-    let noidungCandidate = (c1.startsWith("Nhóm") ? c2 : c1) || c2 || String(r[3] || '').trim();
-    
-    // Tìm các tên chuyên viên xuất hiện trong dòng
-    let foundPersons = [];
-    let extraDescriptions = [];
+        // Cập nhật chuyên viên chủ trì nếu có tên hợp lệ
+        if (r[6] && String(r[6]).trim() && !String(r[6]).includes("thu thập") && !String(r[6]).includes("sự kiện")) {
+          task.lead = String(r[6]).trim();
+        }
+        if (r[7] && String(r[7]).trim() && isNaN(Number(r[7])) && !String(r[7]).includes("thu thập")) {
+          task.support = String(r[7]).trim();
+        }
 
-    for (let col = 3; col < targetColIdx; col++) {
-      let val = String(r[col] || '').trim();
-      if (!val) continue;
-
-      if (isPersonName(val)) {
-        if (!foundPersons.includes(val)) foundPersons.push(val);
-      } else if (!val.includes("Nhóm") && !val.includes("Trưởng phòng") && !val.includes("Giám đốc") && val !== noidungCandidate) {
-        extraDescriptions.push(val);
+        updatedCount++;
       }
-    }
+    });
+  });
 
-    // Nếu có mô tả phụ (như ở dòng 17: Thu thập tại sự kiện...), ghép vào tên nhiệm vụ
-    let finalNoidung = noidungCandidate;
-    if (extraDescriptions.length > 0) {
-      let descText = extraDescriptions.join(', ');
-      if (!finalNoidung.includes(descText)) {
-        finalNoidung += ` (${descText})`;
-      }
-    }
-
-    // Xác định chuyên viên chủ trì & hỗ trợ chuẩn
-    let lead = foundPersons[0] || (currentGroup === "Nhóm Techport" ? "Trịnh Mai Hương" : "");
-    let support = foundPersons[1] || "-";
-
-    // Lấy chỉ tiêu
-    let tgt = Number(String(r[targetColIdx] || '0').replace(/[^0-9.-]+/g, '')) || 0;
-
-    // Lấy 12 tháng
-    let mData = [];
-    for (let m = 0; m < 12; m++) {
-      let val = Number(String(r[m1ColIdx + m] || '0').replace(/[^0-9.-]+/g, '')) || 0;
-      mData.push(val);
-    }
-
-    if (finalNoidung && !finalNoidung.startsWith("Nhóm ") && !finalNoidung.includes("Lãnh đạo")) {
-      extractedItems.push({
-        id: extractedItems.length + 1,
-        group: currentGroup,
-        noidung: finalNoidung,
-        lead: lead,
-        support: support,
-        target: tgt,
-        months: mData
-      });
-    }
-  }
-
-  if (extractedItems.length >= 10) {
-    items = extractedItems;
-    updateFilters();
-    renderTable(items);
-    return true;
-  }
-  return false;
+  updateFilters();
+  applyFilter();
+  return updatedCount > 0;
 }
 
 function updateFilters() {
@@ -830,6 +785,8 @@ function updateFilters() {
 function initDashboard() {
   ['q', 'f_group', 'f_staff'].forEach(id => document.getElementById(id).addEventListener('input', applyFilter));
 
+  updateFilters();
+  renderTable(items);
   syncGoogleSheets();
   setInterval(syncGoogleSheets, 15000);
 }
