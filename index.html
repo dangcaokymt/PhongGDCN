@@ -371,6 +371,7 @@ tr:hover td{ background: #fff7ed; }
   <div class="card" style="margin-top:20px; padding: 12px 18px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
       <h3 style="margin:0">📋 Danh sách Chi tiết Toàn bộ Nhiệm vụ & Nhân sự (<span id="count_display" style="color:#f7941d">0</span> đầu việc)</h3>
+      <span id="sync_status" style="font-size:11.5px; font-weight:600; color:#059669;">● Đang đồng bộ thời gian thực</span>
     </div>
     <div class="table-wrap">
       <table>
@@ -408,10 +409,8 @@ tr:hover td{ background: #fff7ed; }
 Chart.defaults.color = '#64748b';
 Chart.defaults.borderColor = '#f1f5f9';
 
-// CÁC ĐƯỜNG LINK XUẤT BẢN CỦA GOOGLE SHEETS
+// ĐƯỜNG LINK TSV TỪ GOOGLE SHEETS CỦA BẠN
 const GSHEET_TSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=tsv";
-const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
-const GSHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/gviz/tq?tqx=out:json&tq=";
 
 function normalizeVietnamese(str) {
   return String(str || '')
@@ -572,7 +571,7 @@ function renderCharts(rs, kpis) {
   rs.forEach(task => {
     (task.rows || []).forEach(r => {
       let name = (r.staffName || '').trim();
-      if (name && name !== '-' && name !== 'Chưa phân công' && name !== 'Chuyên viên thực hiện') {
+      if (name && name !== '-' && name !== 'Chưa phân công' && !name.toLowerCase().includes("chuyên viên") && !name.toLowerCase().includes("lãnh đạo")) {
         if (!staffMetrics[name]) {
           staffMetrics[name] = { target: 0, actual: 0 };
         }
@@ -630,7 +629,7 @@ function renderTable(rs) {
 
   const tbody = document.getElementById('tb');
   if (rs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;padding:30px;color:#94a3b8">Đang kết nối và nạp số liệu từ Google Sheets...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;padding:30px;color:#94a3b8">Đang kết nối và tải số liệu từ Google Sheets...</td></tr>`;
     return;
   }
 
@@ -702,8 +701,8 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỌC DỮ LIỆU ĐỘNG 100% TỪ BẢNG TÍNH GOOGLE SHEETS
-function parseSheetMatrix(rows) {
+// BỘ PHÂN TÍCH MA TRẬN DỮ LIỆU TSV ĐỘNG 100% TỪ GOOGLE SHEETS
+function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
   let targetColIdx = -1;
@@ -723,8 +722,10 @@ function parseSheetMatrix(rows) {
         let k2 = "thang" + m;
         let k3 = "t" + m;
         if (norm === k1 || norm === k2 || norm === k3 || norm.startsWith("thang" + m)) {
-          monthCols[m - 1] = j;
-          foundMonths++;
+          if (monthCols[m - 1] === -1) {
+            monthCols[m - 1] = j;
+            foundMonths++;
+          }
         }
       }
     }
@@ -752,6 +753,7 @@ function parseSheetMatrix(rows) {
 
   let parsedTasks = [];
   let currentGroup = "Nhóm Techport";
+  let currentTaskName = "";
   let currentTaskObj = null;
 
   for (let i = headerRowIdx + 1; i < rows.length; i++) {
@@ -759,13 +761,13 @@ function parseSheetMatrix(rows) {
     let rowRaw = r.map(x => String(x || '').trim()).join(' ');
     let rowNorm = normalizeVietnamese(rowRaw);
 
-    if (!rowNorm || rowNorm.includes("theodoinhiemvu") || rowNorm.includes("tongcong")) continue;
+    if (!rowNorm || rowNorm.includes("theodoinhiemvu") || rowNorm.includes("tongcong") || rowNorm.includes("roviec")) continue;
 
     if (rowNorm.includes("nhomtechport")) { currentGroup = "Nhóm Techport"; continue; }
     if (rowNorm.includes("nhomxuctien")) { currentGroup = "Nhóm Xúc tiến"; continue; }
     if (rowNorm.includes("nhomketnoi")) { currentGroup = "Nhóm Kết nối"; continue; }
 
-    // Tìm tên nhiệm vụ ở các cột 0, 1, 2
+    // Tìm tên nhiệm vụ ở các cột bên trái
     let col0 = String(r[0] || '').trim();
     let col1 = String(r[1] || '').trim();
     let col2 = String(r[2] || '').trim();
@@ -781,17 +783,18 @@ function parseSheetMatrix(rows) {
       candidateTask.includes("Lương")
     );
 
-    if (candidateTask && !isStaffName) {
+    if (candidateTask && !isStaffName && candidateTask !== currentTaskName) {
+      currentTaskName = candidateTask;
       currentTaskObj = {
         id: parsedTasks.length + 1,
         group: currentGroup,
-        noidung: candidateTask,
+        noidung: currentTaskName,
         rows: []
       };
       parsedTasks.push(currentTaskObj);
     }
 
-    // Bốc tên chuyên viên ở cột chủ trì hoặc cột hỗ trợ
+    // Nhận diện nhân sự
     let leadVal = (leadColIdx < r.length && r[leadColIdx]) ? String(r[leadColIdx]).trim() : "";
     let suppVal = (suppColIdx < r.length && r[suppColIdx]) ? String(r[suppColIdx]).trim() : "";
 
@@ -805,7 +808,6 @@ function parseSheetMatrix(rows) {
       isLead = false;
       staffName = suppVal;
     } else {
-      // Quét tự do nếu vị trí cột bị lệch
       for (let j = 3; j < Math.min(r.length, targetColIdx); j++) {
         let val = String(r[j] || '').trim();
         let norm = normalizeVietnamese(val);
@@ -822,7 +824,7 @@ function parseSheetMatrix(rows) {
         currentTaskObj = {
           id: parsedTasks.length + 1,
           group: currentGroup,
-          noidung: candidateTask || "Nhiệm vụ chung",
+          noidung: currentTaskName || "Nhiệm vụ chung",
           rows: []
         };
         parsedTasks.push(currentTaskObj);
@@ -849,70 +851,23 @@ function parseSheetMatrix(rows) {
     items = parsedTasks;
     updateFilters();
     applyFilter();
+    document.getElementById('sync_status').textContent = '● Đã đồng bộ mới nhất lúc ' + new Date().toLocaleTimeString('vi-VN');
     return true;
   }
   return false;
 }
 
-// BỘ ĐỒNG BỘ ĐA KÊNH: TSV -> CSV -> GVIZ
+// BỘ ĐỒNG BỘ ĐA TẦNG (TSV DIRECT FETCH)
 async function syncGoogleSheets() {
-  // 1. Tải qua TSV (Tối ưu nhất cho Google Sheets)
   try {
     const tsvRes = await fetch(GSHEET_TSV_URL + '&_t=' + Date.now(), { cache: 'no-store' });
     if (tsvRes.ok) {
       const tsvTxt = await tsvRes.text();
       const lines = tsvTxt.split(/\r?\n/).map(line => line.split('\t'));
-      if (parseSheetMatrix(lines)) return;
+      if (parseTsvMatrix(lines)) return;
     }
   } catch (err) {
-    console.log("TSV fetch:", err);
-  }
-
-  // 2. Tải qua GViz API
-  try {
-    const gvizRes = await fetch(GSHEET_GVIZ_URL + encodeURIComponent('SELECT *') + '&_t=' + Date.now(), { cache: 'no-store' });
-    if (gvizRes.ok) {
-      const txt = await gvizRes.text();
-      const jsonStr = txt.replace(/^[/*\s]*google\.visualization\.Query\.setResponse\(/, '').replace(/\);?[\s*]*$/, '');
-      const data = JSON.parse(jsonStr);
-      if (data && data.table && data.table.rows) {
-        const gRows = data.table.rows.map(r => (r.c || []).map(cell => {
-          if (!cell) return '';
-          return (cell.v !== null && cell.v !== undefined) ? cell.v : (cell.f || '');
-        }));
-        if (parseSheetMatrix(gRows)) return;
-      }
-    }
-  } catch (err) {
-    console.log("GViz fetch:", err);
-  }
-
-  // 3. Tải qua CSV
-  try {
-    const csvRes = await fetch(GSHEET_CSV_URL + '&_t=' + Date.now(), { cache: 'no-store' });
-    if (csvRes.ok) {
-      const csvTxt = await csvRes.text();
-      let rows = [], row = [''], inQuotes = false;
-      for (let i = 0; i < csvTxt.length; i++) {
-        let c = csvTxt[i], next = csvTxt[i+1];
-        if (c === '"') {
-          if (inQuotes && next === '"') { row[row.length - 1] += '"'; i++; }
-          else { inQuotes = !inQuotes; }
-        } else if (c === ',' && !inQuotes) {
-          row.push('');
-        } else if ((c === '\r' || c === '\n') && !inQuotes) {
-          if (c === '\r' && next === '\n') i++;
-          rows.push(row);
-          row = [''];
-        } else {
-          row[row.length - 1] += c;
-        }
-      }
-      if (row.length > 1 || row[0] !== '') rows.push(row);
-      parseSheetMatrix(rows);
-    }
-  } catch (err) {
-    console.log("CSV fetch:", err);
+    console.log("TSV Sync error:", err);
   }
 }
 
@@ -934,9 +889,8 @@ function updateFilters() {
 function initDashboard() {
   ['q', 'f_group', 'f_staff'].forEach(id => document.getElementById(id).addEventListener('input', applyFilter));
 
-  renderTable(items);
   syncGoogleSheets();
-  setInterval(syncGoogleSheets, 15000);
+  setInterval(syncGoogleSheets, 10000);
 }
 
 function exportExcel() {
