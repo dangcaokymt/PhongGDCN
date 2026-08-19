@@ -351,9 +351,10 @@ tr:hover td{ background: #fff7ed; }
       <h3>Tiến độ Thực hiện vs Chỉ tiêu Giao (4 Khối Chỉ Số)</h3>
       <div class="chart"><canvas id="c1"></canvas></div>
     </div>
+    <!-- BIỂU ĐỒ MỚI: ĐÁNH GIÁ TIẾN ĐỘ THEO TỪNG CÁ NHÂN -->
     <div class="card">
-      <h3>Theo Dõi Số Lượng Hợp Đồng Sau Kết Nối (12 Tháng)</h3>
-      <div class="chart"><canvas id="c_contract_chart"></canvas></div>
+      <h3>Đánh Giá Tiến Độ Hoàn Thành Theo Từng Cá Nhân (Chỉ tiêu vs Thực hiện)</h3>
+      <div class="chart"><canvas id="c_staff_progress"></canvas></div>
     </div>
   </div>
 
@@ -528,6 +529,7 @@ function calculateKPIs(rs) {
 }
 
 function renderCharts(rs, kpis) {
+  // Biểu đồ 1: Tiến độ thực hiện vs Chỉ tiêu
   const kpiLabels = ['1. Yêu cầu công nghệ', '2. Số lượng kết nối', '3. Hỗ trợ VT & DN', '4. Tổng số hợp đồng'];
   const curData = [kpis.req.cur, kpis.conn.cur, kpis.support.cur, kpis.contract.cur];
   const tgtData = [kpis.req.tgt, kpis.conn.tgt, kpis.support.tgt, kpis.contract.tgt];
@@ -562,27 +564,41 @@ function renderCharts(rs, kpis) {
     }
   });
 
-  let contractTask = rs.find(r => normalizeText(r.noidung).includes("hopdongsauketnoi"));
-  let contractMonthly = Array(12).fill(0);
-  if (contractTask) {
-    (contractTask.rows || []).forEach(row => {
-      for (let m = 0; m < 12; m++) {
-        contractMonthly[m] += (row.months[m] || 0);
+  // Biểu đồ 2: ĐÁNH GIÁ TIẾN ĐỘ HOÀN THÀNH THEO TỪNG CÁ NHÂN
+  const staffMetrics = {};
+  rs.forEach(task => {
+    (task.rows || []).forEach(r => {
+      let name = (r.staffName || '').trim();
+      if (name && name !== '-' && name !== 'Chưa phân công' && name !== 'Chuyên viên hỗ trợ') {
+        if (!staffMetrics[name]) {
+          staffMetrics[name] = { target: 0, actual: 0 };
+        }
+        staffMetrics[name].target += (Number(r.target) || 0);
+        staffMetrics[name].actual += sumMonths(r.months);
       }
     });
-  }
-  let monthLabels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
+  });
 
-  if (charts['c_contract_chart']) charts['c_contract_chart'].destroy();
-  charts['c_contract_chart'] = new Chart(document.getElementById('c_contract_chart'), {
+  const staffNames = Object.keys(staffMetrics).sort((a, b) => a.localeCompare(b, 'vi'));
+  const staffTargetData = staffNames.map(name => staffMetrics[name].target);
+  const staffActualData = staffNames.map(name => staffMetrics[name].actual);
+
+  if (charts['c_staff_progress']) charts['c_staff_progress'].destroy();
+  charts['c_staff_progress'] = new Chart(document.getElementById('c_staff_progress'), {
     type: 'bar',
     data: {
-      labels: monthLabels,
+      labels: staffNames,
       datasets: [
         {
-          label: 'Số lượng hợp đồng đã ký kết',
-          data: contractMonthly,
-          backgroundColor: '#059669',
+          label: 'Đã thực hiện',
+          data: staffActualData,
+          backgroundColor: '#0284c7',
+          borderRadius: 4
+        },
+        {
+          label: 'Chỉ tiêu được giao',
+          data: staffTargetData,
+          backgroundColor: '#fed7aa',
           borderRadius: 4
         }
       ]
@@ -591,17 +607,28 @@ function renderCharts(rs, kpis) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'top', labels: { font: { weight: 600, size: 11 } } }
+        legend: { position: 'top', labels: { font: { weight: 600, size: 11 } } },
+        tooltip: {
+          callbacks: {
+            afterBody: function(context) {
+              const idx = context[0].dataIndex;
+              const name = staffNames[idx];
+              const tgt = staffMetrics[name].target;
+              const act = staffMetrics[name].actual;
+              const rate = tgt > 0 ? ((act / tgt) * 100).toFixed(1) + '%' : (act > 0 ? '100%' : '0%');
+              return `Tỷ lệ hoàn thành: ${rate}`;
+            }
+          }
+        }
       },
       scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1 } },
+        y: { beginAtZero: true },
         x: { ticks: { font: { size: 11 } } }
       }
     }
   });
 }
 
-// RENDER BẢNG: 100% THEO ĐÚNG HÀNG & CỘT TỪ GOOGLE SHEETS
 function renderTable(rs) {
   filteredItems = rs;
   const kpis = calculateKPIs(rs);
@@ -703,7 +730,7 @@ function parseCSV(text) {
   return rows;
 }
 
-// BỘ ĐỌC GOOGLE SHEETS 1:1 THEO THỨ TỰ HÀNG & CỘT
+// BỘ ĐỒNG BỘ GOOGLE SHEETS
 async function syncGoogleSheets() {
   try {
     const gvizRes = await fetch(GSHEET_GVIZ_URL + encodeURIComponent('SELECT *') + '&_t=' + Date.now(), { cache: 'no-store' });
@@ -744,7 +771,6 @@ function buildTasksFromSpreadsheet(rows) {
   let targetColIdx = -1;
   let monthCols = Array(12).fill(-1);
 
-  // Tìm các cột tiêu đề
   for (let i = 0; i < Math.min(rows.length, 6); i++) {
     let r = rows[i];
     for (let j = 0; j < r.length; j++) {
@@ -764,7 +790,6 @@ function buildTasksFromSpreadsheet(rows) {
     }
   }
 
-  // Dự phòng chỉ số cột nếu Google Sheets gộp ô tiêu đề
   if (leadColIdx === -1) leadColIdx = 6;
   if (suppColIdx === -1) suppColIdx = 7;
   if (targetColIdx === -1) targetColIdx = 8;
@@ -782,26 +807,21 @@ function buildTasksFromSpreadsheet(rows) {
     let rowRaw = r.map(x => String(x || '').trim()).join(' ');
     let rowNorm = normalizeText(rowRaw);
 
-    // Bỏ qua dòng tiêu đề trang tính
     if (rowNorm.includes("theodoinhiemvu") || rowNorm.includes("roviec") || (rowNorm.includes("thang01") && rowNorm.includes("thang02"))) {
       continue;
     }
 
-    // Nhận diện chuyển Nhóm
     if (rowNorm.includes("nhomtechport")) { currentGroup = "Nhóm Techport"; }
     if (rowNorm.includes("nhomxuctien")) { currentGroup = "Nhóm Xúc tiến"; }
     if (rowNorm.includes("nhomketnoi")) { currentGroup = "Nhóm Kết nối"; }
 
-    // Tìm tên đầu việc ở các cột đầu (Cột 1, 2, 3)
     let c1 = String(r[1] || '').trim();
     let c2 = String(r[2] || '').trim();
     let taskNameCandidate = (c1.startsWith("Nhóm") ? c2 : c1) || c2;
 
-    // Tìm tên chuyên viên chủ trì & hỗ trợ trên dòng này
     let leadVal = String(r[leadColIdx] || '').trim();
     let suppVal = String(r[suppColIdx] || '').trim();
 
-    // Lọc bỏ chuỗi mô tả không phải tên người
     if (leadVal.toLowerCase().includes("thu thập") || leadVal.toLowerCase().includes("sự kiện") || leadVal.toLowerCase().includes("danh sách")) {
       leadVal = '';
     }
@@ -819,7 +839,6 @@ function buildTasksFromSpreadsheet(rows) {
 
     let hasData = (tgt > 0 || mData.some(x => x > 0) || leadVal !== '' || suppVal !== '');
 
-    // Nếu dòng này có TÊN ĐẦU VIỆC MỚI
     if (taskNameCandidate && !taskNameCandidate.startsWith("Nhóm ") && !taskNameCandidate.includes("Lãnh đạo") && !taskNameCandidate.includes("Phê duyệt")) {
       currentTask = {
         id: extractedTasks.length + 1,
@@ -829,7 +848,6 @@ function buildTasksFromSpreadsheet(rows) {
       };
       extractedTasks.push(currentTask);
 
-      // Thêm dòng đầu tiên (chủ trì hoặc hỗ trợ) vào đầu việc mới này
       let isLeadRow = leadVal !== '' || (suppVal === '');
       let staff = leadVal || suppVal || (currentGroup === 'Nhóm Techport' ? 'Trịnh Mai Hương' : 'Chưa phân công');
 
@@ -839,9 +857,7 @@ function buildTasksFromSpreadsheet(rows) {
         target: tgt,
         months: mData
       });
-    } 
-    // Nếu dòng này là DÒNG CON (chuyên viên hỗ trợ phụ) thuộc đầu việc hiện tại
-    else if (currentTask && hasData) {
+    } else if (currentTask && hasData) {
       let isLeadRow = leadVal !== '';
       let staff = suppVal || leadVal || 'Chuyên viên hỗ trợ';
 
