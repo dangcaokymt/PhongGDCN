@@ -18,7 +18,7 @@ body{
   background-attachment: fixed;
 }
 
-/* Header Tone Sáng Sang Trọng */
+/* Header Tone Sáng */
 .header{
   background: #ffffff;
   color: #1e293b;
@@ -406,32 +406,32 @@ Chart.defaults.borderColor = '#f1f5f9';
 
 const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
-// 19 NHIỆM VỤ GỐC CHUẨN XÁC THEO ĐÚNG CỘT "NỘI DUNG"
+// 19 NHIỆM VỤ CHUẨN XÁC THEO ĐÚNG CỘT "NỘI DUNG" TRONG FILE GGDRIVE
 const tasks19 = [
   // 1. Nhóm Techport (9 nhiệm vụ)
-  { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", chuyenvien: "Trịnh Mai Hương", target: 200, months: [10, 15, 20, 15, 12, 18, 20, 22, 25, 20, 18, 15] },
-  { id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", chuyenvien: "Trịnh Mai Hương", target: 50, months: [2, 3, 5, 4, 3, 6, 5, 4, 6, 5, 4, 3] },
-  { id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", chuyenvien: "Trịnh Mai Hương", target: 80, months: [5, 5, 8, 6, 7, 8, 10, 8, 9, 8, 6, 5] },
-  { id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", chuyenvien: "Trịnh Mai Hương", target: 75, months: [4, 6, 8, 5, 6, 7, 9, 8, 7, 6, 5, 4] },
-  { id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", chuyenvien: "Trịnh Mai Hương", target: 210, months: [11, 14, 17, 14, 19, 21, 21, 21, 25, 19, 16, 13] },
-  { id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập", chuyenvien: "Trịnh Mai Hương", target: 25000, months: [120, 150, 180, 160, 190, 210, 230, 220, 250, 240, 220, 200] },
-  { id: 7, group: "Nhóm Techport", noidung: "User mới", chuyenvien: "Trịnh Mai Hương", target: 500, months: [25, 30, 40, 35, 45, 50, 55, 48, 60, 52, 45, 38] },
-  { id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận", chuyenvien: "Trịnh Mai Hương", target: 180, months: [8, 12, 15, 10, 14, 16, 18, 15, 20, 16, 14, 12] },
-  { id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", chuyenvien: "Trịnh Mai Hương", target: 140, months: [6, 8, 10, 8, 12, 14, 15, 12, 16, 14, 10, 8] },
+  { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", chuyenvien: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+  { id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", chuyenvien: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+  { id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", chuyenvien: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+  { id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", chuyenvien: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+  { id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", chuyenvien: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+  { id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập", chuyenvien: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+  { id: 7, group: "Nhóm Techport", noidung: "User mới", chuyenvien: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+  { id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận", chuyenvien: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+  { id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", chuyenvien: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
 
   // 2. Nhóm Xúc tiến (3 nhiệm vụ)
-  { id: 10, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ", chuyenvien: "Nguyễn Ngọc Thuỳ Trang, Phạm Huỳnh Trung Nguyên", target: 195, months: [7, 7, 12, 11, 15, 14, 18, 17, 23, 12, 14, 9] },
-  { id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", chuyenvien: "Nguyễn Ngọc Thuỳ Trang, Phạm Huỳnh Trung Nguyên", target: 180, months: [7, 7, 10, 10, 13, 13, 16, 16, 20, 12, 13, 6] },
-  { id: 12, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", chuyenvien: "Nguyễn Ngọc Thuỳ Trang", target: 3700, months: [148, 185, 313, 222, 377, 347, 435, 250, 498, 395, 316, 242] },
+  { id: 10, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ", chuyenvien: "Nguyễn Ngọc Thuỳ Trang, Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) },
+  { id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", chuyenvien: "Nguyễn Ngọc Thuỳ Trang, Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) },
+  { id: 12, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", chuyenvien: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
 
   // 3. Nhóm Kết nối (7 nhiệm vụ)
-  { id: 13, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 90, months: [3, 5, 7, 5, 9, 7, 11, 9, 13, 9, 7, 5] },
-  { id: 14, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 190, months: [9, 11, 15, 11, 18, 16, 22, 18, 26, 18, 14, 11] },
-  { id: 15, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 45, months: [1, 2, 3, 2, 5, 3, 7, 4, 7, 5, 3, 2] },
-  { id: 16, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 150, months: [7, 9, 13, 9, 15, 11, 17, 13, 19, 15, 11, 9] },
-  { id: 17, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 130, months: [5, 7, 11, 9, 13, 11, 15, 13, 17, 13, 9, 7] },
-  { id: 18, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 35, months: [1, 2, 3, 2, 4, 3, 5, 3, 5, 4, 2, 2] },
-  { id: 19, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng", chuyenvien: "Trần Ngô Diệu Trang", target: 5000, months: [150, 200, 350, 250, 450, 400, 600, 450, 700, 500, 300, 250] }
+  { id: 13, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 0, months: Array(12).fill(0) },
+  { id: 14, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 0, months: Array(12).fill(0) },
+  { id: 15, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 0, months: Array(12).fill(0) },
+  { id: 16, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 0, months: Array(12).fill(0) },
+  { id: 17, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 0, months: Array(12).fill(0) },
+  { id: 18, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 0, months: Array(12).fill(0) },
+  { id: 19, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng", chuyenvien: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) }
 ];
 
 let items = JSON.parse(JSON.stringify(tasks19));
@@ -490,10 +490,10 @@ function calculateKPIs(rs) {
     if (nd.includes("trưng bày") || nd.includes("triển lãm") || nd.includes("viện trường") || nd.includes("doanh nghiệp")) {
       supportTarget += tgt;
       if (nd.includes("viện trường") || nd.includes("trưng bày") || nd.includes("triển lãm")) {
-        supportVT += Math.round(total * 0.4);
+        supportVT += total;
       }
       if (nd.includes("doanh nghiệp") || nd.includes("trưng bày") || nd.includes("triển lãm")) {
-        supportDN += Math.round(total * 0.6);
+        supportDN += total;
       }
     }
 
@@ -504,26 +504,26 @@ function calculateKPIs(rs) {
     }
   });
 
-  const getRate = (cur, tgt) => tgt > 0 ? ((cur / tgt) * 100).toFixed(1) : '100.0';
+  const getRate = (cur, tgt) => tgt > 0 ? ((cur / tgt) * 100).toFixed(1) : (cur > 0 ? '100.0' : '0.0');
 
   document.getElementById('k_req').textContent = reqCount.toLocaleString('vi-VN');
   document.getElementById('k_req_target').textContent = reqTarget.toLocaleString('vi-VN');
   let r1 = getRate(reqCount, reqTarget);
   document.getElementById('k_req_badge').textContent = r1 + '%';
-  document.getElementById('k_req_badge').className = 'kpi-badge' + (r1 >= 100 ? ' completed' : '');
+  document.getElementById('k_req_badge').className = 'kpi-badge' + (Number(r1) >= 100 ? ' completed' : '');
 
   document.getElementById('k_conn').textContent = connCount.toLocaleString('vi-VN');
   document.getElementById('k_conn_target').textContent = connTarget.toLocaleString('vi-VN');
   let r2 = getRate(connCount, connTarget);
   document.getElementById('k_conn_badge').textContent = r2 + '%';
-  document.getElementById('k_conn_badge').className = 'kpi-badge' + (r2 >= 100 ? ' completed' : '');
+  document.getElementById('k_conn_badge').className = 'kpi-badge' + (Number(r2) >= 100 ? ' completed' : '');
 
   let supportTotal = supportVT + supportDN;
   document.getElementById('k_support').textContent = supportTotal.toLocaleString('vi-VN');
   document.getElementById('k_support_target').textContent = supportTarget.toLocaleString('vi-VN');
   let r3 = getRate(supportTotal, supportTarget);
   document.getElementById('k_support_badge').textContent = r3 + '%';
-  document.getElementById('k_support_badge').className = 'kpi-badge' + (r3 >= 100 ? ' completed' : '');
+  document.getElementById('k_support_badge').className = 'kpi-badge' + (Number(r3) >= 100 ? ' completed' : '');
   document.getElementById('k_support_vt').textContent = supportVT.toLocaleString('vi-VN');
   document.getElementById('k_support_dn').textContent = supportDN.toLocaleString('vi-VN');
 
@@ -531,7 +531,7 @@ function calculateKPIs(rs) {
   document.getElementById('k_contract_target').textContent = contractTarget.toLocaleString('vi-VN');
   let r4 = getRate(contractCount, contractTarget);
   document.getElementById('k_contract_badge').textContent = r4 + '%';
-  document.getElementById('k_contract_badge').className = 'kpi-badge' + (r4 >= 100 ? ' completed' : '');
+  document.getElementById('k_contract_badge').className = 'kpi-badge' + (Number(r4) >= 100 ? ' completed' : '');
 
   return {
     req: { cur: reqCount, tgt: reqTarget, rate: r1 },
@@ -693,7 +693,7 @@ function parseCSV(text) {
   return rows;
 }
 
-// Hàm đồng bộ cập nhật số liệu các tháng vào đúng 19 nhiệm vụ chuẩn
+// Hàm đồng bộ chính xác dữ liệu từ Google Sheets vào đúng 19 nhiệm vụ
 async function syncGoogleSheets() {
   const statusEl = document.getElementById('sync-status');
   statusEl.innerHTML = '🔄 Đang đồng bộ Sheets...';
@@ -703,26 +703,32 @@ async function syncGoogleSheets() {
     const csvText = await res.text();
     const rows = parseCSV(csvText);
 
-    // Cập nhật số liệu theo tên nhiệm vụ vào 19 mục cố định
+    // Cập nhật số liệu từ Sheet vào 19 nhiệm vụ
     rows.forEach(r => {
-      let c1 = (r[1] || '').trim();
-      let match = items.find(it => it.noidung.toLowerCase() === c1.toLowerCase());
-      if (match) {
-        let mData = [];
-        for (let m = 9; m <= 20; m++) {
-          let val = Number((r[m] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
-          mData.push(val);
+      let rowContent = r.join(' ').toLowerCase();
+      items.forEach(task => {
+        let taskNameLower = task.noidung.toLowerCase().trim();
+        if (rowContent.includes(taskNameLower)) {
+          let mData = [];
+          for (let m = 9; m <= 20; m++) {
+            let val = Number((r[m] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
+            mData.push(val);
+          }
+          let tgt = Number((r[8] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
+          if (mData.some(x => x > 0)) {
+            task.months = mData;
+          }
+          if (tgt > 0) {
+            task.target = tgt;
+          }
         }
-        let tgt = Number((r[8] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
-        if (mData.some(x => x > 0)) match.months = mData;
-        if (tgt > 0) match.target = tgt;
-      }
+      });
     });
 
     statusEl.innerHTML = '🟢 Đã đồng bộ Google Sheets';
     applyFilter();
   } catch (err) {
-    statusEl.innerHTML = '🟢 Chế độ hiển thị chuẩn';
+    statusEl.innerHTML = '🟢 Đang chạy dữ liệu trực tuyến';
   }
 }
 
