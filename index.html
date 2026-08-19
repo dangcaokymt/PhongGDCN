@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Trung Tâm Khởi Nghiệp Sáng Tạo - Phòng Giao Dịch Công Nghệ</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -22,30 +22,59 @@ body{
 .header{
   background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   color: white;
-  padding: 20px 3vw;
+  padding: 18px 3vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 18px;
   box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3);
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Khung hiển thị Logo Sihub */
+.logo-container {
+  background: #ffffff;
+  padding: 6px 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-container img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Tiêu đề 2 đơn vị bằng nhau màu cam Sihub #f7941d */
 .header-title h1{
-  margin:0;
-  font-size: 22px;
+  margin: 0;
+  font-size: 19px;
   font-weight: 800;
-  letter-spacing: 0.5px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  letter-spacing: 0.6px;
+  color: #f7941d;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
 }
-.header-title p{
-  margin: 5px 0 0 0;
-  font-size: 14px;
-  opacity: 0.95;
-  font-weight: 600;
-  color: #e0f2fe;
-  letter-spacing: 0.3px;
+.header-title h2{
+  margin: 6px 0 0 0;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: #f7941d;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
 }
+
 .header-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 
 .wrap{max-width:1750px;margin:auto;padding:22px 16px}
@@ -214,15 +243,21 @@ tr:hover td{ background: #f0f9ff; }
 #sync-status{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;}
 
 @media(max-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.charts,.filters{grid-template-columns:1fr}}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.charts,.filters{grid-template-columns:1fr}.header-left{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-title">
-    <h1>🚀 TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO</h1>
-    <p>📋 Phòng Giao dịch công nghệ &bull; Theo dõi nhiệm vụ công tác</p>
+  <div class="header-left">
+    <div class="logo-container">
+      <!-- Thay đổi tên file logo nếu cần -->
+      <img src="logo Sihub mau tieng viet.png" onerror="this.src='logo-sihub.png'; this.onerror=null;" alt="SIHUB Logo">
+    </div>
+    <div class="header-title">
+      <h1>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH</h1>
+      <h2>PHÒNG GIAO DỊCH CÔNG NGHỆ</h2>
+    </div>
   </div>
   <div class="header-actions">
     <div id="sync-status">🟢 Dữ liệu đồng bộ trực tuyến</div>
@@ -293,7 +328,7 @@ tr:hover td{ background: #f0f9ff; }
 Chart.defaults.color = '#64748b';
 Chart.defaults.borderColor = '#f1f5f9';
 
-// Link Google Sheets đã xuất bản dạng CSV
+// Link Google Sheets đã xuất bản CSV
 const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
 // Dữ liệu nội bộ dự phòng chuẩn xác từ File (đã bỏ dòng "6 rõ")
@@ -354,7 +389,6 @@ function populateSelect(id, vals, defaultLabel) {
 }
 
 function renderCharts(rs) {
-  // Chart 1: Donut Chart - Phân bổ nhóm nhiệm vụ
   const groupCounts = { 'Nhóm Techport': 0, 'Nhóm Xúc tiến': 0, 'Nhóm Kết nối': 0 };
   rs.forEach(r => {
     if (groupCounts[r.group] !== undefined) groupCounts[r.group]++;
@@ -382,7 +416,6 @@ function renderCharts(rs) {
     }
   });
 
-  // Chart 2: Bar Chart - Phân bổ theo chuyên viên
   const staffCounts = {};
   rs.forEach(r => {
     let names = r.chuyenvien.split(',').map(s => s.trim());
@@ -473,7 +506,6 @@ function applyFilter() {
   renderTable(res);
 }
 
-// Hàm phân tích CSV tiêu chuẩn xử lý đúng dấu nháy kép và dấu xuống dòng
 function parseCSV(text) {
   let rows = [], row = [''], inQuotes = false;
   for (let i = 0; i < text.length; i++) {
@@ -495,7 +527,6 @@ function parseCSV(text) {
   return rows;
 }
 
-// Đồng bộ trực tiếp từ Google Sheets CSV
 async function syncGoogleSheets() {
   const statusEl = document.getElementById('sync-status');
   statusEl.innerHTML = '🔄 Đang đồng bộ Sheets...';
@@ -516,7 +547,6 @@ async function syncGoogleSheets() {
       let c6 = (r[6] || '').trim();
       let c7 = (r[7] || '').trim();
 
-      // Bỏ qua tiêu đề, dòng "6 rõ" và hàng trống
       if (!c1 && !c2 && !c6 && !c7) continue;
       if (c1.includes("THEO DÕI NHIỆM VỤ") || c1.includes("Rõ việc") || c1.includes("Nhóm/Nội dung")) continue;
 
@@ -550,7 +580,7 @@ async function syncGoogleSheets() {
     }
     applyFilter();
   } catch (err) {
-    console.warn('Lỗi kết nối trực tiếp, sử dụng dữ liệu bộ nhớ đệm:', err);
+    console.warn('Sử dụng dữ liệu cục bộ:', err);
     statusEl.innerHTML = '🟡 Chế độ ngoại tuyến';
   }
 }
@@ -602,7 +632,7 @@ function exportExcel() {
 <style>
   table { border-collapse: collapse; font-family: 'Times New Roman', serif; }
   td, th { border: 0.5pt solid #000000; vertical-align: middle; padding: 6px; }
-  .header-title { font-size: 14pt; font-weight: bold; text-align: center; }
+  .header-title { font-size: 13pt; font-weight: bold; text-align: center; color: #f7941d; }
   .header { font-size: 11pt; font-weight: bold; text-align: center; background-color: #e0f2fe; }
   .data-center { font-size: 11pt; text-align: center; }
   .data-left { font-size: 11pt; text-align: left; }
@@ -610,7 +640,7 @@ function exportExcel() {
 </head>
 <body>
 <table>
-  <tr><td colspan="10" class="header-title">TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO - PHÒNG GIAO DỊCH CÔNG NGHỆ</td></tr>
+  <tr><td colspan="10" class="header-title">TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ</td></tr>
   <tr>
     <th class="header">STT</th>
     <th class="header">Nhóm công tác</th>
