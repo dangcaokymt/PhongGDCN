@@ -204,7 +204,7 @@ input:focus, select:focus{
 
 /* Table */
 table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px}
-th,td{padding:10px 10px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:12px}
+th,td{padding:11px 12px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:12.5px}
 th{
   background: #f8fafc;
   color: #0f172a;
@@ -265,7 +265,7 @@ tr:hover td{ background: #fff7ed; }
 .rate-cell {
   text-align: center;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 11.5px;
 }
 
 @media(max-width:1200px){.grid{grid-template-columns:repeat(2,1fr)}}
@@ -364,10 +364,10 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
 
-  <!-- Bảng Dữ Liệu Chi Tiết (Đúng 34 Mục Chuẩn Hóa Theo Cột Nội Dung Của File Google Drive) -->
+  <!-- Bảng Dữ Liệu Chi Tiết (Chuẩn xác 19 Nhiệm vụ) -->
   <div class="card" style="margin-top:20px; padding: 12px 18px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <h3 style="margin:0">📋 Danh sách Chi tiết Nhiệm vụ (<span id="count_display" style="color:#f7941d">34</span>)</h3>
+      <h3 style="margin:0">📋 Danh sách Chi tiết Nhiệm vụ (<span id="count_display" style="color:#f7941d">19</span>)</h3>
     </div>
     <div class="table-wrap">
       <table>
@@ -406,50 +406,35 @@ Chart.defaults.borderColor = '#f1f5f9';
 
 const GSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=csv";
 
-// 34 NHIỆM VỤ GỐC CHUẨN XÁC THEO ĐÚNG CỘT "NỘI DUNG" CỦA FILE GGDRIVE
-const defaultData = [
-  // 1. Nhóm Techport (10 nhiệm vụ)
-  { group: "Nhóm Techport", noidung: "Danh sách hồ sơ", target: 200, chuyenvien: "Trịnh Mai Hương", months: [10, 15, 20, 15, 12, 18, 20, 22, 25, 20, 18, 15] },
-  { group: "Nhóm Techport", noidung: "Danh sách cách dây chuyền, thiết bị", target: 50, chuyenvien: "Trịnh Mai Hương", months: [2, 3, 5, 4, 3, 6, 5, 4, 6, 5, 4, 3] },
-  { group: "Nhóm Techport", noidung: "Thông tin chuyên gia", target: 80, chuyenvien: "Trịnh Mai Hương", months: [5, 5, 8, 6, 7, 8, 10, 8, 9, 8, 6, 5] },
-  { group: "Nhóm Techport", noidung: "Các tài sản SHTT", target: 75, chuyenvien: "Trịnh Mai Hương", months: [4, 6, 8, 5, 6, 7, 9, 8, 7, 6, 5, 4] },
-  { group: "Nhóm Techport", noidung: "Danh sách viện, trường", target: 60, chuyenvien: "Trịnh Mai Hương", months: [3, 4, 5, 4, 5, 6, 5, 6, 7, 5, 4, 3] },
-  { group: "Nhóm Techport", noidung: "Danh sách doanh nghiệp", target: 150, chuyenvien: "Trịnh Mai Hương", months: [8, 10, 12, 10, 14, 15, 16, 15, 18, 14, 12, 10] },
-  { group: "Nhóm Techport", noidung: "Số lượng lượt truy cập", target: 25000, chuyenvien: "Trịnh Mai Hương", months: [120, 150, 180, 160, 190, 210, 230, 220, 250, 240, 220, 200] },
-  { group: "Nhóm Techport", noidung: "Danh sách Tài khoản Techport", target: 500, chuyenvien: "Trịnh Mai Hương", months: [25, 30, 40, 35, 45, 50, 55, 48, 60, 52, 45, 38] },
-  { group: "Nhóm Techport", noidung: "Danh sách các yêu cầu", target: 180, chuyenvien: "Trịnh Mai Hương", months: [8, 12, 15, 10, 14, 16, 18, 15, 20, 16, 14, 12] },
-  { group: "Nhóm Techport", noidung: "Các bản yêu cầu kết nối", target: 140, chuyenvien: "Trịnh Mai Hương", months: [6, 8, 10, 8, 12, 14, 15, 12, 16, 14, 10, 8] },
+// 19 NHIỆM VỤ GỐC CHUẨN XÁC THEO ĐÚNG CỘT "NỘI DUNG"
+const tasks19 = [
+  // 1. Nhóm Techport (9 nhiệm vụ)
+  { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", chuyenvien: "Trịnh Mai Hương", target: 200, months: [10, 15, 20, 15, 12, 18, 20, 22, 25, 20, 18, 15] },
+  { id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", chuyenvien: "Trịnh Mai Hương", target: 50, months: [2, 3, 5, 4, 3, 6, 5, 4, 6, 5, 4, 3] },
+  { id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", chuyenvien: "Trịnh Mai Hương", target: 80, months: [5, 5, 8, 6, 7, 8, 10, 8, 9, 8, 6, 5] },
+  { id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", chuyenvien: "Trịnh Mai Hương", target: 75, months: [4, 6, 8, 5, 6, 7, 9, 8, 7, 6, 5, 4] },
+  { id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", chuyenvien: "Trịnh Mai Hương", target: 210, months: [11, 14, 17, 14, 19, 21, 21, 21, 25, 19, 16, 13] },
+  { id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập", chuyenvien: "Trịnh Mai Hương", target: 25000, months: [120, 150, 180, 160, 190, 210, 230, 220, 250, 240, 220, 200] },
+  { id: 7, group: "Nhóm Techport", noidung: "User mới", chuyenvien: "Trịnh Mai Hương", target: 500, months: [25, 30, 40, 35, 45, 50, 55, 48, 60, 52, 45, 38] },
+  { id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận", chuyenvien: "Trịnh Mai Hương", target: 180, months: [8, 12, 15, 10, 14, 16, 18, 15, 20, 16, 14, 12] },
+  { id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", chuyenvien: "Trịnh Mai Hương", target: 140, months: [6, 8, 10, 8, 12, 14, 15, 12, 16, 14, 10, 8] },
 
-  // 2. Nhóm Xúc tiến (11 nhiệm vụ)
-  { group: "Nhóm Xúc tiến", noidung: "1. Danh sách viện, trường\n2. Hồ sơ sự kiện", target: 35, chuyenvien: "Nguyễn Ngọc Thuỳ Trang", months: [2, 0, 4, 0, 5, 0, 6, 0, 8, 0, 4, 0] },
-  { group: "Nhóm Xúc tiến", noidung: "1. Danh sách viện, trường\n2. Hồ sơ sự kiện", target: 30, chuyenvien: "Phạm Huỳnh Trung Nguyên", months: [0, 2, 0, 3, 0, 4, 0, 5, 0, 4, 0, 3] },
-  { group: "Nhóm Xúc tiến", noidung: "1. Danh sách viện, trường\n2. Hồ sơ sự kiện", target: 70, chuyenvien: "Nguyễn Ngọc Thuỳ Trang", months: [5, 0, 8, 0, 10, 0, 12, 0, 15, 0, 10, 0] },
-  { group: "Nhóm Xúc tiến", noidung: "1. Danh sách viện, trường\n2. Hồ sơ sự kiện", target: 60, chuyenvien: "Phạm Huỳnh Trung Nguyên", months: [0, 5, 0, 8, 0, 10, 0, 12, 0, 8, 0, 6] },
-  { group: "Nhóm Xúc tiến", noidung: "1. Danh sách CNTB của doanh nghiệp\n2. Hồ sơ sự kiện", target: 60, chuyenvien: "Nguyễn Ngọc Thuỳ Trang", months: [4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 8, 0] },
-  { group: "Nhóm Xúc tiến", noidung: "1. Danh sách CNTB của doanh nghiệp\n2. Hồ sơ sự kiện", target: 50, chuyenvien: "Phạm Huỳnh Trung Nguyên", months: [0, 4, 0, 6, 0, 8, 0, 10, 0, 6, 0, 4] },
-  { group: "Nhóm Xúc tiến", noidung: "1. Danh sách CNTB của doanh nghiệp\n2. Hồ sơ sự kiện", target: 40, chuyenvien: "Nguyễn Ngọc Thuỳ Trang", months: [3, 0, 4, 0, 5, 0, 6, 0, 8, 0, 5, 0] },
-  { group: "Nhóm Xúc tiến", noidung: "1. Danh sách CNTB của doanh nghiệp\n2. Hồ sơ sự kiện", target: 30, chuyenvien: "Phạm Huỳnh Trung Nguyên", months: [0, 3, 0, 4, 0, 5, 0, 6, 0, 4, 0, 2] },
-  { group: "Nhóm Xúc tiến", noidung: "1. Danh sách khách tham dự\n2. Hồ sơ sự kiện", target: 3000, chuyenvien: "Nguyễn Ngọc Thuỳ Trang", months: [120, 150, 250, 180, 300, 280, 350, 200, 400, 320, 260, 200] },
-  { group: "Nhóm Xúc tiến", noidung: "Các biên bản khảo sát nhu cầu", target: 500, chuyenvien: "Nguyễn Ngọc Thuỳ Trang", months: [20, 25, 45, 30, 55, 48, 60, 35, 70, 55, 40, 30] },
-  { group: "Nhóm Xúc tiến", noidung: "Danh sách nhu cầu có khả năng hợp tác, triển khai", target: 200, chuyenvien: "Nguyễn Ngọc Thuỳ Trang", months: [8, 10, 18, 12, 22, 19, 25, 15, 28, 20, 16, 12] },
+  // 2. Nhóm Xúc tiến (3 nhiệm vụ)
+  { id: 10, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ", chuyenvien: "Nguyễn Ngọc Thuỳ Trang, Phạm Huỳnh Trung Nguyên", target: 195, months: [7, 7, 12, 11, 15, 14, 18, 17, 23, 12, 14, 9] },
+  { id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm", chuyenvien: "Nguyễn Ngọc Thuỳ Trang, Phạm Huỳnh Trung Nguyên", target: 180, months: [7, 7, 10, 10, 13, 13, 16, 16, 20, 12, 13, 6] },
+  { id: 12, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện", chuyenvien: "Nguyễn Ngọc Thuỳ Trang", target: 3700, months: [148, 185, 313, 222, 377, 347, 435, 250, 498, 395, 316, 242] },
 
-  // 3. Nhóm Kết nối (13 nhiệm vụ)
-  { group: "Nhóm Kết nối", noidung: "1. Danh sách\n2. Hồ sơ sự kiện", target: 50, chuyenvien: "Trần Ngô Diệu Trang", months: [2, 3, 4, 3, 5, 4, 6, 5, 7, 5, 4, 3] },
-  { group: "Nhóm Kết nối", noidung: "1. Danh sách\n2. Hồ sơ sự kiện", target: 40, chuyenvien: "Phạm Minh Công", months: [1, 2, 3, 2, 4, 3, 5, 4, 6, 4, 3, 2] },
-  { group: "Nhóm Kết nối", noidung: "1. Danh sách\n2. Hồ sơ sự kiện", target: 100, chuyenvien: "Trần Ngô Diệu Trang", months: [5, 6, 8, 6, 10, 9, 12, 10, 14, 10, 8, 6] },
-  { group: "Nhóm Kết nối", noidung: "1. Danh sách\n2. Hồ sơ sự kiện", target: 90, chuyenvien: "Phạm Minh Công", months: [4, 5, 7, 5, 8, 7, 10, 8, 12, 8, 6, 5] },
-  { group: "Nhóm Kết nối", noidung: "Các biên bản MOU", target: 25, chuyenvien: "Trần Ngô Diệu Trang", months: [1, 1, 2, 1, 3, 2, 4, 2, 4, 3, 2, 1] },
-  { group: "Nhóm Kết nối", noidung: "Các biên bản MOU", target: 20, chuyenvien: "Phạm Minh Công", months: [0, 1, 1, 1, 2, 1, 3, 2, 3, 2, 1, 1] },
-  { group: "Nhóm Kết nối", noidung: "Các bài viết nhu cầu tìm kiếm công nghệ", target: 80, chuyenvien: "Trần Ngô Diệu Trang", months: [4, 5, 7, 5, 8, 6, 9, 7, 10, 8, 6, 5] },
-  { group: "Nhóm Kết nối", noidung: "Các bài viết nhu cầu tìm kiếm công nghệ", target: 70, chuyenvien: "Phạm Minh Công", months: [3, 4, 6, 4, 7, 5, 8, 6, 9, 7, 5, 4] },
-  { group: "Nhóm Kết nối", noidung: "Các biên bản kết nối tư vấn", target: 70, chuyenvien: "Trần Ngô Diệu Trang", months: [3, 4, 6, 5, 7, 6, 8, 7, 9, 7, 5, 4] },
-  { group: "Nhóm Kết nối", noidung: "Các biên bản kết nối tư vấn", target: 60, chuyenvien: "Phạm Minh Công", months: [2, 3, 5, 4, 6, 5, 7, 6, 8, 6, 4, 3] },
-  { group: "Nhóm Kết nối", noidung: "Các Hợp đồng đã ký kết", target: 20, chuyenvien: "Trần Ngô Diệu Trang", months: [1, 1, 2, 1, 2, 2, 3, 2, 3, 2, 1, 1] },
-  { group: "Nhóm Kết nối", noidung: "Các Hợp đồng đã ký kết", target: 15, chuyenvien: "Phạm Minh Công", months: [0, 1, 1, 1, 2, 1, 2, 1, 2, 2, 1, 1] },
-  { group: "Nhóm Kết nối", noidung: "Tổng Giá trị hợp đồng", target: 5000, chuyenvien: "Trần Ngô Diệu Trang", months: [150, 200, 350, 250, 450, 400, 600, 450, 700, 500, 300, 250] }
+  // 3. Nhóm Kết nối (7 nhiệm vụ)
+  { id: 13, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 90, months: [3, 5, 7, 5, 9, 7, 11, 9, 13, 9, 7, 5] },
+  { id: 14, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 190, months: [9, 11, 15, 11, 18, 16, 22, 18, 26, 18, 14, 11] },
+  { id: 15, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 45, months: [1, 2, 3, 2, 5, 3, 7, 4, 7, 5, 3, 2] },
+  { id: 16, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 150, months: [7, 9, 13, 9, 15, 11, 17, 13, 19, 15, 11, 9] },
+  { id: 17, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 130, months: [5, 7, 11, 9, 13, 11, 15, 13, 17, 13, 9, 7] },
+  { id: 18, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối", chuyenvien: "Trần Ngô Diệu Trang, Phạm Minh Công", target: 35, months: [1, 2, 3, 2, 4, 3, 5, 3, 5, 4, 2, 2] },
+  { id: 19, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng", chuyenvien: "Trần Ngô Diệu Trang", target: 5000, months: [150, 200, 350, 250, 450, 400, 600, 450, 700, 500, 300, 250] }
 ];
 
-let items = JSON.parse(JSON.stringify(defaultData));
+let items = JSON.parse(JSON.stringify(tasks19));
 let filteredItems = [];
 let charts = {};
 
@@ -496,24 +481,24 @@ function calculateKPIs(rs) {
     }
 
     // 2. Số lượng kết nối (có biên bản)
-    if (nd.includes("kết nối tư vấn") || nd.includes("kết nối") || nd.includes("mou")) {
+    if (nd.includes("kết nối (có biên bản)") || nd.includes("kết nối cung cầu") || nd.includes("mou")) {
       connCount += total;
       connTarget += tgt;
     }
 
     // 3. Hỗ trợ Viện trường & Doanh nghiệp
-    if (nd.includes("viện, trường") || nd.includes("doanh nghiệp") || nd.includes("cntb")) {
+    if (nd.includes("trưng bày") || nd.includes("triển lãm") || nd.includes("viện trường") || nd.includes("doanh nghiệp")) {
       supportTarget += tgt;
-      if (nd.includes("viện") || nd.includes("trường")) {
-        supportVT += total;
+      if (nd.includes("viện trường") || nd.includes("trưng bày") || nd.includes("triển lãm")) {
+        supportVT += Math.round(total * 0.4);
       }
-      if (nd.includes("doanh nghiệp")) {
-        supportDN += total;
+      if (nd.includes("doanh nghiệp") || nd.includes("trưng bày") || nd.includes("triển lãm")) {
+        supportDN += Math.round(total * 0.6);
       }
     }
 
     // 4. Tổng số hợp đồng sau kết nối
-    if (nd.includes("hợp đồng")) {
+    if (nd.includes("hợp đồng sau kết nối")) {
       contractCount += total;
       contractTarget += tgt;
     }
@@ -605,10 +590,12 @@ function renderCharts(rs, kpis) {
 
   const staffCounts = {};
   rs.forEach(r => {
-    let name = (r.chuyenvien || '').trim();
-    if (name && name !== 'Chưa phân công' && !name.includes("Chuyên viên")) {
-      staffCounts[name] = (staffCounts[name] || 0) + 1;
-    }
+    let names = (r.chuyenvien || '').split(',').map(s => s.trim());
+    names.forEach(n => {
+      if (n && n !== 'Chưa phân công') {
+        staffCounts[n] = (staffCounts[n] || 0) + 1;
+      }
+    });
   });
 
   if (charts['c2']) charts['c2'].destroy();
@@ -658,8 +645,8 @@ function renderTable(rs) {
     <tr>
       <td style="font-weight:700;color:#64748b;text-align:center">${i + 1}</td>
       <td><span class="badge-group ${getGroupBadgeClass(r.group)}">${esc(r.group)}</span></td>
-      <td><div style="font-weight:700;color:#0f172a;white-space:pre-line;">${esc(r.noidung)}</div></td>
-      <td><span class="badge-person">👤 ${esc(r.chuyenvien)}</span></td>
+      <td><div style="font-weight:700;color:#0f172a">${esc(r.noidung)}</div></td>
+      <td>${r.chuyenvien.split(',').map(n => `<span class="badge-person" style="margin:2px;">👤 ${esc(n.trim())}</span>`).join(' ')}</td>
       <td class="target-cell">${tgt ? tgt.toLocaleString('vi-VN') : '-'}</td>
       ${monthCols}
       <td class="total-cell">${tot ? tot.toLocaleString('vi-VN') : '0'}</td>
@@ -706,7 +693,7 @@ function parseCSV(text) {
   return rows;
 }
 
-// Hàm đồng bộ chính xác số liệu vào 34 nhiệm vụ gốc
+// Hàm đồng bộ cập nhật số liệu các tháng vào đúng 19 nhiệm vụ chuẩn
 async function syncGoogleSheets() {
   const statusEl = document.getElementById('sync-status');
   statusEl.innerHTML = '🔄 Đang đồng bộ Sheets...';
@@ -716,38 +703,21 @@ async function syncGoogleSheets() {
     const csvText = await res.text();
     const rows = parseCSV(csvText);
 
-    // Cập nhật số liệu các tháng vào đúng 34 nhiệm vụ chuẩn hóa
-    let dataRowIndex = 0;
-    for (let i = 0; i < rows.length; i++) {
-      let r = rows[i];
-      let rowStr = r.join(' ').toLowerCase();
-
-      // Bỏ qua tiêu đề
-      if (rowStr.includes("theo dõi nhiệm vụ") || 
-          rowStr.includes("rõ việc") || 
-          rowStr.includes("nhóm/nội dung") || 
-          rowStr.includes("lãnh đạo trực tiếp")) {
-        continue;
-      }
-
-      let cv = (r[6] || '').trim();
-      let nd = (r[7] || '').trim();
-
-      if ((cv || nd) && dataRowIndex < defaultData.length) {
+    // Cập nhật số liệu theo tên nhiệm vụ vào 19 mục cố định
+    rows.forEach(r => {
+      let c1 = (r[1] || '').trim();
+      let match = items.find(it => it.noidung.toLowerCase() === c1.toLowerCase());
+      if (match) {
         let mData = [];
         for (let m = 9; m <= 20; m++) {
           let val = Number((r[m] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
           mData.push(val);
         }
         let tgt = Number((r[8] || '0').toString().replace(/[^0-9.-]+/g, '')) || 0;
-
-        if (mData.some(x => x > 0) || tgt > 0) {
-          items[dataRowIndex].months = mData;
-          if (tgt > 0) items[dataRowIndex].target = tgt;
-        }
-        dataRowIndex++;
+        if (mData.some(x => x > 0)) match.months = mData;
+        if (tgt > 0) match.target = tgt;
       }
-    }
+    });
 
     statusEl.innerHTML = '🟢 Đã đồng bộ Google Sheets';
     applyFilter();
@@ -759,7 +729,7 @@ async function syncGoogleSheets() {
 function initDashboard() {
   const groups = ["Nhóm Techport", "Nhóm Xúc tiến", "Nhóm Kết nối"];
   const staffSet = new Set();
-  items.forEach(x => x.chuyenvien && staffSet.add(x.chuyenvien.trim()));
+  items.forEach(x => x.chuyenvien.split(',').forEach(s => s.trim() && staffSet.add(s.trim())));
 
   populateSelect('f_group', groups, 'Tất cả Nhóm nhiệm vụ');
   populateSelect('f_staff', Array.from(staffSet), 'Tất cả Chuyên viên');
