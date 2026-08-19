@@ -351,7 +351,7 @@ tr:hover td{ background: #fff7ed; }
       <h3>Tiến độ Thực hiện vs Chỉ tiêu Giao (4 Khối Chỉ Số)</h3>
       <div class="chart"><canvas id="c1"></canvas></div>
     </div>
-    <!-- BIỂU ĐỒ MỚI: ĐÁNH GIÁ TIẾN ĐỘ THEO TỪNG CÁ NHÂN -->
+    <!-- BIỂU ĐỒ ĐÁNH GIÁ TIẾN ĐỘ THEO TỪNG CÁ NHÂN -->
     <div class="card">
       <h3>Đánh Giá Tiến Độ Hoàn Thành Theo Từng Cá Nhân (Chỉ tiêu vs Thực hiện)</h3>
       <div class="chart"><canvas id="c_staff_progress"></canvas></div>
@@ -371,7 +371,7 @@ tr:hover td{ background: #fff7ed; }
   <!-- Bảng Dữ Liệu Chi Tiết -->
   <div class="card" style="margin-top:20px; padding: 12px 18px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <h3 style="margin:0">📋 Danh sách Chi tiết Nhiệm vụ (<span id="count_display" style="color:#f7941d">0</span> đầu việc)</h3>
+      <h3 style="margin:0">📋 Danh sách Chi tiết Nhiệm vụ (<span id="count_display" style="color:#f7941d">20</span> đầu việc)</h3>
     </div>
     <div class="table-wrap">
       <table>
@@ -431,7 +431,150 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-let items = [];
+// 20 ĐẦU VIỆC GỐC ĐƯỢC NẠP SẴN TRÁNH BỊ MẤT BẢNG KHI TẢI TRANG
+const initialTasks = [
+  // 1. Nhóm Techport (9 nhiệm vụ)
+  {
+    id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ",
+    rows: [
+      { isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị",
+    rows: [
+      { isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn",
+    rows: [
+      { isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ",
+    rows: [
+      { isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng",
+    rows: [
+      { isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập",
+    rows: [
+      { isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 7, group: "Nhóm Techport", noidung: "User mới",
+    rows: [
+      { isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ tiếp nhận",
+    rows: [
+      { isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu",
+    rows: [
+      { isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+
+  // 2. Nhóm Xúc tiến (3 nhiệm vụ)
+  {
+    id: 10, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ tại các sự kiện",
+    rows: [
+      { isLead: true, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt Công nghệ thiết bị tại các triển lãm",
+    rows: [
+      { isLead: true, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 12, group: "Nhóm Xúc tiến", noidung: "Số người tham dự kết nối tại các sự kiện",
+    rows: [
+      { isLead: true, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+
+  // 3. Nhóm Kết nối (8 nhiệm vụ)
+  {
+    id: 13, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu",
+    rows: [
+      { isLead: true, staffName: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 14, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu",
+    rows: [
+      { isLead: true, staffName: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 15, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU",
+    rows: [
+      { isLead: true, staffName: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 16, group: "Nhóm Kết nối", noidung: "Số yêu cầu công nghệ (Hợp tác & Kết nối ý tưởng)",
+    rows: [
+      { isLead: true, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 17, group: "Nhóm Kết nối", noidung: "Số lượng nhu cầu tìm kiếm công nghệ",
+    rows: [
+      { isLead: true, staffName: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 18, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)",
+    rows: [
+      { isLead: true, staffName: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 19, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối",
+    rows: [
+      { isLead: true, staffName: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  },
+  {
+    id: 20, group: "Nhóm Kết nối", noidung: "Tổng giá trị hợp đồng",
+    rows: [
+      { isLead: true, staffName: "Trần Ngô Diệu Trang", target: 0, months: Array(12).fill(0) },
+      { isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
+    ]
+  }
+];
+
+let items = JSON.parse(JSON.stringify(initialTasks));
 let filteredItems = [];
 let charts = {};
 
@@ -629,6 +772,7 @@ function renderCharts(rs, kpis) {
   });
 }
 
+// RENDER BẢNG: CHỦ TRÌ CỘT TRÁI HÀNG TRÊN, HỖ TRỢ CỘT PHẢI HÀNG DƯỚI
 function renderTable(rs) {
   filteredItems = rs;
   const kpis = calculateKPIs(rs);
@@ -730,7 +874,7 @@ function parseCSV(text) {
   return rows;
 }
 
-// BỘ ĐỒNG BỘ GOOGLE SHEETS
+// BỘ ĐỒNG BỘ GOOGLE SHEETS AN TOÀN
 async function syncGoogleSheets() {
   try {
     const gvizRes = await fetch(GSHEET_GVIZ_URL + encodeURIComponent('SELECT *') + '&_t=' + Date.now(), { cache: 'no-store' });
@@ -743,11 +887,11 @@ async function syncGoogleSheets() {
           if (!cell) return '';
           return (cell.v !== null && cell.v !== undefined) ? cell.v : (cell.f || '');
         }));
-        if (buildTasksFromSpreadsheet(gRows)) return;
+        if (applySpreadsheetUpdates(gRows)) return;
       }
     }
   } catch (err) {
-    console.log("GViz sync fallback:", err);
+    console.log("GViz fallback to CSV:", err);
   }
 
   try {
@@ -755,19 +899,17 @@ async function syncGoogleSheets() {
     if (csvRes.ok) {
       const csvTxt = await csvRes.text();
       const csvRows = parseCSV(csvTxt);
-      buildTasksFromSpreadsheet(csvRows);
+      applySpreadsheetUpdates(csvRows);
     }
   } catch (err) {
-    console.log("CSV sync fallback:", err);
+    console.log("CSV sync error:", err);
   }
 }
 
-// XÂY DỰNG BẢNG DỮ LIỆU ĐỘNG TỪ GOOGLE SHEETS (1:1 VỚI TRANG TÍNH)
-function buildTasksFromSpreadsheet(rows) {
+// NẠP SỐ LIỆU TỪ SHEETS VÀO ĐÚNG KHUNG DỮ LIỆU ĐÃ CÓ
+function applySpreadsheetUpdates(rows) {
   if (!rows || rows.length === 0) return false;
 
-  let leadColIdx = -1;
-  let suppColIdx = -1;
   let targetColIdx = -1;
   let monthCols = Array(12).fill(-1);
 
@@ -775,8 +917,6 @@ function buildTasksFromSpreadsheet(rows) {
     let r = rows[i];
     for (let j = 0; j < r.length; j++) {
       let norm = normalizeText(r[j]);
-      if (norm.includes("chutri")) leadColIdx = j;
-      if (norm.includes("hotro")) suppColIdx = j;
       if (norm.includes("soluong") || norm.includes("chitieu")) targetColIdx = j;
 
       for (let m = 1; m <= 12; m++) {
@@ -790,93 +930,47 @@ function buildTasksFromSpreadsheet(rows) {
     }
   }
 
-  if (leadColIdx === -1) leadColIdx = 6;
-  if (suppColIdx === -1) suppColIdx = 7;
   if (targetColIdx === -1) targetColIdx = 8;
   if (monthCols[0] === -1) {
     let startM = targetColIdx + 1;
     for (let m = 0; m < 12; m++) monthCols[m] = startM + m;
   }
 
-  let currentGroup = "Nhóm Techport";
-  let extractedTasks = [];
-  let currentTask = null;
+  let updated = false;
 
-  for (let i = 0; i < rows.length; i++) {
-    let r = rows[i];
-    let rowRaw = r.map(x => String(x || '').trim()).join(' ');
-    let rowNorm = normalizeText(rowRaw);
+  // Duyệt qua từng nhiệm vụ và gán đúng dòng chuyên viên tương ứng
+  items.forEach(task => {
+    let taskKey = normalizeText(task.noidung);
 
-    if (rowNorm.includes("theodoinhiemvu") || rowNorm.includes("roviec") || (rowNorm.includes("thang01") && rowNorm.includes("thang02"))) {
-      continue;
-    }
+    rows.forEach(r => {
+      let rowRaw = r.map(x => String(x || '').trim()).join(' ');
+      let rowNorm = normalizeText(rowRaw);
 
-    if (rowNorm.includes("nhomtechport")) { currentGroup = "Nhóm Techport"; }
-    if (rowNorm.includes("nhomxuctien")) { currentGroup = "Nhóm Xúc tiến"; }
-    if (rowNorm.includes("nhomketnoi")) { currentGroup = "Nhóm Kết nối"; }
+      if (rowNorm.includes(taskKey)) {
+        let tgt = parseNumeric(r[targetColIdx]);
+        let mData = [];
+        for (let m = 0; m < 12; m++) {
+          let col = monthCols[m];
+          let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
+          mData.push(val);
+        }
 
-    let c1 = String(r[1] || '').trim();
-    let c2 = String(r[2] || '').trim();
-    let taskNameCandidate = (c1.startsWith("Nhóm") ? c2 : c1) || c2;
+        // Tìm dòng chuyên viên khớp với dòng trên Google Sheets
+        (task.rows || []).forEach(rowObj => {
+          let staffKey = normalizeText(rowObj.staffName);
+          if (rowNorm.includes(staffKey)) {
+            if (tgt > 0) rowObj.target = tgt;
+            if (mData.some(x => x > 0)) rowObj.months = mData;
+            updated = true;
+          }
+        });
+      }
+    });
+  });
 
-    let leadVal = String(r[leadColIdx] || '').trim();
-    let suppVal = String(r[suppColIdx] || '').trim();
-
-    if (leadVal.toLowerCase().includes("thu thập") || leadVal.toLowerCase().includes("sự kiện") || leadVal.toLowerCase().includes("danh sách")) {
-      leadVal = '';
-    }
-    if (suppVal.toLowerCase().includes("thu thập") || suppVal.toLowerCase().includes("sự kiện") || suppVal.toLowerCase().includes("danh sách")) {
-      suppVal = '';
-    }
-
-    let tgt = parseNumeric(r[targetColIdx]);
-    let mData = [];
-    for (let m = 0; m < 12; m++) {
-      let col = monthCols[m];
-      let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
-      mData.push(val);
-    }
-
-    let hasData = (tgt > 0 || mData.some(x => x > 0) || leadVal !== '' || suppVal !== '');
-
-    if (taskNameCandidate && !taskNameCandidate.startsWith("Nhóm ") && !taskNameCandidate.includes("Lãnh đạo") && !taskNameCandidate.includes("Phê duyệt")) {
-      currentTask = {
-        id: extractedTasks.length + 1,
-        group: currentGroup,
-        noidung: taskNameCandidate,
-        rows: []
-      };
-      extractedTasks.push(currentTask);
-
-      let isLeadRow = leadVal !== '' || (suppVal === '');
-      let staff = leadVal || suppVal || (currentGroup === 'Nhóm Techport' ? 'Trịnh Mai Hương' : 'Chưa phân công');
-
-      currentTask.rows.push({
-        isLead: isLeadRow,
-        staffName: staff,
-        target: tgt,
-        months: mData
-      });
-    } else if (currentTask && hasData) {
-      let isLeadRow = leadVal !== '';
-      let staff = suppVal || leadVal || 'Chuyên viên hỗ trợ';
-
-      currentTask.rows.push({
-        isLead: isLeadRow,
-        staffName: staff,
-        target: tgt,
-        months: mData
-      });
-    }
-  }
-
-  if (extractedTasks.length >= 10) {
-    items = extractedTasks;
-    updateFilters();
-    renderTable(items);
-    return true;
-  }
-  return false;
+  updateFilters();
+  applyFilter();
+  return updated;
 }
 
 function updateFilters() {
@@ -897,6 +991,8 @@ function updateFilters() {
 function initDashboard() {
   ['q', 'f_group', 'f_staff'].forEach(id => document.getElementById(id).addEventListener('input', applyFilter));
 
+  updateFilters();
+  renderTable(items);
   syncGoogleSheets();
   setInterval(syncGoogleSheets, 15000);
 }
