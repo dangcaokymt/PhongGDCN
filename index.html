@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v6 -->
+<!-- VERSION: v7 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v6)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v7)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -576,9 +576,9 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V6: XÓA SẠCH SỐ ẢO Ở THÁNG 01 VÀ THÁNG 02 (T1 = 0, T2 = 0)
+// BỘ DỮ LIỆU ĐẦY ĐỦ V7: CẬP NHẬT CHUẨN XÁC VỊ TRÍ TỪNG THÁNG & BÀI VIẾT TRUYỀN THÔNG
 const initialFullDataset = [
-  // --- 1. NHÓM TECHPORT (Chỉ tiêu chuẩn, T1 và T2 rỗng) ---
+  // --- 1. NHÓM TECHPORT ---
   { 
     id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", 
     rows: [{ key: "tp_hs", isLead: true, staffName: "Trịnh Mai Hương", target: 150, months: [0, 0, 30, 4, 0, 0, 0, 0, 0, 0, 0, 0] }] 
@@ -621,7 +621,7 @@ const initialFullDataset = [
     ] 
   },
 
-  // --- 2. NHÓM XÚC TIẾN (Chỉ tiêu chuẩn, T1 và T2 rỗng) ---
+  // --- 2. NHÓM XÚC TIẾN ---
   {
     id: 11, group: "Nhóm Xúc tiến", noidung: "Tổ chức Techmart",
     rows: [{ key: "xt_tm", isLead: true, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 2, months: Array(12).fill(0) }]
@@ -1093,7 +1093,12 @@ function parseTsvMatrix(rows) {
           taskMatches = true;
         }
 
-        if (taskMatches || (task.noidung.includes("hợp đồng") && rowNorm.includes("hopdong")) || (task.noidung.includes("Cafe") && rowNorm.includes("cafe"))) {
+        // Bổ sung nhận diện riêng cho Bài viết, Hợp đồng và Cafe CN
+        let isSpecialTask = (task.noidung.includes("hợp đồng") && rowNorm.includes("hopdong")) || 
+                            (task.noidung.includes("Cafe") && rowNorm.includes("cafe")) ||
+                            (task.noidung.includes("bài viết") && (rowNorm.includes("baiviet") || rowNorm.includes("luong") || rowNorm.includes("tran")));
+
+        if (taskMatches || isSpecialTask) {
           (task.rows || []).forEach(rObj => {
             let sNorm = normalizeVietnamese(rObj.staffName);
             if (rowNorm.includes(sNorm)) {
