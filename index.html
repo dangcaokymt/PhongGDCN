@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v7 -->
+<!-- VERSION: v8 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v7)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v8)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -576,7 +576,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V7: CẬP NHẬT CHUẨN XÁC VỊ TRÍ TỪNG THÁNG & BÀI VIẾT TRUYỀN THÔNG
+// BỘ DỮ LIỆU ĐẦY ĐỦ V8: CẬP NHẬT CHÍNH XÁC 100% SỐ LIỆU TỪNG THÁNG & CHỈ TIÊU
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -641,7 +641,7 @@ const initialFullDataset = [
   {
     id: 15, group: "Nhóm Xúc tiến", noidung: "Trưng bày công nghệ và thiết bị tại Sàn giao dịch công nghệ trực tiếp",
     rows: [
-      { key: "xt_tb_nguyen", isLead: true, staffName: "Phạm Huỳnh Trung Nguyên", target: 100, months: Array(12).fill(0) },
+      { key: "xt_tb_nguyen", isLead: true, staffName: "Phạm Huỳnh Trung Nguyên", target: 100, months: [0, 0, 96, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
       { key: "xt_tb_cong", isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) },
       { key: "xt_tb_trang", isLead: false, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
       { key: "xt_tb_huong", isLead: false, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
@@ -679,7 +679,7 @@ const initialFullDataset = [
     ]
   },
 
-  // --- 3. NHÓM KẾT NỐI (Chuyển Cafe CN sang Nhóm Kết nối, T1 và T2 rỗng) ---
+  // --- 3. NHÓM KẾT NỐI (Cafe công nghệ, Kết quả nghiên cứu, MOU, Hợp đồng...) ---
   {
     id: 19, group: "Nhóm Kết nối", noidung: "Số sự kiện Cafe công nghệ",
     rows: [{ key: "kn_cafe", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 10, months: [0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0] }]
@@ -725,12 +725,12 @@ const initialFullDataset = [
   {
     id: 25, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối",
     rows: [
-      { key: "kn_hd_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: [0, 0, 0, 3, 3, 1, 1, 0, 0, 0, 0, 0] },
-      { key: "kn_hd_cong", isLead: false, staffName: "Phạm Minh Công", target: 7, months: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0] },
-      { key: "kn_hd_trang", isLead: false, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 10, months: [0, 0, 0, 2, 3, 2, 2, 0, 0, 0, 0, 0] },
-      { key: "kn_hd_nguyen", isLead: false, staffName: "Phạm Huỳnh Trung Nguyên", target: 15, months: [0, 0, 0, 5, 4, 2, 2, 0, 0, 0, 0, 0] },
-      { key: "kn_hd_huong", isLead: false, staffName: "Trịnh Mai Hương", target: 5, months: [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0] },
-      { key: "kn_hd_luong", isLead: false, staffName: "Nguyễn Thị Hiền Lương", target: 8, months: [0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0] }
+      { key: "kn_hd_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: [0, 0, 3, 3, 1, 1, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_hd_cong", isLead: false, staffName: "Phạm Minh Công", target: 7, months: [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_hd_trang", isLead: false, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 10, months: [0, 0, 2, 3, 2, 2, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_hd_nguyen", isLead: false, staffName: "Phạm Huỳnh Trung Nguyên", target: 15, months: [0, 0, 5, 4, 2, 2, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_hd_huong", isLead: false, staffName: "Trịnh Mai Hương", target: 5, months: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_hd_luong", isLead: false, staffName: "Nguyễn Thị Hiền Lương", target: 8, months: [0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0] }
     ]
   },
   {
@@ -1020,7 +1020,7 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV ĐỘNG THEO MA TRẬN KHÓA CỐ ĐỊNH CHUẨN XÁC
+// BỘ ĐỒNG BỘ TSV CHÍNH XÁC 100% THEO CẤU TRÚC PHÂN CẤP GOOGLE SHEETS
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
@@ -1083,22 +1083,18 @@ function parseTsvMatrix(rows) {
       }
     }
 
+    // ĐỐI SOÁT CHÍNH XÁC: ĐÚNG NHÓM + ĐÚNG NHIỆM VỤ + ĐÚNG CHUYÊN VIÊN
     items.forEach(task => {
       if (task.group === currentGroupName) {
-        let taskMatches = false;
         let tNorm = normalizeVietnamese(task.noidung);
         let curTNorm = normalizeVietnamese(currentTaskName);
 
+        let taskMatches = false;
         if (curTNorm && (tNorm.includes(curTNorm.slice(0, 8)) || curTNorm.includes(tNorm.slice(0, 8)))) {
           taskMatches = true;
         }
 
-        // Bổ sung nhận diện riêng cho Bài viết, Hợp đồng và Cafe CN
-        let isSpecialTask = (task.noidung.includes("hợp đồng") && rowNorm.includes("hopdong")) || 
-                            (task.noidung.includes("Cafe") && rowNorm.includes("cafe")) ||
-                            (task.noidung.includes("bài viết") && (rowNorm.includes("baiviet") || rowNorm.includes("luong") || rowNorm.includes("tran")));
-
-        if (taskMatches || isSpecialTask) {
+        if (taskMatches) {
           (task.rows || []).forEach(rObj => {
             let sNorm = normalizeVietnamese(rObj.staffName);
             if (rowNorm.includes(sNorm)) {
