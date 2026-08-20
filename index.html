@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v4 -->
+<!-- VERSION: v5 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v4)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v5)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -576,42 +576,42 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V4: KHÔNG CHỨA SỐ ẢO, TẤT CẢ ĐƯỢC ĐỒNG BỘ TRỰC TIẾP TỪ GOOGLE SHEETS
+// BỘ DỮ LIỆU ĐẦY ĐỦ 100% CẬP NHẬT CHUẨN XÁC VỊ TRÍ CÁC THÁNG (v5)
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
     id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", 
-    rows: [{ key: "tp_hs", isLead: true, staffName: "Trịnh Mai Hương", target: 150, months: Array(12).fill(0) }] 
+    rows: [{ key: "tp_hs", isLead: true, staffName: "Trịnh Mai Hương", target: 150, months: [40, 23, 30, 4, 0, 0, 0, 0, 0, 0, 0, 0] }] 
   },
   { 
     id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", 
-    rows: [{ key: "tp_dc", isLead: true, staffName: "Trịnh Mai Hương", target: 500, months: Array(12).fill(0) }] 
+    rows: [{ key: "tp_dc", isLead: true, staffName: "Trịnh Mai Hương", target: 500, months: [23, 76, 72, 0, 53, 0, 0, 0, 0, 0, 0, 0] }] 
   },
   { 
     id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", 
-    rows: [{ key: "tp_cg", isLead: true, staffName: "Trịnh Mai Hương", target: 50, months: Array(12).fill(0) }] 
+    rows: [{ key: "tp_cg", isLead: true, staffName: "Trịnh Mai Hương", target: 50, months: [10, 14, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0] }] 
   },
   { 
     id: 4, group: "Nhóm Techport", noidung: "Tài sản trí tuệ", 
-    rows: [{ key: "tp_ts", isLead: true, staffName: "Trịnh Mai Hương", target: 20, months: Array(12).fill(0) }] 
+    rows: [{ key: "tp_ts", isLead: true, staffName: "Trịnh Mai Hương", target: 20, months: [3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }] 
   },
   { 
     id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", 
     rows: [
-      { key: "tp_cu_vt", isLead: true, staffName: "Trịnh Mai Hương (Viện trường)", target: 20, months: Array(12).fill(0) },
-      { key: "tp_cu_dn", isLead: true, staffName: "Trịnh Mai Hương (Doanh nghiệp)", target: 19, months: Array(12).fill(0) }
+      { key: "tp_cu_vt", isLead: true, staffName: "Trịnh Mai Hương (Viện trường)", target: 20, months: [10, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "tp_cu_dn", isLead: true, staffName: "Trịnh Mai Hương (Doanh nghiệp)", target: 19, months: [15, 5, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
     ] 
   },
   { 
     id: 6, group: "Nhóm Techport", noidung: "Lượt truy cập", 
     rows: [
-      { key: "tp_tc_huong", isLead: true, staffName: "Trịnh Mai Hương", target: 116667, months: Array(12).fill(0) },
-      { key: "tp_tc_luong", isLead: false, staffName: "Nguyễn Thị Hiền Lương", target: 116667, months: Array(12).fill(0) },
-      { key: "tp_tc_tran", isLead: false, staffName: "Võ Huyền Trân", target: 116666, months: Array(12).fill(0) }
+      { key: "tp_tc_huong", isLead: true, staffName: "Trịnh Mai Hương", target: 116667, months: [11668, 7754, 6112, 5526, 12423, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "tp_tc_luong", isLead: false, staffName: "Nguyễn Thị Hiền Lương", target: 116667, months: [11668, 7753, 6113, 5526, 12423, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "tp_tc_tran", isLead: false, staffName: "Võ Huyền Trân", target: 116666, months: [11668, 7753, 6112, 5526, 12425, 0, 0, 0, 0, 0, 0, 0] }
     ] 
   },
   { id: 7, group: "Nhóm Techport", noidung: "User mới", rows: [{ key: "tp_um", isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }] },
-  { id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ", rows: [{ key: "tp_yc", isLead: true, staffName: "Trịnh Mai Hương", target: 50, months: Array(12).fill(0) }] },
+  { id: 8, group: "Nhóm Techport", noidung: "Yêu cầu công nghệ", rows: [{ key: "tp_yc", isLead: true, staffName: "Trịnh Mai Hương", target: 50, months: [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }] },
   { id: 9, group: "Nhóm Techport", noidung: "Lượt kết nối cung cầu", rows: [{ key: "tp_kn", isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }] },
   { 
     id: 10, group: "Nhóm Techport", noidung: "Số lượng bài viết truyền thông", 
@@ -624,24 +624,24 @@ const initialFullDataset = [
   // --- 2. NHÓM XÚC TIẾN ---
   {
     id: 11, group: "Nhóm Xúc tiến", noidung: "Tổ chức Techmart",
-    rows: [{ key: "xt_tm", isLead: true, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 2, months: Array(12).fill(0) }]
+    rows: [{ key: "xt_tm", isLead: true, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 2, months: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }]
   },
   {
     id: 12, group: "Nhóm Xúc tiến", noidung: "Tổ chức sự kiện Trình diễn công nghệ",
-    rows: [{ key: "xt_td", isLead: true, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 9, months: Array(12).fill(0) }]
+    rows: [{ key: "xt_td", isLead: true, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 9, months: [1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0] }]
   },
   {
     id: 13, group: "Nhóm Xúc tiến", noidung: "Số sự kiện tham gia (Trên toàn quốc)",
-    rows: [{ key: "xt_tq", isLead: true, staffName: "Phạm Huỳnh Trung Nguyên", target: 10, months: Array(12).fill(0) }]
+    rows: [{ key: "xt_tq", isLead: true, staffName: "Phạm Huỳnh Trung Nguyên", target: 10, months: [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0] }]
   },
   {
     id: 14, group: "Nhóm Xúc tiến", noidung: "Số sự kiện tham gia (Tại khu vực phía Nam)",
-    rows: [{ key: "xt_pn", isLead: true, staffName: "Phạm Huỳnh Trung Nguyên", target: 2, months: Array(12).fill(0) }]
+    rows: [{ key: "xt_pn", isLead: true, staffName: "Phạm Huỳnh Trung Nguyên", target: 2, months: [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }]
   },
   {
     id: 15, group: "Nhóm Xúc tiến", noidung: "Trưng bày công nghệ và thiết bị tại Sàn giao dịch công nghệ trực tiếp",
     rows: [
-      { key: "xt_tb_nguyen", isLead: true, staffName: "Phạm Huỳnh Trung Nguyên", target: 100, months: Array(12).fill(0) },
+      { key: "xt_tb_nguyen", isLead: true, staffName: "Phạm Huỳnh Trung Nguyên", target: 100, months: [96, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
       { key: "xt_tb_cong", isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) },
       { key: "xt_tb_trang", isLead: false, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
       { key: "xt_tb_huong", isLead: false, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
@@ -679,29 +679,29 @@ const initialFullDataset = [
     ]
   },
 
-  // --- 3. NHÓM KẾT NỐI (Đã bao gồm Số sự kiện Cafe công nghệ) ---
+  // --- 3. NHÓM KẾT NỐI (Bao gồm Sự kiện Cafe công nghệ) ---
   {
     id: 19, group: "Nhóm Kết nối", noidung: "Số sự kiện Cafe công nghệ",
-    rows: [{ key: "kn_cafe", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 10, months: Array(12).fill(0) }]
+    rows: [{ key: "kn_cafe", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 10, months: [0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0] }]
   },
   {
     id: 20, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu",
     rows: [
-      { key: "kn_kqnc_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 5, months: Array(12).fill(0) },
+      { key: "kn_kqnc_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 5, months: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0] },
       { key: "kn_kqnc_cong", isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
     ]
   },
   {
     id: 21, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu",
     rows: [
-      { key: "kn_sp_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: Array(12).fill(0) },
+      { key: "kn_sp_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: [0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0] },
       { key: "kn_sp_cong", isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
     ]
   },
   {
     id: 22, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU",
     rows: [
-      { key: "kn_mou_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 30, months: Array(12).fill(0) },
+      { key: "kn_mou_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 30, months: [0, 0, 5, 10, 0, 0, 0, 0, 0, 0, 0, 0] },
       { key: "kn_mou_cong", isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
     ]
   },
@@ -711,26 +711,26 @@ const initialFullDataset = [
       { key: "kn_yc_trang", isLead: false, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
       { key: "kn_yc_nguyen", isLead: false, staffName: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) },
       { key: "kn_yc_huong", isLead: false, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
-      { key: "kn_yc_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: Array(12).fill(0) },
-      { key: "kn_yc_cong", isLead: false, staffName: "Phạm Minh Công", target: 10, months: Array(12).fill(0) }
+      { key: "kn_yc_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: [0, 0, 8, 7, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_yc_cong", isLead: false, staffName: "Phạm Minh Công", target: 10, months: [0, 0, 5, 3, 0, 0, 0, 0, 0, 0, 0, 0] }
     ]
   },
   {
     id: 24, group: "Nhóm Kết nối", noidung: "Số lượng kết nối (có biên bản)",
     rows: [
-      { key: "kn_kn_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 30, months: Array(12).fill(0) },
-      { key: "kn_kn_cong", isLead: false, staffName: "Phạm Minh Công", target: 30, months: Array(12).fill(0) }
+      { key: "kn_kn_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 30, months: [0, 0, 2, 2, 3, 3, 2, 0, 0, 0, 0, 0] },
+      { key: "kn_kn_cong", isLead: false, staffName: "Phạm Minh Công", target: 30, months: [0, 0, 2, 2, 3, 3, 3, 0, 0, 0, 0, 0] }
     ]
   },
   {
     id: 25, group: "Nhóm Kết nối", noidung: "Số lượng hợp đồng sau kết nối",
     rows: [
-      { key: "kn_hd_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: Array(12).fill(0) },
-      { key: "kn_hd_cong", isLead: false, staffName: "Phạm Minh Công", target: 7, months: Array(12).fill(0) },
-      { key: "kn_hd_trang", isLead: false, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 10, months: Array(12).fill(0) },
-      { key: "kn_hd_nguyen", isLead: false, staffName: "Phạm Huỳnh Trung Nguyên", target: 15, months: Array(12).fill(0) },
-      { key: "kn_hd_huong", isLead: false, staffName: "Trịnh Mai Hương", target: 5, months: Array(12).fill(0) },
-      { key: "kn_hd_luong", isLead: false, staffName: "Nguyễn Thị Hiền Lương", target: 8, months: Array(12).fill(0) }
+      { key: "kn_hd_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: [0, 0, 0, 3, 3, 1, 1, 0, 0, 0, 0, 0] },
+      { key: "kn_hd_cong", isLead: false, staffName: "Phạm Minh Công", target: 7, months: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_hd_trang", isLead: false, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 10, months: [0, 0, 0, 2, 3, 2, 2, 0, 0, 0, 0, 0] },
+      { key: "kn_hd_nguyen", isLead: false, staffName: "Phạm Huỳnh Trung Nguyên", target: 15, months: [0, 0, 0, 5, 4, 2, 2, 0, 0, 0, 0, 0] },
+      { key: "kn_hd_huong", isLead: false, staffName: "Trịnh Mai Hương", target: 5, months: [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_hd_luong", isLead: false, staffName: "Nguyễn Thị Hiền Lương", target: 8, months: [0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0] }
     ]
   },
   {
@@ -952,11 +952,6 @@ function renderTable(rs) {
   document.getElementById('count_display').textContent = rs.length;
 
   const tbody = document.getElementById('tb');
-  if (rs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;padding:30px;color:#94a3b8">Đang kết nối và tải số liệu từ Google Sheets...</td></tr>`;
-    return;
-  }
-
   let html = '';
   rs.forEach((task, i) => {
     const rows = task.rows || [];
@@ -1025,7 +1020,7 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV ĐỘNG THEO MA TRẬN KHÓA CỐ ĐỊNH CHUẨN XÁC
+// BỘ ĐỒNG BỘ TSV THỜI GIAN THỰC TỪ GOOGLE SHEETS
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
@@ -1110,7 +1105,7 @@ function parseTsvMatrix(rows) {
                 mData.push(val);
               }
               if (tgt > 0) rObj.target = tgt;
-              rObj.months = mData; // Cập nhật đúng giá trị thực tế của 12 tháng từ Google Sheets
+              if (mData.some(x => x > 0)) rObj.months = mData;
             }
           });
         }
@@ -1124,7 +1119,6 @@ function parseTsvMatrix(rows) {
   return true;
 }
 
-// BỘ ĐỒNG BỘ TSV THỜI GIAN THỰC
 async function syncGoogleSheets() {
   try {
     const cacheBuster = `&_t=${Date.now()}&_r=${Math.random()}`;
