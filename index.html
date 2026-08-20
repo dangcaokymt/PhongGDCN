@@ -232,6 +232,15 @@ input:focus, select:focus{
   background: linear-gradient(135deg, #10b981, #059669);
   transform: translateY(-2px);
 }
+.btn-sync{
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: white;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+.btn-sync:hover{
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  transform: translateY(-2px);
+}
 
 /* Table */
 table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px}
@@ -330,6 +339,7 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
   <div class="header-actions">
+    <button class="btn btn-sync" onclick="syncGoogleSheets(true)">🔄 Cập nhật ngay</button>
     <button class="btn btn-export" onclick="exportExcel()">📥 Xuất File Excel (.xls)</button>
   </div>
 </div>
@@ -385,7 +395,7 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
 
-  <!-- BIỂU ĐỒ: CỘT BÊN TRÁI LÀ 4 KHỐI CHỈ SỐ, BÊN PHẢI LÀ 3 BIỂU ĐỒ TRÒN 3 NHÓM -->
+  <!-- BIỂU ĐỒ -->
   <div class="charts">
     <div class="card">
       <h3>Tiến độ Thực hiện vs Chỉ tiêu Giao (4 Khối Chỉ Số)</h3>
@@ -722,7 +732,6 @@ function calculateKPIs(rs) {
   };
 }
 
-// VẼ BIỂU ĐỒ: BIỂU ĐỒ CỘT VÀ 3 BIỂU ĐỒ TRÒN CHO 3 NHÓM
 function renderCharts(rs, kpis) {
   const kpiLabels = ['1. Yêu cầu công nghệ', '2. Số lượng kết nối', '3. Hỗ trợ VT & DN', '4. Tổng số hợp đồng'];
   const curData = [kpis.req.cur, kpis.conn.cur, kpis.support.cur, kpis.contract.cur];
@@ -758,7 +767,6 @@ function renderCharts(rs, kpis) {
     }
   });
 
-  // TÍNH TỶ LỆ % HOÀN THÀNH CỦA 03 NHÓM
   const groupStats = {
     techport: { target: 0, actual: 0 },
     xuctien: { target: 0, actual: 0 },
@@ -911,7 +919,7 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV ĐỘNG TỪ GOOGLE SHEETS
+// BỘ ĐỒNG BỘ TSV THÔNG MINH - CHỐNG CACHE VÀ BẮT ĐÚNG TẤT CẢ CỘT
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
@@ -921,7 +929,7 @@ function parseTsvMatrix(rows) {
   let suppColIdx = -1;
   let headerRowIdx = -1;
 
-  for (let i = 0; i < Math.min(rows.length, 10); i++) {
+  for (let i = 0; i < Math.min(rows.length, 12); i++) {
     let r = rows[i];
     let foundMonths = 0;
     for (let j = 0; j < r.length; j++) {
@@ -1064,16 +1072,31 @@ function parseTsvMatrix(rows) {
   return false;
 }
 
-async function syncGoogleSheets() {
+// BỘ ĐỒNG BỘ TSV TRỰC TIẾP VỚI CƠ CHẾ BỎ CACHE TRIỆT ĐỂ
+async function syncGoogleSheets(manual = false) {
+  if (manual) {
+    document.getElementById('sync_status').textContent = '⏳ Đang đồng bộ...';
+  }
   try {
-    const tsvRes = await fetch(GSHEET_TSV_URL + '&_t=' + Date.now(), { cache: 'no-store' });
+    const cacheBuster = `&_t=${Date.now()}&_r=${Math.random()}`;
+    const tsvRes = await fetch(GSHEET_TSV_URL + cacheBuster, {
+      method: 'GET',
+      headers: {
+        'Pragma': 'no-cache',
+        'Cache-Control': 'no-cache, no-store, must-revalidate'
+      }
+    });
     if (tsvRes.ok) {
       const tsvTxt = await tsvRes.text();
       const lines = tsvTxt.split(/\r?\n/).map(line => line.split('\t'));
-      if (parseTsvMatrix(lines)) return;
+      if (parseTsvMatrix(lines)) {
+        if (manual) alert('Đã cập nhật số liệu mới nhất từ Google Sheets thành công!');
+        return;
+      }
     }
   } catch (err) {
     console.log("TSV Sync error:", err);
+    if (manual) alert('Chưa thể kết nối Google Sheets, vui lòng kiểm tra kết nối mạng!');
   }
 }
 
@@ -1098,7 +1121,7 @@ function initDashboard() {
   updateFilters();
   renderTable(items);
   syncGoogleSheets();
-  setInterval(syncGoogleSheets, 10000);
+  setInterval(() => syncGoogleSheets(false), 8000);
 }
 
 function exportExcel() {
