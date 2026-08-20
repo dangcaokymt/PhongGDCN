@@ -209,37 +209,31 @@ input:focus, select:focus{
   box-shadow: 0 0 0 3px rgba(247, 148, 29, 0.15);
 }
 
-/* Buttons */
-.btn{
-  font-weight: 700;
+/* Button DATA */
+.btn-data{
+  font-weight: 800;
   border: none;
   cursor: pointer;
-  padding: 10px 16px;
-  border-radius: 10px;
+  padding: 9px 20px;
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.2s ease;
-  font-size: 13px;
-}
-.btn-export{
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 13.5px;
+  letter-spacing: 0.8px;
   background: linear-gradient(135deg, #059669, #047857);
-  color: white;
-  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
 }
-.btn-export:hover{
+.btn-data:hover{
   background: linear-gradient(135deg, #10b981, #059669);
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
-.btn-sync{
-  background: linear-gradient(135deg, #0284c7, #0369a1);
-  color: white;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
-}
-.btn-sync:hover{
-  background: linear-gradient(135deg, #38bdf8, #0284c7);
-  transform: translateY(-2px);
+.btn-data:active{
+  transform: translateY(0);
 }
 
 /* Table */
@@ -339,8 +333,8 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
   <div class="header-actions">
-    <button class="btn btn-sync" onclick="syncGoogleSheets(true)">🔄 Cập nhật ngay</button>
-    <button class="btn btn-export" onclick="exportExcel()">📥 Xuất File Excel (.xls)</button>
+    <!-- Nút DATA duy nhất tại góc trên bên phải -->
+    <button class="btn-data" onclick="exportExcel()">📊 DATA</button>
   </div>
 </div>
 
@@ -919,14 +913,12 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV THÔNG MINH - CHỐNG CACHE VÀ BẮT ĐÚNG TẤT CẢ CỘT
+// BỘ ĐỒNG BỘ TSV ĐỘNG: QUÉT VÀ CẬP NHẬT TRỰC TIẾP TỪNG DÒNG NHÂN SỰ
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
   let targetColIdx = -1;
   let monthCols = Array(12).fill(-1);
-  let leadColIdx = -1;
-  let suppColIdx = -1;
   let headerRowIdx = -1;
 
   for (let i = 0; i < Math.min(rows.length, 12); i++) {
@@ -951,8 +943,6 @@ function parseTsvMatrix(rows) {
       for (let j = 0; j < r.length; j++) {
         let norm = normalizeVietnamese(r[j]);
         if (norm.includes("soluong") || norm.includes("chitieu")) targetColIdx = j;
-        if (norm.includes("chutri") || norm.includes("chuyenvienchutri")) leadColIdx = j;
-        if (norm.includes("hotro") || norm.includes("chuyenviengiatro") || norm.includes("chuyenvienhotro")) suppColIdx = j;
       }
       break;
     }
@@ -965,118 +955,54 @@ function parseTsvMatrix(rows) {
     targetColIdx = monthCols[0] - 1;
   }
 
-  if (leadColIdx === -1) leadColIdx = 6;
-  if (suppColIdx === -1) suppColIdx = 7;
+  // CẬP NHẬT SỐ LIỆU ĐẾN TỪNG CHUYÊN VIÊN TRONG ITEMS
+  items.forEach(task => {
+    let tNorm = normalizeVietnamese(task.noidung);
 
-  let parsedTasks = [];
-  let currentGroup = "Nhóm Techport";
-  let currentTaskName = "";
-  let currentTaskObj = null;
+    (task.rows || []).forEach(rObj => {
+      let sNorm = normalizeVietnamese(rObj.staffName);
 
-  for (let i = headerRowIdx + 1; i < rows.length; i++) {
-    let r = rows[i];
-    let rowRaw = r.map(x => String(x || '').trim()).join(' ');
-    let rowNorm = normalizeVietnamese(rowRaw);
+      // Tìm dòng tương ứng trên file TSV Google Sheets
+      for (let i = headerRowIdx + 1; i < rows.length; i++) {
+        let r = rows[i];
+        let rowFull = r.join(' ');
+        let rowNorm = normalizeVietnamese(rowFull);
 
-    if (!rowNorm || rowNorm.includes("theodoinhiemvu") || rowNorm.includes("tongcong") || rowNorm.includes("roviec")) continue;
+        if (rowNorm.includes(sNorm)) {
+          let isMatch = false;
+          if (task.noidung.includes("hợp đồng")) {
+            isMatch = rowNorm.includes("hopdong") || (i >= 30 && i <= 45);
+          } else if (task.noidung.includes("kết nối (có biên bản)")) {
+            isMatch = rowNorm.includes("cobienban") || rowNorm.includes("ketnoituvanketnoi");
+          } else {
+            isMatch = rowNorm.includes(tNorm.slice(0, 10));
+          }
 
-    if (rowNorm.includes("nhomtechport")) { currentGroup = "Nhóm Techport"; continue; }
-    if (rowNorm.includes("nhomxuctien")) { currentGroup = "Nhóm Xúc tiến"; continue; }
-    if (rowNorm.includes("nhomketnoi")) { currentGroup = "Nhóm Kết nối"; continue; }
-
-    let col0 = String(r[0] || '').trim();
-    let col1 = String(r[1] || '').trim();
-    let col2 = String(r[2] || '').trim();
-
-    let candidateTask = "";
-    if (col0 && !normalizeVietnamese(col0).includes("nhom") && !normalizeVietnamese(col0).startsWith("1.") && isNaN(col0)) candidateTask = col0;
-    else if (col1 && !normalizeVietnamese(col1).includes("nhom") && !normalizeVietnamese(col1).startsWith("1.") && isNaN(col1)) candidateTask = col1;
-    else if (col2 && !normalizeVietnamese(col2).includes("nhom") && !normalizeVietnamese(col2).startsWith("1.") && isNaN(col2)) candidateTask = col2;
-
-    let isStaffName = candidateTask && (
-      candidateTask.includes("Trang") || candidateTask.includes("Hương") || 
-      candidateTask.includes("Nguyên") || candidateTask.includes("Công") || 
-      candidateTask.includes("Lương") || candidateTask.includes("Trân")
-    );
-
-    if (candidateTask && !isStaffName && candidateTask !== currentTaskName) {
-      currentTaskName = candidateTask;
-      currentTaskObj = {
-        id: parsedTasks.length + 1,
-        group: currentGroup,
-        noidung: currentTaskName,
-        rows: []
-      };
-      parsedTasks.push(currentTaskObj);
-    }
-
-    let leadVal = (leadColIdx < r.length && r[leadColIdx]) ? String(r[leadColIdx]).trim() : "";
-    let suppVal = (suppColIdx < r.length && r[suppColIdx]) ? String(r[suppColIdx]).trim() : "";
-
-    let isLead = false;
-    let staffName = "";
-
-    if (leadVal && !normalizeVietnamese(leadVal).includes("chuyenvien") && !normalizeVietnamese(leadVal).includes("lanhdao")) {
-      isLead = true;
-      staffName = leadVal;
-    } else if (suppVal && !normalizeVietnamese(suppVal).includes("chuyenvien") && !normalizeVietnamese(suppVal).includes("hotro")) {
-      isLead = false;
-      staffName = suppVal;
-    } else {
-      for (let j = 3; j < Math.min(r.length, targetColIdx); j++) {
-        let val = String(r[j] || '').trim();
-        let norm = normalizeVietnamese(val);
-        if (norm.includes("trang") || norm.includes("huong") || norm.includes("nguyen") || norm.includes("cong") || norm.includes("luong") || norm.includes("tran")) {
-          staffName = val;
-          isLead = (j <= leadColIdx);
-          break;
+          if (isMatch) {
+            let tgt = parseNumeric(r[targetColIdx]);
+            let mData = [];
+            for (let m = 0; m < 12; m++) {
+              let col = monthCols[m];
+              let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
+              mData.push(val);
+            }
+            if (tgt > 0) rObj.target = tgt;
+            rObj.months = mData;
+            break;
+          }
         }
       }
-    }
+    });
+  });
 
-    if (staffName) {
-      if (!currentTaskObj) {
-        currentTaskObj = {
-          id: parsedTasks.length + 1,
-          group: currentGroup,
-          noidung: currentTaskName || "Nhiệm vụ chung",
-          rows: []
-        };
-        parsedTasks.push(currentTaskObj);
-      }
-
-      let tgt = parseNumeric(r[targetColIdx]);
-      let mData = [];
-      for (let m = 0; m < 12; m++) {
-        let col = monthCols[m];
-        let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
-        mData.push(val);
-      }
-
-      currentTaskObj.rows.push({
-        isLead: isLead,
-        staffName: staffName,
-        target: tgt,
-        months: mData
-      });
-    }
-  }
-
-  if (parsedTasks.length >= 8) {
-    items = parsedTasks;
-    updateFilters();
-    applyFilter();
-    document.getElementById('sync_status').textContent = '● Đã đồng bộ mới nhất lúc ' + new Date().toLocaleTimeString('vi-VN');
-    return true;
-  }
-  return false;
+  updateFilters();
+  applyFilter();
+  document.getElementById('sync_status').textContent = '● Đã đồng bộ lúc ' + new Date().toLocaleTimeString('vi-VN');
+  return true;
 }
 
-// BỘ ĐỒNG BỘ TSV TRỰC TIẾP VỚI CƠ CHẾ BỎ CACHE TRIỆT ĐỂ
-async function syncGoogleSheets(manual = false) {
-  if (manual) {
-    document.getElementById('sync_status').textContent = '⏳ Đang đồng bộ...';
-  }
+// BỘ ĐỒNG BỘ TSV THỜI GIAN THỰC
+async function syncGoogleSheets() {
   try {
     const cacheBuster = `&_t=${Date.now()}&_r=${Math.random()}`;
     const tsvRes = await fetch(GSHEET_TSV_URL + cacheBuster, {
@@ -1089,14 +1015,10 @@ async function syncGoogleSheets(manual = false) {
     if (tsvRes.ok) {
       const tsvTxt = await tsvRes.text();
       const lines = tsvTxt.split(/\r?\n/).map(line => line.split('\t'));
-      if (parseTsvMatrix(lines)) {
-        if (manual) alert('Đã cập nhật số liệu mới nhất từ Google Sheets thành công!');
-        return;
-      }
+      parseTsvMatrix(lines);
     }
   } catch (err) {
     console.log("TSV Sync error:", err);
-    if (manual) alert('Chưa thể kết nối Google Sheets, vui lòng kiểm tra kết nối mạng!');
   }
 }
 
@@ -1121,7 +1043,7 @@ function initDashboard() {
   updateFilters();
   renderTable(items);
   syncGoogleSheets();
-  setInterval(() => syncGoogleSheets(false), 8000);
+  setInterval(syncGoogleSheets, 5000);
 }
 
 function exportExcel() {
