@@ -295,7 +295,7 @@ tr:hover td{ background: #fff7ed; }
 </div>
 
 <div class="wrap">
-  <!-- 4 THỐNG KÊ CHÍNH -->
+  <!-- 4 THỐNG KÊ CHÍNH CHUẨN HÓA NGUỒN DỮ LIỆU -->
   <div class="grid">
     <!-- 1. Tổng số yêu cầu công nghệ -->
     <div class="card">
@@ -305,10 +305,10 @@ tr:hover td{ background: #fff7ed; }
         <div class="kpi-target">Chỉ tiêu: <b id="k_req_target" style="color:#f7941d">0</b></div>
         <span class="kpi-badge" id="k_req_badge">0%</span>
       </div>
-      <div class="kpi-sub">Tiếp nhận & Khảo sát nhu cầu 12 tháng</div>
+      <div class="kpi-sub">Khảo sát & Tiếp nhận nhu cầu (Nhóm Kết nối)</div>
     </div>
 
-    <!-- 2. Số lượng kết nối -->
+    <!-- 2. Số lượng kết nối có biên bản -->
     <div class="card">
       <div class="label">2. Số Lượng Kết Nối (Có Biên Bản)</div>
       <div class="kpi-row">
@@ -316,10 +316,10 @@ tr:hover td{ background: #fff7ed; }
         <div class="kpi-target">Chỉ tiêu: <b id="k_conn_target" style="color:#7e22ce">0</b></div>
         <span class="kpi-badge" id="k_conn_badge">0%</span>
       </div>
-      <div class="kpi-sub">Biên bản tư vấn & Lượt cung cầu</div>
+      <div class="kpi-sub">Biên bản tư vấn & Lượt cung cầu kết nối</div>
     </div>
 
-    <!-- 3. Thông tin hỗ trợ viện trường, doanh nghiệp -->
+    <!-- 3. Hỗ trợ viện trường & doanh nghiệp -->
     <div class="card">
       <div class="label">3. Hỗ Trợ Viện Trường & Doanh Nghiệp</div>
       <div class="kpi-row">
@@ -333,7 +333,7 @@ tr:hover td{ background: #fff7ed; }
       </div>
     </div>
 
-    <!-- 4. Tổng số hợp đồng -->
+    <!-- 4. Tổng số hợp đồng sau kết nối -->
     <div class="card">
       <div class="label">4. Tổng Số Hợp Đồng Sau Kết Nối</div>
       <div class="kpi-row">
@@ -341,7 +341,7 @@ tr:hover td{ background: #fff7ed; }
         <div class="kpi-target">Chỉ tiêu: <b id="k_contract_target" style="color:#059669">0</b></div>
         <span class="kpi-badge" id="k_contract_badge">0%</span>
       </div>
-      <div class="kpi-sub">Các Hợp đồng đã ký kết thành công</div>
+      <div class="kpi-sub">Tổng số Hợp đồng ký kết (6 Chuyên viên)</div>
     </div>
   </div>
 
@@ -432,9 +432,9 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ KHỞI TẠO CHUẨN XÁC THEO FILE CỦA BẠN
+// BỘ DỮ LIỆU CƠ SỞ CHUẨN
 const initialFullDataset = [
-  // --- 1. NHÓM TECHPORT ---
+  // 1. Nhóm Techport
   { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", rows: [{ isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }] },
   { id: 2, group: "Nhóm Techport", noidung: "Dây chuyền/thiết bị", rows: [{ isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }] },
   { id: 3, group: "Nhóm Techport", noidung: "Chuyên gia tư vấn", rows: [{ isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }] },
@@ -465,7 +465,7 @@ const initialFullDataset = [
     ] 
   },
 
-  // --- 2. NHÓM XÚC TIẾN ---
+  // 2. Nhóm Xúc tiến
   {
     id: 11, group: "Nhóm Xúc tiến", noidung: "Hỗ trợ lượt trưng bày công nghệ tại các Sự kiện",
     rows: [
@@ -497,7 +497,7 @@ const initialFullDataset = [
     ]
   },
 
-  // --- 3. NHÓM KẾT NỐI (Đầy đủ tất cả thành viên & số liệu chính xác) ---
+  // 3. Nhóm Kết nối
   {
     id: 14, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu",
     rows: [
@@ -585,6 +585,7 @@ function populateSelect(id, vals, defaultLabel) {
   if (uniqueVals.includes(currentVal)) e.value = currentVal;
 }
 
+// TÍNH TOÁN 4 KHỐI KPI CHUẨN XÁC THEO TỪNG DÒNG NHIỆM VỤ CỤ THỂ
 function calculateKPIs(rs) {
   let reqCount = 0, reqTarget = 0;
   let connCount = 0, connTarget = 0;
@@ -592,29 +593,37 @@ function calculateKPIs(rs) {
   let contractCount = 0, contractTarget = 0;
 
   rs.forEach(task => {
-    (task.rows || []).forEach(row => {
-      let tot = sumMonths(row.months);
-      let tgt = Number(row.target) || 0;
-      let nd = normalizeVietnamese(task.noidung);
+    let nd = normalizeVietnamese(task.noidung);
+    let taskTot = (task.rows || []).reduce((s, r) => s + sumMonths(r.months), 0);
+    let taskTgt = (task.rows || []).reduce((s, r) => s + (Number(r.target) || 0), 0);
 
-      if (nd.includes("yeucau") || nd.includes("timkiemcongnghe") || nd.includes("nhucau")) {
-        reqCount += tot;
-        reqTarget += tgt;
-      }
-      if (nd.includes("ketnoicobienban") || nd.includes("ketnoicungcau") || nd.includes("mou")) {
-        connCount += tot;
-        connTarget += tgt;
-      }
-      if (nd.includes("trungbay") || nd.includes("trienlam") || nd.includes("vientruong") || nd.includes("doanhnghiep") || nd.includes("cntb")) {
-        supportTarget += tgt;
-        if (nd.includes("vientruong") || nd.includes("trungbay") || nd.includes("trienlam")) supportVT += tot;
-        if (nd.includes("doanhnghiep") || nd.includes("trungbay") || nd.includes("trienlam")) supportDN += tot;
-      }
-      if (nd.includes("hopdongsauketnoi") || (nd.includes("hopdong") && !nd.includes("giatri"))) {
-        contractCount += tot;
-        contractTarget += tgt;
-      }
-    });
+    // 1. Số yêu cầu công nghệ (Chỉ tính riêng nhiệm vụ Số yêu cầu công nghệ Nhóm Kết nối)
+    if (nd === "soyeucaucongnghe" && task.group === "Nhóm Kết nối") {
+      reqCount += taskTot;
+      reqTarget += taskTgt;
+    }
+
+    // 2. Số lượng kết nối có biên bản (Chỉ tính riêng nhiệm vụ Số lượng kết nối có biên bản)
+    if (nd === "soluongketnoicobienban" || (nd.includes("ketnoi") && nd.includes("cobienban"))) {
+      connCount += taskTot;
+      connTarget += taskTgt;
+    }
+
+    // 3. Hỗ trợ Viện trường & Doanh nghiệp (Kết quả nghiên cứu + Sản phẩm KHCN doanh nghiệp)
+    if (nd.includes("ketquanghiencuu") && nd.includes("vientruong")) {
+      supportVT += taskTot;
+      supportTarget += taskTgt;
+    }
+    if (nd.includes("sanphamkhoahoc") || (nd.includes("sanpham") && nd.includes("doanhnghiep"))) {
+      supportDN += taskTot;
+      supportTarget += taskTgt;
+    }
+
+    // 4. Số lượng hợp đồng sau kết nối (Tính đầy đủ 6 chuyên viên)
+    if (nd === "soluonghopdongsauketnoi" || (nd.includes("hopdong") && !nd.includes("giatri"))) {
+      contractCount += taskTot;
+      contractTarget += taskTgt;
+    }
   });
 
   const getRate = (cur, tgt) => tgt > 0 ? ((cur / tgt) * 100).toFixed(1) : (cur > 0 ? '100.0' : '0.0');
@@ -823,7 +832,7 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ PHÂN TÍCH MA TRẬN DỮ LIỆU TSV ĐỘNG 100% TỪ GOOGLE SHEETS
+// BỘ ĐỒNG BỘ TSV ĐỘNG 100% TỪ GOOGLE SHEETS
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
@@ -976,7 +985,6 @@ function parseTsvMatrix(rows) {
   return false;
 }
 
-// BỘ ĐỒNG BỘ THỜI GIAN THỰC
 async function syncGoogleSheets() {
   try {
     const tsvRes = await fetch(GSHEET_TSV_URL + '&_t=' + Date.now(), { cache: 'no-store' });
