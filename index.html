@@ -615,7 +615,7 @@ const initialFullDataset = [
   { 
     id: 10, group: "Nhóm Techport", noidung: "Số lượng bài viết truyền thông", 
     rows: [
-      { isLead: true, staffName: "Nguyễn Thị Hiền Lương", target: 12, months: [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { isLead: true, staffName: "Nguyễn Thị Hiền Lương", target: 12, months: Array(12).fill(0) },
       { isLead: false, staffName: "Võ Huyền Trân", target: 0, months: Array(12).fill(0) }
     ] 
   },
@@ -1080,6 +1080,8 @@ function parseTsvMatrix(rows) {
             isMatch = rowNorm.includes("hopdong") || (i >= 30 && i <= 60);
           } else if (task.noidung.includes("kết nối (có biên bản)")) {
             isMatch = rowNorm.includes("cobienban") || rowNorm.includes("ketnoituvanketnoi");
+          } else if (task.noidung.includes("bài viết")) {
+            isMatch = rowNorm.includes("baiviet") || (i >= 8 && i <= 15);
           } else if (task.noidung.includes("Techmart")) {
             isMatch = rowNorm.includes("techmart");
           } else if (task.noidung.includes("Trình diễn")) {
