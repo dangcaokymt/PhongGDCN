@@ -139,7 +139,7 @@ body{
 
 /* Charts */
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
-.chart{height:300px;position:relative}
+.chart{height:280px;position:relative}
 .card h3{
   margin-top: 0;
   font-size: 15px;
@@ -148,6 +148,46 @@ body{
   letter-spacing: 0.4px;
   border-left: 4px solid #f7941d;
   padding-left: 10px;
+}
+
+/* Cụm 3 Biểu đồ tròn */
+.group-progress-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  height: 280px;
+  align-items: center;
+}
+.group-chart-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px 8px;
+  border: 1px dashed #e2e8f0;
+}
+.doughnut-container {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin-bottom: 12px;
+}
+.chart-percent-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  pointer-events: none;
+}
+.group-chart-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
 }
 
 /* Filters */
@@ -274,7 +314,7 @@ tr:hover td{ background: #fff7ed; }
 }
 
 @media(max-width:1200px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:850px){.grid{grid-template-columns:1fr}.charts,.filters{grid-template-columns:1fr}.header-left{flex-direction:column;align-items:flex-start}}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.charts,.filters{grid-template-columns:1fr}.group-progress-wrap{grid-template-columns:1fr; height:auto;}.header-left{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -295,7 +335,7 @@ tr:hover td{ background: #fff7ed; }
 </div>
 
 <div class="wrap">
-  <!-- 4 THỐNG KÊ CHÍNH CHUẨN HÓA NGUỒN DỮ LIỆU -->
+  <!-- 4 THỐNG KÊ CHÍNH -->
   <div class="grid">
     <!-- 1. Tổng số yêu cầu công nghệ -->
     <div class="card">
@@ -345,15 +385,43 @@ tr:hover td{ background: #fff7ed; }
     </div>
   </div>
 
-  <!-- BIỂU ĐỒ -->
+  <!-- BIỂU ĐỒ: CỘT BÊN TRÁI LÀ 4 KHỐI CHỈ SỐ, BÊN PHẢI LÀ 3 BIỂU ĐỒ TRÒN 3 NHÓM -->
   <div class="charts">
     <div class="card">
       <h3>Tiến độ Thực hiện vs Chỉ tiêu Giao (4 Khối Chỉ Số)</h3>
       <div class="chart"><canvas id="c1"></canvas></div>
     </div>
+    
     <div class="card">
-      <h3>Đánh Giá Tiến Độ Hoàn Thành Theo Từng Cá Nhân (Chỉ tiêu vs Thực hiện)</h3>
-      <div class="chart"><canvas id="c_staff_progress"></canvas></div>
+      <h3>Tỷ Lệ Hoàn Thành Chỉ Tiêu Của 03 Nhóm Công Tác</h3>
+      <div class="group-progress-wrap">
+        <!-- Nhóm Techport -->
+        <div class="group-chart-box">
+          <div class="doughnut-container">
+            <canvas id="cg_techport"></canvas>
+            <div class="chart-percent-text" id="pct_techport" style="color:#0284c7">0%</div>
+          </div>
+          <div class="group-chart-title"><span class="badge-group badge-techport">Nhóm Techport</span></div>
+        </div>
+
+        <!-- Nhóm Xúc tiến -->
+        <div class="group-chart-box">
+          <div class="doughnut-container">
+            <canvas id="cg_xuctien"></canvas>
+            <div class="chart-percent-text" id="pct_xuctien" style="color:#d97706">0%</div>
+          </div>
+          <div class="group-chart-title"><span class="badge-group badge-xuctien">Nhóm Xúc tiến</span></div>
+        </div>
+
+        <!-- Nhóm Kết nối -->
+        <div class="group-chart-box">
+          <div class="doughnut-container">
+            <canvas id="cg_ketnoi"></canvas>
+            <div class="chart-percent-text" id="pct_ketnoi" style="color:#7e22ce">0%</div>
+          </div>
+          <div class="group-chart-title"><span class="badge-group badge-ketnoi">Nhóm Kết nối</span></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -432,7 +500,6 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU CƠ SỞ CHUẨN
 const initialFullDataset = [
   // 1. Nhóm Techport
   { id: 1, group: "Nhóm Techport", noidung: "Hồ sơ công nghệ", rows: [{ isLead: true, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) }] },
@@ -585,7 +652,6 @@ function populateSelect(id, vals, defaultLabel) {
   if (uniqueVals.includes(currentVal)) e.value = currentVal;
 }
 
-// TÍNH TOÁN 4 KHỐI KPI CHUẨN XÁC THEO TỪNG DÒNG NHIỆM VỤ CỤ THỂ
 function calculateKPIs(rs) {
   let reqCount = 0, reqTarget = 0;
   let connCount = 0, connTarget = 0;
@@ -597,19 +663,14 @@ function calculateKPIs(rs) {
     let taskTot = (task.rows || []).reduce((s, r) => s + sumMonths(r.months), 0);
     let taskTgt = (task.rows || []).reduce((s, r) => s + (Number(r.target) || 0), 0);
 
-    // 1. Số yêu cầu công nghệ (Chỉ tính riêng nhiệm vụ Số yêu cầu công nghệ Nhóm Kết nối)
     if (nd === "soyeucaucongnghe" && task.group === "Nhóm Kết nối") {
       reqCount += taskTot;
       reqTarget += taskTgt;
     }
-
-    // 2. Số lượng kết nối có biên bản (Chỉ tính riêng nhiệm vụ Số lượng kết nối có biên bản)
     if (nd === "soluongketnoicobienban" || (nd.includes("ketnoi") && nd.includes("cobienban"))) {
       connCount += taskTot;
       connTarget += taskTgt;
     }
-
-    // 3. Hỗ trợ Viện trường & Doanh nghiệp (Kết quả nghiên cứu + Sản phẩm KHCN doanh nghiệp)
     if (nd.includes("ketquanghiencuu") && nd.includes("vientruong")) {
       supportVT += taskTot;
       supportTarget += taskTgt;
@@ -618,8 +679,6 @@ function calculateKPIs(rs) {
       supportDN += taskTot;
       supportTarget += taskTgt;
     }
-
-    // 4. Số lượng hợp đồng sau kết nối (Tính đầy đủ 6 chuyên viên)
     if (nd === "soluonghopdongsauketnoi" || (nd.includes("hopdong") && !nd.includes("giatri"))) {
       contractCount += taskTot;
       contractTarget += taskTgt;
@@ -663,6 +722,7 @@ function calculateKPIs(rs) {
   };
 }
 
+// VẼ BIỂU ĐỒ: BIỂU ĐỒ CỘT VÀ 3 BIỂU ĐỒ TRÒN CHO 3 NHÓM
 function renderCharts(rs, kpis) {
   const kpiLabels = ['1. Yêu cầu công nghệ', '2. Số lượng kết nối', '3. Hỗ trợ VT & DN', '4. Tổng số hợp đồng'];
   const curData = [kpis.req.cur, kpis.conn.cur, kpis.support.cur, kpis.contract.cur];
@@ -698,58 +758,77 @@ function renderCharts(rs, kpis) {
     }
   });
 
-  const staffMetrics = {};
+  // TÍNH TỶ LỆ % HOÀN THÀNH CỦA 03 NHÓM
+  const groupStats = {
+    techport: { target: 0, actual: 0 },
+    xuctien: { target: 0, actual: 0 },
+    ketnoi: { target: 0, actual: 0 }
+  };
+
   rs.forEach(task => {
-    (task.rows || []).forEach(r => {
-      let name = (r.staffName || '').trim();
-      if (name && name !== '-' && name !== 'Chưa phân công' && !name.toLowerCase().includes("chuyên viên") && !name.toLowerCase().includes("lãnh đạo")) {
-        if (!staffMetrics[name]) {
-          staffMetrics[name] = { target: 0, actual: 0 };
-        }
-        staffMetrics[name].target += (Number(r.target) || 0);
-        staffMetrics[name].actual += sumMonths(r.months);
-      }
-    });
+    let g = task.group;
+    let tTot = (task.rows || []).reduce((s, r) => s + sumMonths(r.months), 0);
+    let tTgt = (task.rows || []).reduce((s, r) => s + (Number(r.target) || 0), 0);
+
+    if (g.includes("Techport")) {
+      groupStats.techport.target += tTgt;
+      groupStats.techport.actual += tTot;
+    } else if (g.includes("Xúc tiến")) {
+      groupStats.xuctien.target += tTgt;
+      groupStats.xuctien.actual += tTot;
+    } else if (g.includes("Kết nối")) {
+      groupStats.ketnoi.target += tTgt;
+      groupStats.ketnoi.actual += tTot;
+    }
   });
 
-  const staffNames = Object.keys(staffMetrics).sort((a, b) => a.localeCompare(b, 'vi'));
-  const staffTargetData = staffNames.map(name => staffMetrics[name].target);
-  const staffActualData = staffNames.map(name => staffMetrics[name].actual);
+  const calcGroupRate = st => st.target > 0 ? ((st.actual / st.target) * 100) : (st.actual > 0 ? 100 : 0);
 
-  if (charts['c_staff_progress']) charts['c_staff_progress'].destroy();
-  charts['c_staff_progress'] = new Chart(document.getElementById('c_staff_progress'), {
-    type: 'bar',
-    data: {
-      labels: staffNames,
-      datasets: [
-        { label: 'Đã thực hiện', data: staffActualData, backgroundColor: '#0284c7', borderRadius: 4 },
-        { label: 'Chỉ tiêu được giao', data: staffTargetData, backgroundColor: '#fed7aa', borderRadius: 4 }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'top', labels: { font: { weight: 600, size: 11 } } },
-        tooltip: {
-          callbacks: {
-            afterBody: function(context) {
-              const idx = context[0].dataIndex;
-              const name = staffNames[idx];
-              const tgt = staffMetrics[name].target;
-              const act = staffMetrics[name].actual;
-              const rate = tgt > 0 ? ((act / tgt) * 100).toFixed(1) + '%' : (act > 0 ? '100%' : '0%');
-              return `Tỷ lệ hoàn thành: ${rate}`;
+  const rTechport = calcGroupRate(groupStats.techport);
+  const rXuctien = calcGroupRate(groupStats.xuctien);
+  const rKetnoi = calcGroupRate(groupStats.ketnoi);
+
+  document.getElementById('pct_techport').textContent = rTechport.toFixed(1) + '%';
+  document.getElementById('pct_xuctien').textContent = rXuctien.toFixed(1) + '%';
+  document.getElementById('pct_ketnoi').textContent = rKetnoi.toFixed(1) + '%';
+
+  function createDonut(id, rate, primaryColor) {
+    if (charts[id]) charts[id].destroy();
+    let displayRate = Math.min(Math.max(rate, 0), 100);
+    let remaining = 100 - displayRate;
+
+    charts[id] = new Chart(document.getElementById(id), {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [displayRate, remaining],
+          backgroundColor: [primaryColor, '#e2e8f0'],
+          borderWidth: 0,
+          hoverOffset: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '74%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                if (ctx.dataIndex === 0) return `Hoàn thành: ${rate.toFixed(1)}%`;
+                return `Còn lại: ${(100 - rate).toFixed(1)}%`;
+              }
             }
           }
         }
-      },
-      scales: {
-        y: { beginAtZero: true },
-        x: { ticks: { font: { size: 11 } } }
       }
-    }
-  });
+    });
+  }
+
+  createDonut('cg_techport', rTechport, '#0284c7');
+  createDonut('cg_xuctien', rXuctien, '#f7941d');
+  createDonut('cg_ketnoi', rKetnoi, '#7e22ce');
 }
 
 function renderTable(rs) {
@@ -832,7 +911,7 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV ĐỘNG 100% TỪ GOOGLE SHEETS
+// BỘ ĐỒNG BỘ TSV ĐỘNG TỪ GOOGLE SHEETS
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
