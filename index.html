@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v2 -->
+<!-- VERSION: v3 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v2)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v3)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -576,7 +576,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU CƠ SỞ CHUẨN XÁC 100% CỦA PHIÊN BẢN V2
+// BỘ DỮ LIỆU ĐẦY ĐỦ 100% CẬP NHẬT CHUẨN XÁC VỊ TRÍ CÁC THÁNG (v3)
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -683,25 +683,25 @@ const initialFullDataset = [
     rows: [{ key: "xt_cafe", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 10, months: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }]
   },
 
-  // --- 3. NHÓM KẾT NỐI ---
+  // --- 3. NHÓM KẾT NỐI (Tháng 01, 02 đều bằng 0, số liệu bắt đầu từ T3/T4) ---
   {
     id: 20, group: "Nhóm Kết nối", noidung: "Số kết quả nghiên cứu của viện trường được hỗ trợ kết nối cung cầu",
     rows: [
-      { key: "kn_kqnc_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 5, months: [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_kqnc_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 5, months: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0] },
       { key: "kn_kqnc_cong", isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
     ]
   },
   {
     id: 21, group: "Nhóm Kết nối", noidung: "Số lượng các sản phẩm khoa học công nghệ của doanh nghiệp được hỗ trợ kết nối cung cầu",
     rows: [
-      { key: "kn_sp_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: [3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_sp_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: [0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0] },
       { key: "kn_sp_cong", isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
     ]
   },
   {
     id: 22, group: "Nhóm Kết nối", noidung: "Số biên bản ghi nhớ MOU",
     rows: [
-      { key: "kn_mou_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 30, months: [5, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_mou_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 30, months: [0, 0, 5, 10, 0, 0, 0, 0, 0, 0, 0, 0] },
       { key: "kn_mou_cong", isLead: false, staffName: "Phạm Minh Công", target: 0, months: Array(12).fill(0) }
     ]
   },
@@ -711,8 +711,8 @@ const initialFullDataset = [
       { key: "kn_yc_trang", isLead: false, staffName: "Nguyễn Ngọc Thuỳ Trang", target: 0, months: Array(12).fill(0) },
       { key: "kn_yc_nguyen", isLead: false, staffName: "Phạm Huỳnh Trung Nguyên", target: 0, months: Array(12).fill(0) },
       { key: "kn_yc_huong", isLead: false, staffName: "Trịnh Mai Hương", target: 0, months: Array(12).fill(0) },
-      { key: "kn_yc_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: [8, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
-      { key: "kn_yc_cong", isLead: false, staffName: "Phạm Minh Công", target: 10, months: [5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
+      { key: "kn_yc_dtrang", isLead: true, staffName: "Trần Ngô Diệu Trang", target: 15, months: [0, 0, 8, 7, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { key: "kn_yc_cong", isLead: false, staffName: "Phạm Minh Công", target: 10, months: [0, 0, 5, 3, 0, 0, 0, 0, 0, 0, 0, 0] }
     ]
   },
   {
