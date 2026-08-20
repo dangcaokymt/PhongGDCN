@@ -60,6 +60,10 @@ body{
   letter-spacing: 0.4px;
   color: #f7941d;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 .header-title h2{
   margin: 5px 0 0 0;
@@ -68,6 +72,20 @@ body{
   letter-spacing: 0.4px;
   color: #0f172a;
   text-transform: uppercase;
+}
+
+/* Hiệu ứng nhấp nháy chữ REAL-TIME màu đỏ */
+@keyframes blinkRealtime {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.2; transform: scale(0.96); }
+}
+.badge-realtime{
+  color: #ef4444;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  display: inline-block;
+  animation: blinkRealtime 1.2s infinite ease-in-out;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
 }
 
 .header-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -335,7 +353,7 @@ tr:hover td{ background: #fff7ed; }
       <img src="logo-sihub.png" onerror="this.src='logo Sihub mau tieng viet.png'; this.onerror=null;" alt="SIHUB Logo">
     </div>
     <div class="header-title">
-      <h1>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH</h1>
+      <h1>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH <span class="badge-realtime">- REAL-TIME</span></h1>
       <h2>PHÒNG GIAO DỊCH CÔNG NGHỆ</h2>
     </div>
   </div>
