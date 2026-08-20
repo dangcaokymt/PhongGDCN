@@ -63,7 +63,7 @@ body{
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 .header-title h2{
   margin: 5px 0 0 0;
@@ -74,18 +74,33 @@ body{
   text-transform: uppercase;
 }
 
-/* Hiệu ứng nhấp nháy chữ REAL-TIME màu đỏ */
+/* Hiệu ứng nhấp nháy chữ REAL-TIME đặt trong khung, chu kỳ 2s */
 @keyframes blinkRealtime {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.2; transform: scale(0.96); }
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+  }
+  50% { 
+    opacity: 0.25; 
+    transform: scale(0.97);
+    box-shadow: 0 0 2px rgba(239, 68, 68, 0.05);
+  }
 }
 .badge-realtime{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1.5px solid #ef4444;
+  background: rgba(239, 68, 68, 0.08);
   color: #ef4444;
+  font-size: 11.5px;
   font-weight: 900;
   letter-spacing: 0.8px;
-  display: inline-block;
-  animation: blinkRealtime 1.2s infinite ease-in-out;
-  text-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
+  animation: blinkRealtime 2s infinite ease-in-out;
+  vertical-align: middle;
 }
 
 .header-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -353,7 +368,7 @@ tr:hover td{ background: #fff7ed; }
       <img src="logo-sihub.png" onerror="this.src='logo Sihub mau tieng viet.png'; this.onerror=null;" alt="SIHUB Logo">
     </div>
     <div class="header-title">
-      <h1>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH <span class="badge-realtime">- REAL-TIME</span></h1>
+      <h1>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH <span class="badge-realtime">REAL-TIME</span></h1>
       <h2>PHÒNG GIAO DỊCH CÔNG NGHỆ</h2>
     </div>
   </div>
@@ -825,7 +840,6 @@ function calculateKPIs(rs) {
   };
 }
 
-// HÀM TẠO VÒNG TRÒN DOUGHNUT CHUNG
 function createDonutChart(id, rate, primaryColor) {
   if (charts[id]) charts[id].destroy();
   let displayRate = Math.min(Math.max(rate, 0), 100);
