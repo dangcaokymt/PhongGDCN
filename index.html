@@ -139,7 +139,6 @@ body{
 
 /* Charts */
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
-.chart{height:280px;position:relative}
 .card h3{
   margin-top: 0;
   font-size: 15px;
@@ -150,7 +149,16 @@ body{
   padding-left: 10px;
 }
 
-/* Cụm 3 Biểu đồ tròn */
+/* Cụm 2 Biểu đồ sự kiện (Bên trái) */
+.event-progress-wrap {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  height: 280px;
+  align-items: center;
+}
+
+/* Cụm 3 Biểu đồ tròn nhóm (Bên phải) */
 .group-progress-wrap {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -158,7 +166,8 @@ body{
   height: 280px;
   align-items: center;
 }
-.group-chart-box {
+
+.chart-box {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -167,24 +176,25 @@ body{
   border-radius: 12px;
   padding: 12px 8px;
   border: 1px dashed #e2e8f0;
+  height: 100%;
 }
 .doughnut-container {
   position: relative;
-  width: 140px;
-  height: 140px;
-  margin-bottom: 12px;
+  width: 135px;
+  height: 135px;
+  margin-bottom: 10px;
 }
 .chart-percent-text {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
   color: #0f172a;
   pointer-events: none;
 }
-.group-chart-title {
+.chart-box-title {
   font-size: 12px;
   font-weight: 700;
   text-align: center;
@@ -314,7 +324,7 @@ tr:hover td{ background: #fff7ed; }
 }
 
 @media(max-width:1200px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:850px){.grid{grid-template-columns:1fr}.charts,.filters{grid-template-columns:1fr}.group-progress-wrap{grid-template-columns:1fr; height:auto;}.header-left{flex-direction:column;align-items:flex-start}}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.charts,.filters{grid-template-columns:1fr}.event-progress-wrap,.group-progress-wrap{grid-template-columns:1fr; height:auto;}.header-left{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -387,39 +397,65 @@ tr:hover td{ background: #fff7ed; }
 
   <!-- BIỂU ĐỒ -->
   <div class="charts">
+    <!-- KHUNG TRÁI: 2 BIỂU ĐỒ TRÒN SỰ KIỆN -->
     <div class="card">
-      <h3>Tiến độ Thực hiện vs Chỉ tiêu Giao (4 Khối Chỉ Số)</h3>
-      <div class="chart"><canvas id="c1"></canvas></div>
+      <h3>Tỷ Lệ Tổ Chức Sự Kiện So Với Chỉ Tiêu</h3>
+      <div class="event-progress-wrap">
+        <!-- Sự kiện Cafe công nghệ -->
+        <div class="chart-box">
+          <div class="doughnut-container">
+            <canvas id="cg_cafe"></canvas>
+            <div class="chart-percent-text" id="pct_cafe" style="color:#ea580c">0%</div>
+          </div>
+          <div class="chart-box-title">
+            <span style="color:#ea580c;font-weight:800">☕ Cafe Công nghệ</span>
+            <div style="font-size:11px;color:#64748b;margin-top:2px" id="sub_cafe">Đã làm: 0 / Chỉ tiêu: 0</div>
+          </div>
+        </div>
+
+        <!-- Sự kiện Trình diễn công nghệ -->
+        <div class="chart-box">
+          <div class="doughnut-container">
+            <canvas id="cg_trinhdien"></canvas>
+            <div class="chart-percent-text" id="pct_trinhdien" style="color:#0284c7">0%</div>
+          </div>
+          <div class="chart-box-title">
+            <span style="color:#0284c7;font-weight:800">🎯 Trình diễn Công nghệ</span>
+            <div style="font-size:11px;color:#64748b;margin-top:2px" id="sub_trinhdien">Đã làm: 0 / Chỉ tiêu: 0</div>
+          </div>
+        </div>
+      </div>
     </div>
     
+    <!-- KHUNG PHẢI: 3 BIỂU ĐỒ TRÒN 3 NHÓM -->
     <div class="card">
       <h3>Tỷ Lệ Hoàn Thành Chỉ Tiêu Của 03 Nhóm Công Tác</h3>
       <div class="group-progress-wrap">
         <!-- Nhóm Techport -->
-        <div class="group-chart-box">
+        <div class="chart-box">
           <div class="doughnut-container">
             <canvas id="cg_techport"></canvas>
             <div class="chart-percent-text" id="pct_techport" style="color:#0284c7">0%</div>
           </div>
-          <div class="group-chart-title"><span class="badge-group badge-techport">Nhóm Techport</span></div>
+          <div class="chart-box-title"><span class="badge-group badge-techport">Nhóm Techport</span></div>
         </div>
 
         <!-- Nhóm Xúc tiến -->
-        <div class="group-chart-box">
+        <div class="chart-box">
           <div class="doughnut-container">
             <canvas id="cg_xuctien"></canvas>
             <div class="chart-percent-text" id="pct_xuctien" style="color:#d97706">0%</div>
           </div>
-          <div class="group-chart-title"><span class="badge-group badge-xuctien">Nhóm Xúc tiến</span></div>
+          <div class="chart-box-title"><span class="badge-group badge-xuctien">Nhóm Xúc tiến</span></div>
         </div>
 
         <!-- Nhóm Kết nối -->
-        <div class="group-chart-box">
+        <div class="chart-box">
           <div class="doughnut-container">
             <canvas id="cg_ketnoi"></canvas>
             <div class="chart-percent-text" id="pct_ketnoi" style="color:#7e22ce">0%</div>
           </div>
-          <div class="group-chart-title"><span class="badge-group badge-ketnoi">Nhóm Kết nối</span></div>
+          <div class="chart-box-title"><span class="badge-group badge-ketnoi">Nhóm Kết nối</span></div>
         </div>
       </div>
     </div>
@@ -495,7 +531,6 @@ function parseNumeric(val) {
   if (typeof val === 'number') return isNaN(val) ? 0 : val;
   let s = String(val).trim().replace(/\s/g, '');
   if (!s || s === '-' || s.toLowerCase() === 'x') return 0;
-  // Xử lý dấu chấm hàng nghìn như 116.667 -> 116667
   if (s.includes('.') && !s.includes(',')) {
     let parts = s.split('.');
     if (parts.length === 2 && parts[1].length === 3) {
@@ -772,41 +807,73 @@ function calculateKPIs(rs) {
   };
 }
 
-function renderCharts(rs, kpis) {
-  const kpiLabels = ['1. Yêu cầu công nghệ', '2. Số lượng kết nối', '3. Hỗ trợ VT & DN', '4. Tổng số hợp đồng'];
-  const curData = [kpis.req.cur, kpis.conn.cur, kpis.support.cur, kpis.contract.cur];
-  const tgtData = [kpis.req.tgt, kpis.conn.tgt, kpis.support.tgt, kpis.contract.tgt];
+// HÀM TẠO VÒNG TRÒN DOUGHNUT CHUNG
+function createDonutChart(id, rate, primaryColor) {
+  if (charts[id]) charts[id].destroy();
+  let displayRate = Math.min(Math.max(rate, 0), 100);
+  let remaining = 100 - displayRate;
 
-  if (charts['c1']) charts['c1'].destroy();
-  charts['c1'] = new Chart(document.getElementById('c1'), {
-    type: 'bar',
+  charts[id] = new Chart(document.getElementById(id), {
+    type: 'doughnut',
     data: {
-      labels: kpiLabels,
-      datasets: [
-        { label: 'Đã thực hiện', data: curData, backgroundColor: '#f7941d', borderRadius: 6 },
-        { label: 'Chỉ tiêu giao', data: tgtData, backgroundColor: '#cbd5e1', borderRadius: 6 }
-      ]
+      datasets: [{
+        data: [displayRate, remaining],
+        backgroundColor: [primaryColor, '#e2e8f0'],
+        borderWidth: 0,
+        hoverOffset: 2
+      }]
     },
     options: {
-      indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
+      cutout: '74%',
       plugins: {
-        legend: { position: 'top', labels: { font: { weight: 600, size: 11 } } },
+        legend: { display: false },
         tooltip: {
           callbacks: {
-            afterBody: function(context) {
-              const idx = context[0].dataIndex;
-              const rates = [kpis.req.rate, kpis.conn.rate, kpis.support.rate, kpis.contract.rate];
-              return `Tỷ lệ hoàn thành: ${rates[idx]}%`;
+            label: function(ctx) {
+              if (ctx.dataIndex === 0) return `Hoàn thành: ${rate.toFixed(1)}%`;
+              return `Còn lại: ${(100 - rate).toFixed(1)}%`;
             }
           }
         }
-      },
-      scales: { x: { beginAtZero: true } }
+      }
+    }
+  });
+}
+
+function renderCharts(rs, kpis) {
+  // 1. TÍNH TOÁN 2 SỰ KIỆN: CAFE CÔNG NGHỆ & TRÌNH DIỄN CÔNG NGHỆ
+  let cafeTgt = 0, cafeAct = 0;
+  let trinhDienTgt = 0, trinhDienAct = 0;
+
+  rs.forEach(task => {
+    let nd = normalizeVietnamese(task.noidung);
+    let tTot = (task.rows || []).reduce((s, r) => s + sumMonths(r.months), 0);
+    let tTgt = (task.rows || []).reduce((s, r) => s + (Number(r.target) || 0), 0);
+
+    if (nd.includes("cafecongnghe") || nd.includes("cafe")) {
+      cafeTgt += tTgt;
+      cafeAct += tTot;
+    }
+    if (nd.includes("trinhdiencongnghe") || nd.includes("trinhdien")) {
+      trinhDienTgt += tTgt;
+      trinhDienAct += tTot;
     }
   });
 
+  const rCafe = cafeTgt > 0 ? ((cafeAct / cafeTgt) * 100) : (cafeAct > 0 ? 100 : 0);
+  const rTrinhDien = trinhDienTgt > 0 ? ((trinhDienAct / trinhDienTgt) * 100) : (trinhDienAct > 0 ? 100 : 0);
+
+  document.getElementById('pct_cafe').textContent = rCafe.toFixed(1) + '%';
+  document.getElementById('sub_cafe').textContent = `Đã làm: ${cafeAct} / Chỉ tiêu: ${cafeTgt}`;
+  createDonutChart('cg_cafe', rCafe, '#ea580c');
+
+  document.getElementById('pct_trinhdien').textContent = rTrinhDien.toFixed(1) + '%';
+  document.getElementById('sub_trinhdien').textContent = `Đã làm: ${trinhDienAct} / Chỉ tiêu: ${trinhDienTgt}`;
+  createDonutChart('cg_trinhdien', rTrinhDien, '#0284c7');
+
+  // 2. TÍNH TOÁN 3 NHÓM CÔNG TÁC
   const groupStats = {
     techport: { target: 0, actual: 0 },
     xuctien: { target: 0, actual: 0 },
@@ -840,43 +907,9 @@ function renderCharts(rs, kpis) {
   document.getElementById('pct_xuctien').textContent = rXuctien.toFixed(1) + '%';
   document.getElementById('pct_ketnoi').textContent = rKetnoi.toFixed(1) + '%';
 
-  function createDonut(id, rate, primaryColor) {
-    if (charts[id]) charts[id].destroy();
-    let displayRate = Math.min(Math.max(rate, 0), 100);
-    let remaining = 100 - displayRate;
-
-    charts[id] = new Chart(document.getElementById(id), {
-      type: 'doughnut',
-      data: {
-        datasets: [{
-          data: [displayRate, remaining],
-          backgroundColor: [primaryColor, '#e2e8f0'],
-          borderWidth: 0,
-          hoverOffset: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '74%',
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function(ctx) {
-                if (ctx.dataIndex === 0) return `Hoàn thành: ${rate.toFixed(1)}%`;
-                return `Còn lại: ${(100 - rate).toFixed(1)}%`;
-              }
-            }
-          }
-        }
-      }
-    });
-  }
-
-  createDonut('cg_techport', rTechport, '#0284c7');
-  createDonut('cg_xuctien', rXuctien, '#f7941d');
-  createDonut('cg_ketnoi', rKetnoi, '#7e22ce');
+  createDonutChart('cg_techport', rTechport, '#0284c7');
+  createDonutChart('cg_xuctien', rXuctien, '#d97706');
+  createDonutChart('cg_ketnoi', rKetnoi, '#7e22ce');
 }
 
 function renderTable(rs) {
@@ -998,7 +1031,6 @@ function parseTsvMatrix(rows) {
     targetColIdx = monthCols[0] - 1;
   }
 
-  // CẬP NHẬT TRỰC TIẾP SỐ LIỆU CHO TỪNG DÒNG VÀ TỪNG CHUYÊN VIÊN
   items.forEach(task => {
     let tNorm = normalizeVietnamese(task.noidung);
 
