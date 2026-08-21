@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v28 - Hinh nen Smart City Command Center + Giu nguyen 100% du lieu v27 -->
+<!-- VERSION: v29 - Fixed Landmark 81 & Smart City UAV Background + Giu nguyen 100% du lieu -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v28)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v29)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -12,10 +12,15 @@ body{
   margin:0;
   color:#1e293b;
   font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;
-  /* Hình nền không gian Smart City / Trung tâm điều hành thông minh & UAV */
-  background: 
-    linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.78)),
-    url('https://terra-drone.com.sa/wp-content/uploads/2025/02/featured-image-1024x576.webp') no-repeat center center fixed;
+  background-color: #0f172a;
+  /* Hình nền Landmark 81 & Không gian điều hành Smart City góc nhìn UAV */
+  background-image: 
+    linear-gradient(135deg, rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.70)),
+    url('background.jpg'),
+    url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=2000&q=80');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   background-size: cover;
   min-height: 100vh;
 }
@@ -569,7 +574,6 @@ function parseNumeric(val) {
   if (typeof val === 'number') return isNaN(val) ? 0 : val;
   let s = String(val).trim().replace(/\s/g, '');
   if (!s || s === '-' || s.toLowerCase() === 'x') return 0;
-  // Xử lý định dạng dấu chấm hàng nghìn như 116.667 -> 116667
   if (s.includes('.') && !s.includes(',')) {
     let parts = s.split('.');
     if (parts.length === 2 && parts[1].length === 3) {
@@ -581,7 +585,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V28: GIỮ NGUYÊN 100% SỐ LIỆU CHUẨN XÁC CỦA V27
+// BỘ DỮ LIỆU ĐẦY ĐỦ V29: GIỮ NGUYÊN 100% SỐ LIỆU CHUẨN XÁC
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
