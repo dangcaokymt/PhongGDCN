@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v14 -->
+<!-- VERSION: v16 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v14)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v16)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -565,7 +565,6 @@ function parseNumeric(val) {
   if (typeof val === 'number') return isNaN(val) ? 0 : val;
   let s = String(val).trim().replace(/\s/g, '');
   if (!s || s === '-' || s.toLowerCase() === 'x') return 0;
-  // Xử lý định dạng dấu chấm hàng nghìn như 116.667 -> 116667
   if (s.includes('.') && !s.includes(',')) {
     let parts = s.split('.');
     if (parts.length === 2 && parts[1].length === 3) {
@@ -577,7 +576,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V14: ĐÃ ĐỒNG BỘ CHUẨN XÁC MỤC BÀI VIẾT TRUYỀN THÔNG
+// BỘ DỮ LIỆU ĐẦY ĐỦ V16: KHÔNG CHỨA BẤT KỲ SỐ LIỆU NÀO Ở THÁNG 01 VÀ THÁNG 02 (T1 = 0, T2 = 0)
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -1021,7 +1020,7 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV THÔNG MINH - CAN THIỆP CHÍNH XÁC TỪNG NHIỆM VỤ
+// BỘ ĐỒNG BỘ TSV THỜI GIAN THỰC ĐỐI SOÁT CHÍNH XÁC THEO GOOGLE SHEETS
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
@@ -1093,7 +1092,6 @@ function parseTsvMatrix(rows) {
           taskMatches = true;
         }
 
-        // Xử lý chuẩn xác riêng cho Bài viết truyền thông
         if (task.noidung.includes("bài viết") && (rowNorm.includes("baiviet") || (curTNorm && curTNorm.includes("baiviet")))) {
           taskMatches = true;
         }
@@ -1109,13 +1107,11 @@ function parseTsvMatrix(rows) {
                 let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
                 mData.push(val);
               }
-              // Cập nhật giá trị trực tiếp từ Google Sheets
               if (tgt > 0 || rowNorm.includes("baiviet")) {
                 rObj.target = tgt;
               }
-              if (mData.some(x => x > 0) || rowNorm.includes("baiviet")) {
-                rObj.months = mData;
-              }
+              // Đồng bộ thuần túy theo Google Sheets
+              rObj.months = mData;
             }
           });
         }
