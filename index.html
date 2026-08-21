@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v22 - Chuan hoa Chuyen vien chu tri Day chuyen thiet bi -->
+<!-- VERSION: v23 - Chuan hoa Chuyen vien chu tri Chuyen gia tu van -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v22)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v23)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -565,7 +565,6 @@ function parseNumeric(val) {
   if (typeof val === 'number') return isNaN(val) ? 0 : val;
   let s = String(val).trim().replace(/\s/g, '');
   if (!s || s === '-' || s.toLowerCase() === 'x') return 0;
-  // Xử lý định dạng dấu chấm hàng nghìn như 116.667 -> 116667
   if (s.includes('.') && !s.includes(',')) {
     let parts = s.split('.');
     if (parts.length === 2 && parts[1].length === 3) {
@@ -577,7 +576,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V22: KHÓA CHUẨN TRỊNH MAI HƯƠNG LÀ CHỦ TRÌ CỦA DÂY CHUYỀN/THIẾT BỊ
+// BỘ DỮ LIỆU ĐẦY ĐỦ V23: KHÓA CHUẨN TRỊNH MAI HƯƠNG LÀ CHỦ TRÌ CỦA CHUYÊN GIA TƯ VẤN
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -1122,7 +1121,21 @@ function parseTsvMatrix(rows) {
       continue;
     }
 
-    // 3. BÀI VIẾT TRUYỀN THÔNG (ID = 10)
+    // 3. CHUYÊN GIA TƯ VẤN (ID = 3) - GẮN ĐÚNG TRỊNH MAI HƯƠNG LÀ CHUYÊN VIÊN CHỦ TRÌ
+    if ((rowNorm.includes("chuyengia") || candNorm.includes("chuyengia")) && (rowNorm.includes("huong") || currentGroupName === "Nhóm Techport")) {
+      let task = items.find(t => t.id === 3);
+      if (task) {
+        let leadRow = task.rows.find(r => r.key === "tp_cg" && r.isLead === true);
+        if (leadRow) {
+          let { tgt, mData } = extractRowData();
+          if (tgt > 0) leadRow.target = tgt;
+          leadRow.months = mData;
+        }
+      }
+      continue;
+    }
+
+    // 4. BÀI VIẾT TRUYỀN THÔNG (ID = 10)
     if (rowNorm.includes("baiviet") || candNorm.includes("baiviet")) {
       inTaskContextId = 10;
     } else if (candNorm.includes("techmart") || rowNorm.includes("techmart") || currentGroupName !== "Nhóm Techport") {
@@ -1151,9 +1164,9 @@ function parseTsvMatrix(rows) {
       continue;
     }
 
-    // 4. ĐỐI SOÁT CÁC NHIỆM VỤ KHÁC
+    // 5. ĐỐI SOÁT CÁC NHIỆM VỤ KHÁC
     items.forEach(task => {
-      if (task.group === currentGroupName && task.id !== 1 && task.id !== 2 && task.id !== 10) {
+      if (task.group === currentGroupName && ![1, 2, 3, 10].includes(task.id)) {
         let tNorm = normalizeVietnamese(task.noidung);
         let curTNorm = normalizeVietnamese(currentTaskName);
 
