@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v13 -->
+<!-- VERSION: v14 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v13)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v14)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -577,7 +577,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V13: CẬP NHẬT CHUẨN XÁC 100% CỘT CHỈ TIÊU VÀ SỐ LIỆU TỪNG THÁNG
+// BỘ DỮ LIỆU ĐẦY ĐỦ V14: ĐÃ ĐỒNG BỘ CHUẨN XÁC MỤC BÀI VIẾT TRUYỀN THÔNG
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -1021,7 +1021,7 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV THÔNG MINH ĐỐI SOÁT CHÍNH XÁC THEO GOOGLE SHEETS
+// BỘ ĐỒNG BỘ TSV THÔNG MINH - CAN THIỆP CHÍNH XÁC TỪNG NHIỆM VỤ
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
@@ -1093,6 +1093,11 @@ function parseTsvMatrix(rows) {
           taskMatches = true;
         }
 
+        // Xử lý chuẩn xác riêng cho Bài viết truyền thông
+        if (task.noidung.includes("bài viết") && (rowNorm.includes("baiviet") || (curTNorm && curTNorm.includes("baiviet")))) {
+          taskMatches = true;
+        }
+
         if (taskMatches || (task.noidung.includes("hợp đồng") && rowNorm.includes("hopdong")) || (task.noidung.includes("Cafe") && rowNorm.includes("cafe"))) {
           (task.rows || []).forEach(rObj => {
             let sNorm = normalizeVietnamese(rObj.staffName);
@@ -1104,8 +1109,13 @@ function parseTsvMatrix(rows) {
                 let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
                 mData.push(val);
               }
-              if (tgt > 0) rObj.target = tgt;
-              if (mData.some(x => x > 0)) rObj.months = mData;
+              // Cập nhật giá trị trực tiếp từ Google Sheets
+              if (tgt > 0 || rowNorm.includes("baiviet")) {
+                rObj.target = tgt;
+              }
+              if (mData.some(x => x > 0) || rowNorm.includes("baiviet")) {
+                rObj.months = mData;
+              }
             }
           });
         }
