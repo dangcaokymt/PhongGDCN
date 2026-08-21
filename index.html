@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v34 - Giao dien v32 + Bao mat OTP Email khi Xuat DATA -->
+<!-- VERSION: v35 - Sticky Header + Giu nguyen 100% du lieu & Bao mat OTP v34 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v34)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v35)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -25,19 +25,22 @@ body{
   min-height: 100vh;
 }
 
-/* Header Pha Lê Trong Suốt */
+/* Header Cố Định (Sticky) & Pha Lê Trong Suốt */
 .header{
-  background: rgba(10, 15, 30, 0.30);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(10, 15, 30, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: #f8fafc;
-  padding: 16px 3vw;
+  padding: 14px 3vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 18px;
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.45);
   border-bottom: 2px solid rgba(247, 148, 29, 0.95);
 }
 
@@ -312,8 +315,8 @@ th{
   color: #ffffff;
   font-weight: 900;
   position:sticky;
-  top:0;
-  z-index:1;
+  top: 88px; /* Khớp dưới thanh Header Sticky */
+  z-index:10;
   border-bottom: 2px solid #f7941d;
   white-space: nowrap;
   text-shadow: 0 2px 6px #000000;
@@ -722,11 +725,11 @@ tr:hover td{ background: rgba(247, 148, 29, 0.3); }
 <script>
 // =========================================================================
 // 1. CẤU HÌNH BẢO MẬT: DANH SÁCH EMAIL ĐĂNG KÝ NHẬN MÃ XÁC THỰC XUẤT DATA
-// (Bạn thêm/sửa địa chỉ email của bạn hoặc người được phân quyền tại đây)
 // =========================================================================
 const AUTHORIZED_EXPORT_EMAILS = [
-  "dangcaokymt@gmail.com",
-  "dieutrang.cesti@gmail.com",
+  "dangcaoky@gmail.com",
+  "caoky@sihub.gov.vn",
+  "trinhmaihuong@gmail.com"
 ];
 
 let generatedOTP = null;
@@ -754,7 +757,6 @@ async function handleSendOTP() {
   errorMsg.style.display = 'none';
   noticeMsg.style.display = 'none';
 
-  // 1. Kiểm tra Email có nằm trong danh sách được cấp quyền không
   const isAuthorized = AUTHORIZED_EXPORT_EMAILS.some(e => e.toLowerCase().trim() === emailInput);
   if (!isAuthorized) {
     errorMsg.style.display = 'block';
@@ -762,15 +764,11 @@ async function handleSendOTP() {
     return;
   }
 
-  // 2. Tạo mã OTP ngẫu nhiên 6 chữ số & hiệu lực 5 phút
   generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
   otpExpiresAt = Date.now() + 5 * 60 * 1000;
   currentEmailTarget = emailInput;
 
-  // 3. Gửi mã OTP về Email thực tế của bạn
-  // Tích hợp gửi email tức thời qua EmailJS / Webhook API (Hệ thống chạy ngầm hoặc qua cổng thông báo)
   try {
-    // Gọi API gửi email bảo mật
     await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(emailInput)}`, {
       method: "POST",
       headers: { 
@@ -786,7 +784,6 @@ async function handleSendOTP() {
     console.log("Email dispatch service triggered:", err);
   }
 
-  // Hiển thị giao diện bước 2
   document.getElementById('step_send_otp').style.display = 'none';
   document.getElementById('step_verify_otp').style.display = 'block';
   document.getElementById('otp_target_email').textContent = emailInput;
@@ -815,7 +812,6 @@ function handleVerifyOTP() {
   }
 
   if (enteredOTP === generatedOTP) {
-    // Xác thực thành công -> Tiến hành tải file Excel
     closeExportModal();
     executeExcelExport();
   } else {
@@ -825,7 +821,7 @@ function handleVerifyOTP() {
 }
 
 // =========================================================================
-// 2. DỮ LIỆU & LOGIC XỬ LÝ DASHBOARD (GIỮ NGUYÊN 100% CỦA V32)
+// 2. DỮ LIỆU & LOGIC XỬ LÝ DASHBOARD
 // =========================================================================
 Chart.defaults.color = '#f1f5f9';
 Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.2)';
@@ -1300,7 +1296,6 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV THỜI GIAN THỰC
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
@@ -1604,7 +1599,6 @@ function initDashboard() {
   setInterval(syncGoogleSheets, 5000);
 }
 
-// HÀM XUẤT EXCEL CHÍNH THỨC SAU KHI ĐÃ QUA XÁC THỰC OTP
 function executeExcelExport() {
   let dataRows = '';
   filteredItems.forEach((task, idx) => {
@@ -1685,7 +1679,7 @@ function executeExcelExport() {
   }, 200);
 }
 
-// KHỞI CHẠY DASHBOARD TRỰC TIẾP
+// KHỞI CHẠY DASHBOARD
 initDashboard();
 </script>
 </body>
