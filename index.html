@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v18 -->
+<!-- VERSION: v19 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v18)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v19)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -577,7 +577,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V18: KHÓA CHUẨN DỮ LIỆU TẤT CẢ CÁC NHIỆM VỤ
+// BỘ DỮ LIỆU ĐẦY ĐỦ V19: ĐÃ ĐỒNG BỘ CHUẨN XÁC DÒNG HỒ SƠ CÔNG NGHỆ
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -600,7 +600,7 @@ const initialFullDataset = [
     id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", 
     rows: [
       { key: "tp_cu_vt", isLead: true, staffName: "Trịnh Mai Hương (Viện trường)", target: 20, months: Array(12).fill(0) },
-      { key: "tp_cu_dn", isLead: true, staffName: "Trịnh Mai Hương (Doanh nghiệp)", target: 19, months: [0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
+      { key: "tp_cu_dn", isLead: true, staffName: "Trịnh Mai Hương (Doanh nghiệp)", target: 19, months: [0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0] }
     ] 
   },
   { 
@@ -1061,7 +1061,7 @@ function parseTsvMatrix(rows) {
 
   let currentGroupName = "Nhóm Techport";
   let currentTaskName = "";
-  let inTaskContextId = 0; // Biến khóa ngữ cảnh nhiệm vụ
+  let inTaskContextId = 0;
 
   for (let i = headerRowIdx + 1; i < rows.length; i++) {
     let r = rows[i];
@@ -1086,14 +1086,34 @@ function parseTsvMatrix(rows) {
 
     let candNorm = normalizeVietnamese(currentTaskName);
 
-    // KÍCH HOẠT VÀ DUY TRÌ NGỮ CẢNH CHO MỤC BÀI VIẾT TRUYỀN THÔNG (ID = 10)
+    // 1. XỬ LÝ RIÊNG BIỆT CHO HỒ SƠ CÔNG NGHỆ (TRỊNH MAI HƯƠNG - ID = 1)
+    if (rowNorm.includes("hosocongnghe") || rowNorm.includes("ho so cong nghe") || candNorm.includes("hosocongnghe")) {
+      let hsTask = items.find(t => t.id === 1);
+      if (hsTask) {
+        let mData = [];
+        for (let m = 0; m < 12; m++) {
+          let col = monthCols[m];
+          let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
+          mData.push(val);
+        }
+        let tgt = targetColIdx !== -1 ? parseNumeric(r[targetColIdx]) : 0;
+        let rObj = hsTask.rows[0];
+        if (rObj) {
+          if (tgt > 0) rObj.target = tgt;
+          rObj.months = mData;
+        }
+      }
+      continue;
+    }
+
+    // 2. KÍCH HOẠT VÀ DUY TRÌ NGỮ CẢNH CHO MỤC BÀI VIẾT TRUYỀN THÔNG (ID = 10)
     if (rowNorm.includes("baiviet") || candNorm.includes("baiviet")) {
       inTaskContextId = 10;
     } else if (candNorm.includes("techmart") || rowNorm.includes("techmart") || currentGroupName !== "Nhóm Techport") {
       inTaskContextId = 0;
     }
 
-    // XỬ LÝ CHUẨN XÁC RIÊNG CHO BÀI VIẾT TRUYỀN THÔNG (HIỀN LƯƠNG & HUYỀN TRÂN)
+    // XỬ LÝ RIÊNG CHO BÀI VIẾT TRUYỀN THÔNG (HIỀN LƯƠNG & HUYỀN TRÂN)
     if (inTaskContextId === 10) {
       let bvTask = items.find(t => t.id === 10);
       if (bvTask) {
@@ -1125,9 +1145,9 @@ function parseTsvMatrix(rows) {
       continue;
     }
 
-    // ĐỐI SOÁT CÁC NHIỆM VỤ KHÁC
+    // 3. ĐỐI SOÁT CÁC NHIỆM VỤ KHÁC
     items.forEach(task => {
-      if (task.group === currentGroupName && task.id !== 10) {
+      if (task.group === currentGroupName && task.id !== 1 && task.id !== 10) {
         let tNorm = normalizeVietnamese(task.noidung);
         let curTNorm = normalizeVietnamese(currentTaskName);
 
