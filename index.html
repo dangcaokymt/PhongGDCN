@@ -1,27 +1,30 @@
 <!doctype html>
-<!-- VERSION: v27 - Sua loi chi tieu Don vi cung ung (Doanh nghiep) -->
+<!-- VERSION: v28 - Hinh nen Smart City Command Center + Giu nguyen 100% du lieu v27 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v27)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v28)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
-  background:#f1f5f9;
   color:#1e293b;
   font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(247, 148, 29, 0.06) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.06) 0px, transparent 50%);
-  background-attachment: fixed;
+  /* Hình nền không gian Smart City / Trung tâm điều hành thông minh & UAV */
+  background: 
+    linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.78)),
+    url('https://terra-drone.com.sa/wp-content/uploads/2025/02/featured-image-1024x576.webp') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
 }
 
-/* Header Tone Sáng */
+/* Header Tone Sáng Kính Mờ */
 .header{
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: #1e293b;
   padding: 16px 3vw;
   display: flex;
@@ -29,7 +32,7 @@ body{
   align-items: center;
   flex-wrap: wrap;
   gap: 18px;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
   border-bottom: 3px solid #f7941d;
 }
 
@@ -80,7 +83,7 @@ body{
   0%, 100% { 
     opacity: 1; 
     transform: scale(1);
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
   }
   50% { 
     opacity: 0.25; 
@@ -108,24 +111,25 @@ body{
 
 .wrap{max-width:1920px;margin:auto;padding:22px 16px}
 
-/* Grid KPI */
+/* Grid KPI với hiệu ứng Glassmorphism */
 .grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:14px}
 .card{
-  background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 16px;
   padding: 18px;
-  box-shadow: 
-    0 10px 25px -5px rgba(148, 163, 184, 0.12),
-    0 4px 6px -2px rgba(148, 163, 184, 0.06);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
 .card:hover{
   transform: translateY(-3px);
-  box-shadow: 0 16px 28px -8px rgba(247, 148, 29, 0.18);
+  box-shadow: 0 16px 36px rgba(247, 148, 29, 0.25);
   border-color: #f7941d;
+  background: rgba(255, 255, 255, 0.98);
 }
 
 .label{
@@ -250,7 +254,7 @@ input,select,button{
 input:focus, select:focus{
   border-color: #f7941d;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(247, 148, 29, 0.15);
+  box-shadow: 0 0 0 3px rgba(247, 148, 29, 0.2);
 }
 
 /* Button DATA */
@@ -269,12 +273,12 @@ input:focus, select:focus{
   letter-spacing: 0.8px;
   background: linear-gradient(135deg, #059669, #047857);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
 }
 .btn-data:hover{
   background: linear-gradient(135deg, #10b981, #059669);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
 }
 
 /* Table */
@@ -577,7 +581,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V27: ĐÃ SỬA CHUẨN XÁC CHỈ TIÊU ĐƠN VỊ CUNG ỨNG (DOANH NGHIỆP)
+// BỘ DỮ LIỆU ĐẦY ĐỦ V28: GIỮ NGUYÊN 100% SỐ LIỆU CHUẨN XÁC CỦA V27
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
