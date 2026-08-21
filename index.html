@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v26 - Chuan hoa User moi, Yeu cau cong nghe, Luot ket noi cung cau (Techport) -->
+<!-- VERSION: v27 - Sua loi chi tieu Don vi cung ung (Doanh nghiep) -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v26)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v27)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -577,7 +577,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V26: KHÓA CHUẨN TRỊNH MAI HƯƠNG LÀ CHỦ TRÌ CHO CÁC MỤC TECHPORT
+// BỘ DỮ LIỆU ĐẦY ĐỦ V27: ĐÃ SỬA CHUẨN XÁC CHỈ TIÊU ĐƠN VỊ CUNG ỨNG (DOANH NGHIỆP)
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -600,7 +600,7 @@ const initialFullDataset = [
     id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", 
     rows: [
       { key: "tp_cu_vt", isLead: true, staffName: "Trịnh Mai Hương (Viện trường)", target: 20, months: Array(12).fill(0) },
-      { key: "tp_cu_dn", isLead: true, staffName: "Trịnh Mai Hương (Doanh nghiệp)", target: 19, months: [0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
+      { key: "tp_cu_dn", isLead: true, staffName: "Trịnh Mai Hương (Doanh nghiệp)", target: 0, months: [0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
     ] 
   },
   { 
@@ -1150,7 +1150,7 @@ function parseTsvMatrix(rows) {
       continue;
     }
 
-    // 5. ĐƠN VỊ CUNG ỨNG (ID = 5) - TRỊNH MAI HƯƠNG (CHỦ TRÌ)
+    // 5. ĐƠN VỊ CUNG ỨNG (ID = 5) - TRỊNH MAI HƯƠNG (CHỦ TRÌ CHO CẢ VIỆN TRƯỜNG & DOANH NGHIỆP)
     if (rowNorm.includes("cungung") || candNorm.includes("cungung") || inTaskContextId === 5) {
       inTaskContextId = 5;
       let task = items.find(t => t.id === 5);
@@ -1159,14 +1159,14 @@ function parseTsvMatrix(rows) {
         if (rowNorm.includes("vientruong") || rowNorm.includes("vien")) {
           let vtRow = task.rows.find(x => x.key === "tp_cu_vt" && x.isLead === true);
           if (vtRow) {
-            if (tgt > 0) vtRow.target = tgt;
+            vtRow.target = tgt;
             vtRow.months = mData;
           }
         }
         if (rowNorm.includes("doanhnghiep")) {
           let dnRow = task.rows.find(x => x.key === "tp_cu_dn" && x.isLead === true);
           if (dnRow) {
-            if (tgt > 0) dnRow.target = tgt;
+            dnRow.target = tgt;
             dnRow.months = mData;
           }
         }
