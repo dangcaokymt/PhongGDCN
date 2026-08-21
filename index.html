@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v17 -->
+<!-- VERSION: v18 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v17)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v18)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -565,6 +565,7 @@ function parseNumeric(val) {
   if (typeof val === 'number') return isNaN(val) ? 0 : val;
   let s = String(val).trim().replace(/\s/g, '');
   if (!s || s === '-' || s.toLowerCase() === 'x') return 0;
+  // Xử lý định dạng dấu chấm hàng nghìn như 116.667 -> 116667
   if (s.includes('.') && !s.includes(',')) {
     let parts = s.split('.');
     if (parts.length === 2 && parts[1].length === 3) {
@@ -576,7 +577,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V17: CHUẨN XÁC TẤT CẢ 26 NHIỆM VỤ, T1 & T2 RỖNG
+// BỘ DỮ LIỆU ĐẦY ĐỦ V18: KHÓA CHUẨN DỮ LIỆU TẤT CẢ CÁC NHIỆM VỤ
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -1020,7 +1021,7 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV THÔNG MINH ĐỐI SOÁT CHÍNH XÁC THEO GOOGLE SHEETS
+// BỘ ĐỒNG BỘ TSV THÔNG MINH - ĐỐI SOÁT CHÍNH XÁC THEO GOOGLE SHEETS
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
@@ -1060,6 +1061,7 @@ function parseTsvMatrix(rows) {
 
   let currentGroupName = "Nhóm Techport";
   let currentTaskName = "";
+  let inTaskContextId = 0; // Biến khóa ngữ cảnh nhiệm vụ
 
   for (let i = headerRowIdx + 1; i < rows.length; i++) {
     let r = rows[i];
@@ -1082,8 +1084,17 @@ function parseTsvMatrix(rows) {
       }
     }
 
-    // XỬ LÝ RIÊNG BIỆT VÀ CHÍNH XÁC CHO MỤC BÀI VIẾT TRUYỀN THÔNG (HIỀN LƯƠNG & HUYỀN TRÂN)
-    if (rowNorm.includes("baiviet") || (currentTaskName && normalizeVietnamese(currentTaskName).includes("baiviet"))) {
+    let candNorm = normalizeVietnamese(currentTaskName);
+
+    // KÍCH HOẠT VÀ DUY TRÌ NGỮ CẢNH CHO MỤC BÀI VIẾT TRUYỀN THÔNG (ID = 10)
+    if (rowNorm.includes("baiviet") || candNorm.includes("baiviet")) {
+      inTaskContextId = 10;
+    } else if (candNorm.includes("techmart") || rowNorm.includes("techmart") || currentGroupName !== "Nhóm Techport") {
+      inTaskContextId = 0;
+    }
+
+    // XỬ LÝ CHUẨN XÁC RIÊNG CHO BÀI VIẾT TRUYỀN THÔNG (HIỀN LƯƠNG & HUYỀN TRÂN)
+    if (inTaskContextId === 10) {
       let bvTask = items.find(t => t.id === 10);
       if (bvTask) {
         let mData = [];
@@ -1094,7 +1105,7 @@ function parseTsvMatrix(rows) {
         }
         let tgt = targetColIdx !== -1 ? parseNumeric(r[targetColIdx]) : 0;
 
-        // Nếu dòng có chứa Võ Huyền Trân (ở cột hỗ trợ hoặc dòng riêng)
+        // Cập nhật cho Võ Huyền Trân
         if (rowNorm.includes("tran")) {
           let tranRow = bvTask.rows.find(r => r.key === "tp_bv_tran");
           if (tranRow) {
@@ -1102,7 +1113,7 @@ function parseTsvMatrix(rows) {
             tranRow.months = mData;
           }
         }
-        // Nếu dòng có chứa Nguyễn Thị Hiền Lương
+        // Cập nhật cho Nguyễn Thị Hiền Lương
         if (rowNorm.includes("luong")) {
           let luongRow = bvTask.rows.find(r => r.key === "tp_bv_luong");
           if (luongRow) {
