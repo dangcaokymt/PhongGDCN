@@ -1,21 +1,21 @@
 <!doctype html>
-<!-- VERSION: v29 - Fixed Landmark 81 & Smart City UAV Background + Giu nguyen 100% du lieu -->
+<!-- VERSION: v30 - Giao dien Glassmorphism Trong Suot Noi Bat + Giu nguyen 100% du lieu -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v29)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v30)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
-  color:#1e293b;
+  color:#f8fafc;
   font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;
-  background-color: #0f172a;
+  background-color: #0b0f19;
   /* Hình nền Landmark 81 & Không gian điều hành Smart City góc nhìn UAV */
   background-image: 
-    linear-gradient(135deg, rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.70)),
+    linear-gradient(135deg, rgba(11, 15, 25, 0.70), rgba(15, 23, 42, 0.60)),
     url('background.jpg'),
     url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=2000&q=80');
   background-position: center center;
@@ -25,20 +25,20 @@ body{
   min-height: 100vh;
 }
 
-/* Header Tone Sáng Kính Mờ */
+/* Header Trong Suốt Cao Cấp */
 .header{
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(15, 23, 42, 0.70);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  color: #1e293b;
+  color: #f8fafc;
   padding: 16px 3vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 18px;
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
-  border-bottom: 3px solid #f7941d;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid rgba(247, 148, 29, 0.8);
 }
 
 .header-left {
@@ -59,7 +59,7 @@ body{
   width: auto;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
 }
 
 .header-title h1{
@@ -73,14 +73,16 @@ body{
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
+  text-shadow: 0 2px 10px rgba(247, 148, 29, 0.4);
 }
 .header-title h2{
   margin: 5px 0 0 0;
   font-size: 18.5px;
   font-weight: 800;
   letter-spacing: 0.4px;
-  color: #0f172a;
+  color: #ffffff;
   text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 /* Hiệu ứng nhấp nháy chữ REAL-TIME đặt trong khung, chu kỳ 2s */
@@ -88,12 +90,12 @@ body{
   0%, 100% { 
     opacity: 1; 
     transform: scale(1);
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
   }
   50% { 
-    opacity: 0.25; 
+    opacity: 0.35; 
     transform: scale(0.97);
-    box-shadow: 0 0 2px rgba(239, 68, 68, 0.05);
+    box-shadow: 0 0 3px rgba(239, 68, 68, 0.1);
   }
 }
 .badge-realtime{
@@ -103,8 +105,8 @@ body{
   padding: 2px 8px;
   border-radius: 6px;
   border: 1.5px solid #ef4444;
-  background: rgba(239, 68, 68, 0.08);
-  color: #ef4444;
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
   font-size: 11.5px;
   font-weight: 900;
   letter-spacing: 0.8px;
@@ -116,31 +118,31 @@ body{
 
 .wrap{max-width:1920px;margin:auto;padding:22px 16px}
 
-/* Grid KPI với hiệu ứng Glassmorphism */
+/* Grid KPI Trong Suốt Kính Mờ */
 .grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:14px}
 .card{
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(15, 23, 42, 0.68);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   padding: 18px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
 .card:hover{
   transform: translateY(-3px);
-  box-shadow: 0 16px 36px rgba(247, 148, 29, 0.25);
-  border-color: #f7941d;
-  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 12px 40px rgba(247, 148, 29, 0.3);
+  border-color: rgba(247, 148, 29, 0.8);
+  background: rgba(15, 23, 42, 0.78);
 }
 
 .label{
-  font-size: 11px;
-  color: #64748b;
-  font-weight: 700;
+  font-size: 11.5px;
+  color: #94a3b8;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
@@ -151,29 +153,31 @@ body{
   margin-top: 6px;
 }
 .kpi{
-  font-size: 28px;
-  font-weight: 800;
-  color: #0f172a;
+  font-size: 30px;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 .kpi-target{
-  font-size: 13px;
-  color: #64748b;
+  font-size: 13.5px;
+  color: #cbd5e1;
   font-weight: 600;
 }
 .kpi-badge{
   font-size: 11px;
-  padding: 3px 8px;
+  padding: 3px 9px;
   border-radius: 999px;
-  font-weight: 700;
-  background: #f1f5f9;
-  color: #475569;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
-.kpi-badge.completed { background: #dcfce7; color: #166534; }
+.kpi-badge.completed { background: rgba(34, 197, 94, 0.25); color: #4ade80; border-color: rgba(74, 222, 128, 0.4); }
 
 .kpi-sub{
   font-size: 12px;
-  margin-top: 6px;
-  color: #475569;
+  margin-top: 8px;
+  color: #cbd5e1;
   font-weight: 600;
   display: flex;
   gap: 12px;
@@ -184,12 +188,13 @@ body{
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
 .card h3{
   margin-top: 0;
-  font-size: 15px;
-  color: #0f172a;
-  font-weight: 700;
+  font-size: 15.5px;
+  color: #ffffff;
+  font-weight: 800;
   letter-spacing: 0.4px;
   border-left: 4px solid #f7941d;
   padding-left: 10px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 /* Cụm 2 Biểu đồ sự kiện (Bên trái) */
@@ -215,10 +220,10 @@ body{
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f8fafc;
+  background: rgba(30, 41, 59, 0.5);
   border-radius: 12px;
   padding: 12px 8px;
-  border: 1px dashed #e2e8f0;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
   height: 100%;
 }
 .doughnut-container {
@@ -232,13 +237,14 @@ body{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 19px;
-  font-weight: 800;
-  color: #0f172a;
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
   pointer-events: none;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 .chart-box-title {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
   text-align: center;
 }
@@ -248,18 +254,20 @@ body{
 input,select,button{
   width:100%;
   padding:10px 14px;
-  border:1px solid #cbd5e1;
+  border:1px solid rgba(255, 255, 255, 0.2);
   border-radius:10px;
-  background: #f8fafc;
-  color: #0f172a;
+  background: rgba(15, 23, 42, 0.7);
+  color: #ffffff;
   font-size:13px;
   outline: none;
   transition: all 0.2s ease;
 }
+input::placeholder { color: #94a3b8; }
+select option { background: #0f172a; color: #ffffff; }
 input:focus, select:focus{
   border-color: #f7941d;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(247, 148, 29, 0.2);
+  background: rgba(15, 23, 42, 0.9);
+  box-shadow: 0 0 0 3px rgba(247, 148, 29, 0.3);
 }
 
 /* Button DATA */
@@ -278,28 +286,28 @@ input:focus, select:focus{
   letter-spacing: 0.8px;
   background: linear-gradient(135deg, #059669, #047857);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4);
 }
 .btn-data:hover{
   background: linear-gradient(135deg, #10b981, #059669);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
 }
 
-/* Table */
+/* Table Trong Suốt & Chữ Sáng Nổi Bật */
 table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px}
-th,td{padding:8px 8px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:12px;vertical-align:middle;}
+th,td{padding:8px 8px;border-bottom:1px solid rgba(255, 255, 255, 0.1);text-align:left;font-size:12px;vertical-align:middle;}
 th{
-  background: #f8fafc;
-  color: #0f172a;
-  font-weight: 700;
+  background: rgba(15, 23, 42, 0.85);
+  color: #f8fafc;
+  font-weight: 800;
   position:sticky;
   top:0;
   z-index:1;
-  border-bottom: 2px solid #fed7aa;
+  border-bottom: 2px solid #f7941d;
   white-space: nowrap;
 }
-tr:hover td{ background: #fff7ed; }
+tr:hover td{ background: rgba(247, 148, 29, 0.15); }
 
 /* Badges */
 .badge-group{
@@ -310,29 +318,29 @@ tr:hover td{ background: #fff7ed; }
   display:inline-block;
   white-space: nowrap;
 }
-.badge-techport{ background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
-.badge-xuctien{ background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
-.badge-ketnoi{ background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+.badge-techport{ background: rgba(2, 132, 199, 0.25); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+.badge-xuctien{ background: rgba(217, 119, 6, 0.25); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); }
+.badge-ketnoi{ background: rgba(126, 34, 206, 0.25); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.4); }
 
 .badge-lead{
   padding:3px 7px;
   border-radius:6px;
-  background: #ecfdf5;
-  color: #047857;
+  background: rgba(5, 150, 105, 0.25);
+  color: #34d399;
   font-weight:700;
   font-size:11.5px;
-  border: 1px solid #a7f3d0;
+  border: 1px solid rgba(52, 211, 153, 0.4);
   display: inline-block;
   white-space: nowrap;
 }
 .badge-support{
   padding:3px 7px;
   border-radius:6px;
-  background: #eff6ff;
-  color: #0284c7;
+  background: rgba(2, 132, 199, 0.25);
+  color: #60a5fa;
   font-weight:600;
   font-size:11.5px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid rgba(96, 165, 250, 0.4);
   display: inline-block;
   white-space: nowrap;
 }
@@ -341,29 +349,30 @@ tr:hover td{ background: #fff7ed; }
 
 .month-cell {
   text-align: center;
-  font-size: 11px;
+  font-size: 11.5px;
   min-width: 26px;
+  color: #f1f5f9;
 }
 .target-cell {
   text-align: center;
-  font-weight: 700;
-  color: #ea580c;
-  background: #fffaf0;
+  font-weight: 800;
+  color: #fb923c;
+  background: rgba(251, 146, 60, 0.1);
 }
 .total-cell {
   text-align: center;
-  font-weight: 700;
-  color: #0284c7;
-  background: #f8fafc;
+  font-weight: 800;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
 }
 .rate-cell {
   text-align: center;
-  font-weight: 700;
-  font-size: 11.5px;
+  font-weight: 800;
+  font-size: 12px;
 }
 
 .sub-row td {
-  background: #fafaf9;
+  background: rgba(15, 23, 42, 0.4);
 }
 
 @media(max-width:1200px){.grid{grid-template-columns:repeat(2,1fr)}}
@@ -405,8 +414,8 @@ tr:hover td{ background: #fff7ed; }
     <div class="card">
       <div class="label">2. Số Lượng Kết Nối (Có Biên Bản)</div>
       <div class="kpi-row">
-        <div class="kpi" id="k_conn" style="color:#7e22ce">0</div>
-        <div class="kpi-target">Chỉ tiêu: <b id="k_conn_target" style="color:#7e22ce">0</b></div>
+        <div class="kpi" id="k_conn" style="color:#c084fc">0</div>
+        <div class="kpi-target">Chỉ tiêu: <b id="k_conn_target" style="color:#c084fc">0</b></div>
         <span class="kpi-badge" id="k_conn_badge">0%</span>
       </div>
       <div class="kpi-sub">Biên bản tư vấn & Lượt cung cầu kết nối</div>
@@ -416,13 +425,13 @@ tr:hover td{ background: #fff7ed; }
     <div class="card">
       <div class="label">3. Hỗ Trợ Viện Trường & Doanh Nghiệp</div>
       <div class="kpi-row">
-        <div class="kpi" id="k_support" style="color:#ea580c">0</div>
-        <div class="kpi-target">Chỉ tiêu: <b id="k_support_target" style="color:#ea580c">0</b></div>
+        <div class="kpi" id="k_support" style="color:#fb923c">0</div>
+        <div class="kpi-target">Chỉ tiêu: <b id="k_support_target" style="color:#fb923c">0</b></div>
         <span class="kpi-badge" id="k_support_badge">0%</span>
       </div>
       <div class="kpi-sub">
-        <span>🏛️ Viện trường: <b id="k_support_vt" style="color:#d97706">0</b></span>
-        <span>🏢 Doanh nghiệp: <b id="k_support_dn" style="color:#0284c7">0</b></span>
+        <span>🏛️ Viện trường: <b id="k_support_vt" style="color:#fbbf24">0</b></span>
+        <span>🏢 Doanh nghiệp: <b id="k_support_dn" style="color:#38bdf8">0</b></span>
       </div>
     </div>
 
@@ -430,8 +439,8 @@ tr:hover td{ background: #fff7ed; }
     <div class="card">
       <div class="label">4. Tổng Số Hợp Đồng Sau Kết Nối</div>
       <div class="kpi-row">
-        <div class="kpi" id="k_contract" style="color:#059669">0</div>
-        <div class="kpi-target">Chỉ tiêu: <b id="k_contract_target" style="color:#059669">0</b></div>
+        <div class="kpi" id="k_contract" style="color:#4ade80">0</div>
+        <div class="kpi-target">Chỉ tiêu: <b id="k_contract_target" style="color:#4ade80">0</b></div>
         <span class="kpi-badge" id="k_contract_badge">0%</span>
       </div>
       <div class="kpi-sub">Tổng số Hợp đồng ký kết (6 Chuyên viên)</div>
@@ -448,11 +457,11 @@ tr:hover td{ background: #fff7ed; }
         <div class="chart-box">
           <div class="doughnut-container">
             <canvas id="cg_cafe"></canvas>
-            <div class="chart-percent-text" id="pct_cafe" style="color:#ea580c">0%</div>
+            <div class="chart-percent-text" id="pct_cafe" style="color:#fb923c">0%</div>
           </div>
           <div class="chart-box-title">
-            <span style="color:#ea580c;font-weight:800">☕ Cafe Công nghệ</span>
-            <div style="font-size:11px;color:#64748b;margin-top:2px" id="sub_cafe">Đã làm: 0 / Chỉ tiêu: 0</div>
+            <span style="color:#fb923c;font-weight:800">☕ Cafe Công nghệ</span>
+            <div style="font-size:11.5px;color:#94a3b8;margin-top:2px" id="sub_cafe">Đã làm: 0 / Chỉ tiêu: 0</div>
           </div>
         </div>
 
@@ -460,11 +469,11 @@ tr:hover td{ background: #fff7ed; }
         <div class="chart-box">
           <div class="doughnut-container">
             <canvas id="cg_trinhdien"></canvas>
-            <div class="chart-percent-text" id="pct_trinhdien" style="color:#0284c7">0%</div>
+            <div class="chart-percent-text" id="pct_trinhdien" style="color:#38bdf8">0%</div>
           </div>
           <div class="chart-box-title">
-            <span style="color:#0284c7;font-weight:800">🎯 Trình diễn Công nghệ</span>
-            <div style="font-size:11px;color:#64748b;margin-top:2px" id="sub_trinhdien">Đã làm: 0 / Chỉ tiêu: 0</div>
+            <span style="color:#38bdf8;font-weight:800">🎯 Trình diễn Công nghệ</span>
+            <div style="font-size:11.5px;color:#94a3b8;margin-top:2px" id="sub_trinhdien">Đã làm: 0 / Chỉ tiêu: 0</div>
           </div>
         </div>
       </div>
@@ -478,7 +487,7 @@ tr:hover td{ background: #fff7ed; }
         <div class="chart-box">
           <div class="doughnut-container">
             <canvas id="cg_techport"></canvas>
-            <div class="chart-percent-text" id="pct_techport" style="color:#0284c7">0%</div>
+            <div class="chart-percent-text" id="pct_techport" style="color:#38bdf8">0%</div>
           </div>
           <div class="chart-box-title"><span class="badge-group badge-techport">Nhóm Techport</span></div>
         </div>
@@ -487,7 +496,7 @@ tr:hover td{ background: #fff7ed; }
         <div class="chart-box">
           <div class="doughnut-container">
             <canvas id="cg_xuctien"></canvas>
-            <div class="chart-percent-text" id="pct_xuctien" style="color:#d97706">0%</div>
+            <div class="chart-percent-text" id="pct_xuctien" style="color:#fbbf24">0%</div>
           </div>
           <div class="chart-box-title"><span class="badge-group badge-xuctien">Nhóm Xúc tiến</span></div>
         </div>
@@ -496,7 +505,7 @@ tr:hover td{ background: #fff7ed; }
         <div class="chart-box">
           <div class="doughnut-container">
             <canvas id="cg_ketnoi"></canvas>
-            <div class="chart-percent-text" id="pct_ketnoi" style="color:#7e22ce">0%</div>
+            <div class="chart-percent-text" id="pct_ketnoi" style="color:#c084fc">0%</div>
           </div>
           <div class="chart-box-title"><span class="badge-group badge-ketnoi">Nhóm Kết nối</span></div>
         </div>
@@ -518,7 +527,7 @@ tr:hover td{ background: #fff7ed; }
   <div class="card" style="margin-top:20px; padding: 12px 18px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
       <h3 style="margin:0">📋 Danh sách Chi tiết Toàn bộ Nhiệm vụ & Nhân sự (<span id="count_display" style="color:#f7941d">0</span> đầu việc)</h3>
-      <span id="sync_status" style="font-size:11.5px; font-weight:600; color:#059669;">● Đang đồng bộ thời gian thực từ Google Sheets...</span>
+      <span id="sync_status" style="font-size:11.5px; font-weight:600; color:#34d399;">● Đang đồng bộ thời gian thực từ Google Sheets...</span>
     </div>
     <div class="table-wrap">
       <table>
@@ -553,8 +562,8 @@ tr:hover td{ background: #fff7ed; }
 </div>
 
 <script>
-Chart.defaults.color = '#64748b';
-Chart.defaults.borderColor = '#f1f5f9';
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
 
 const GSHEET_TSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRDtmx6r9ckdfGP-j_q6hajEYc3UVEeu3kIFSkCTuFdyilHO5bkD6i_g2oFA3cJ0xy2FUvnDE4QO3dk/pub?gid=0&single=true&output=tsv";
 
@@ -585,7 +594,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V29: GIỮ NGUYÊN 100% SỐ LIỆU CHUẨN XÁC
+// BỘ DỮ LIỆU ĐẦY ĐỦ V30: GIỮ NGUYÊN 100% SỐ LIỆU CHUẨN XÁC
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -860,7 +869,7 @@ function createDonutChart(id, rate, primaryColor) {
     data: {
       datasets: [{
         data: [displayRate, remaining],
-        backgroundColor: [primaryColor, '#e2e8f0'],
+        backgroundColor: [primaryColor, 'rgba(255, 255, 255, 0.1)'],
         borderWidth: 0,
         hoverOffset: 2
       }]
@@ -909,11 +918,11 @@ function renderCharts(rs, kpis) {
 
   document.getElementById('pct_cafe').textContent = rCafe.toFixed(1) + '%';
   document.getElementById('sub_cafe').textContent = `Đã làm: ${cafeAct} / Chỉ tiêu: ${cafeTgt}`;
-  createDonutChart('cg_cafe', rCafe, '#ea580c');
+  createDonutChart('cg_cafe', rCafe, '#fb923c');
 
   document.getElementById('pct_trinhdien').textContent = rTrinhDien.toFixed(1) + '%';
   document.getElementById('sub_trinhdien').textContent = `Đã làm: ${trinhDienAct} / Chỉ tiêu: ${trinhDienTgt}`;
-  createDonutChart('cg_trinhdien', rTrinhDien, '#0284c7');
+  createDonutChart('cg_trinhdien', rTrinhDien, '#38bdf8');
 
   // 2. TÍNH TOÁN 3 NHÓM CÔNG TÁC
   const groupStats = {
@@ -949,9 +958,9 @@ function renderCharts(rs, kpis) {
   document.getElementById('pct_xuctien').textContent = rXuctien.toFixed(1) + '%';
   document.getElementById('pct_ketnoi').textContent = rKetnoi.toFixed(1) + '%';
 
-  createDonutChart('cg_techport', rTechport, '#0284c7');
-  createDonutChart('cg_xuctien', rXuctien, '#d97706');
-  createDonutChart('cg_ketnoi', rKetnoi, '#7e22ce');
+  createDonutChart('cg_techport', rTechport, '#38bdf8');
+  createDonutChart('cg_xuctien', rXuctien, '#fbbf24');
+  createDonutChart('cg_ketnoi', rKetnoi, '#c084fc');
 }
 
 function renderTable(rs) {
@@ -970,7 +979,7 @@ function renderTable(rs) {
       const tot = sumMonths(r.months);
       const tgt = Number(r.target) || 0;
       const rate = tgt > 0 ? ((tot / tgt) * 100).toFixed(0) : '-';
-      const rateColor = tgt > 0 && tot >= tgt ? '#166534' : (tot > 0 ? '#ea580c' : '#94a3b8');
+      const rateColor = tgt > 0 && tot >= tgt ? '#4ade80' : (tot > 0 ? '#fb923c' : '#94a3b8');
       const monthCols = (r.months || Array(12).fill(0)).map(m => `<td class="month-cell">${m ? Number(m).toLocaleString('vi-VN') : '-'}</td>`).join('');
 
       const leadCol = r.isLead && r.staffName ? `<span class="badge-lead">${esc(r.staffName)}</span>` : '';
@@ -979,9 +988,9 @@ function renderTable(rs) {
       if (rIdx === 0) {
         html += `
         <tr>
-          <td rowspan="${rowCount}" style="font-weight:700;color:#64748b;text-align:center;">${i + 1}</td>
+          <td rowspan="${rowCount}" style="font-weight:700;color:#94a3b8;text-align:center;">${i + 1}</td>
           <td rowspan="${rowCount}"><span class="badge-group ${getGroupBadgeClass(task.group)}">${esc(task.group)}</span></td>
-          <td rowspan="${rowCount}"><div style="font-weight:700;color:#0f172a;">${esc(task.noidung)}</div></td>
+          <td rowspan="${rowCount}"><div style="font-weight:700;color:#ffffff;">${esc(task.noidung)}</div></td>
           
           <td>${leadCol}</td>
           <td>${suppCol}</td>
