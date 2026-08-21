@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v35 - Sticky Header + Giu nguyen 100% du lieu & Bao mat OTP v34 -->
+<!-- VERSION: v36 - Chi co dinh thanh Header chinh + Giu nguyen 100% du lieu & Bao mat OTP v34 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v35)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v36)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -25,7 +25,7 @@ body{
   min-height: 100vh;
 }
 
-/* Header Cố Định (Sticky) & Pha Lê Trong Suốt */
+/* CHỈ CỐ ĐỊNH DUY NHẤT THANH HEADER CHÍNH */
 .header{
   position: sticky;
   top: 0;
@@ -306,17 +306,14 @@ input:focus, select:focus{
   box-shadow: 0 6px 24px rgba(16, 185, 129, 0.9);
 }
 
-/* Table Pha Lê Siêu Trong Suốt & Đậm Chữ */
+/* Table Pha Lê Siêu Trong Suốt - TIÊU ĐỀ CUỘN TỰ NHIÊN (KHÔNG CỐ ĐỊNH) */
 table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px}
 th,td{padding:8px 8px;border-bottom:1px solid rgba(255, 255, 255, 0.2);text-align:left;font-size:13px;vertical-align:middle;}
 th{
   background: rgba(10, 16, 30, 0.45);
-  backdrop-filter: blur(4px);
   color: #ffffff;
   font-weight: 900;
-  position:sticky;
-  top: 88px; /* Khớp dưới thanh Header Sticky */
-  z-index:10;
+  position: static; /* Không ghim cố định */
   border-bottom: 2px solid #f7941d;
   white-space: nowrap;
   text-shadow: 0 2px 6px #000000;
@@ -727,7 +724,7 @@ tr:hover td{ background: rgba(247, 148, 29, 0.3); }
 // 1. CẤU HÌNH BẢO MẬT: DANH SÁCH EMAIL ĐĂNG KÝ NHẬN MÃ XÁC THỰC XUẤT DATA
 // =========================================================================
 const AUTHORIZED_EXPORT_EMAILS = [
-  "dangcaoky@gmail.com",
+  "dangcaokymt@gmail.com",
   "caoky@sihub.gov.vn",
   "trinhmaihuong@gmail.com"
 ];
@@ -1296,6 +1293,7 @@ function applyFilter() {
   renderTable(res);
 }
 
+// BỘ ĐỒNG BỘ TSV THỜI GIAN THỰC
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
