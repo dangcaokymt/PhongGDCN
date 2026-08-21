@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v16 -->
+<!-- VERSION: v17 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v16)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v17)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -576,7 +576,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V16: KHÔNG CHỨA BẤT KỲ SỐ LIỆU NÀO Ở THÁNG 01 VÀ THÁNG 02 (T1 = 0, T2 = 0)
+// BỘ DỮ LIỆU ĐẦY ĐỦ V17: CHUẨN XÁC TẤT CẢ 26 NHIỆM VỤ, T1 & T2 RỖNG
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -1020,7 +1020,7 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV THỜI GIAN THỰC ĐỐI SOÁT CHÍNH XÁC THEO GOOGLE SHEETS
+// BỘ ĐỒNG BỘ TSV THÔNG MINH ĐỐI SOÁT CHÍNH XÁC THEO GOOGLE SHEETS
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
@@ -1082,17 +1082,46 @@ function parseTsvMatrix(rows) {
       }
     }
 
+    // XỬ LÝ RIÊNG BIỆT VÀ CHÍNH XÁC CHO MỤC BÀI VIẾT TRUYỀN THÔNG (HIỀN LƯƠNG & HUYỀN TRÂN)
+    if (rowNorm.includes("baiviet") || (currentTaskName && normalizeVietnamese(currentTaskName).includes("baiviet"))) {
+      let bvTask = items.find(t => t.id === 10);
+      if (bvTask) {
+        let mData = [];
+        for (let m = 0; m < 12; m++) {
+          let col = monthCols[m];
+          let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
+          mData.push(val);
+        }
+        let tgt = targetColIdx !== -1 ? parseNumeric(r[targetColIdx]) : 0;
+
+        // Nếu dòng có chứa Võ Huyền Trân (ở cột hỗ trợ hoặc dòng riêng)
+        if (rowNorm.includes("tran")) {
+          let tranRow = bvTask.rows.find(r => r.key === "tp_bv_tran");
+          if (tranRow) {
+            tranRow.target = tgt;
+            tranRow.months = mData;
+          }
+        }
+        // Nếu dòng có chứa Nguyễn Thị Hiền Lương
+        if (rowNorm.includes("luong")) {
+          let luongRow = bvTask.rows.find(r => r.key === "tp_bv_luong");
+          if (luongRow) {
+            luongRow.target = tgt > 0 ? tgt : luongRow.target;
+            luongRow.months = mData;
+          }
+        }
+      }
+      continue;
+    }
+
+    // ĐỐI SOÁT CÁC NHIỆM VỤ KHÁC
     items.forEach(task => {
-      if (task.group === currentGroupName) {
+      if (task.group === currentGroupName && task.id !== 10) {
         let tNorm = normalizeVietnamese(task.noidung);
         let curTNorm = normalizeVietnamese(currentTaskName);
 
         let taskMatches = false;
         if (curTNorm && (tNorm.includes(curTNorm.slice(0, 8)) || curTNorm.includes(tNorm.slice(0, 8)))) {
-          taskMatches = true;
-        }
-
-        if (task.noidung.includes("bài viết") && (rowNorm.includes("baiviet") || (curTNorm && curTNorm.includes("baiviet")))) {
           taskMatches = true;
         }
 
@@ -1107,10 +1136,7 @@ function parseTsvMatrix(rows) {
                 let val = (col !== -1 && col < r.length) ? parseNumeric(r[col]) : 0;
                 mData.push(val);
               }
-              if (tgt > 0 || rowNorm.includes("baiviet")) {
-                rObj.target = tgt;
-              }
-              // Đồng bộ thuần túy theo Google Sheets
+              if (tgt > 0) rObj.target = tgt;
               rObj.months = mData;
             }
           });
