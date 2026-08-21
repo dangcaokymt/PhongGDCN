@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v24 - Chuan hoa Chuyen vien chu tri Tai san tri tue -->
+<!-- VERSION: v25 - Chuan hoa Chuyen vien chu tri Don vi cung ung -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v24)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v25)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -577,7 +577,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V24: KHÓA CHUẨN TRỊNH MAI HƯƠNG LÀ CHỦ TRÌ CỦA TÀI SẢN TRÍ TUỆ
+// BỘ DỮ LIỆU ĐẦY ĐỦ V25: KHÓA CHUẨN TRỊNH MAI HƯƠNG LÀ CHỦ TRÌ CỦA ĐƠN VỊ CUNG ỨNG (VIỆN TRƯỜNG & DOANH NGHIỆP)
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -1108,7 +1108,7 @@ function parseTsvMatrix(rows) {
       continue;
     }
 
-    // 2. DÂY CHUYỀN/THIẾT BỊ (ID = 2) - GẮN ĐÚNG TRỊNH MAI HƯƠNG LÀ CHUYÊN VIÊN CHỦ TRÌ
+    // 2. DÂY CHUYỀN/THIẾT BỊ (ID = 2) - GẮN ĐÚNG TRỊNH MAI HƯƠNG LÀ CHỦ TRÌ
     if ((rowNorm.includes("daychuyen") || candNorm.includes("daychuyen")) && (rowNorm.includes("huong") || currentGroupName === "Nhóm Techport")) {
       let task = items.find(t => t.id === 2);
       if (task) {
@@ -1122,7 +1122,7 @@ function parseTsvMatrix(rows) {
       continue;
     }
 
-    // 3. CHUYÊN GIA TƯ VẤN (ID = 3) - GẮN ĐÚNG TRỊNH MAI HƯƠNG LÀ CHUYÊN VIÊN CHỦ TRÌ
+    // 3. CHUYÊN GIA TƯ VẤN (ID = 3) - GẮN ĐÚNG TRỊNH MAI HƯƠNG LÀ CHỦ TRÌ
     if ((rowNorm.includes("chuyengia") || candNorm.includes("chuyengia")) && (rowNorm.includes("huong") || currentGroupName === "Nhóm Techport")) {
       let task = items.find(t => t.id === 3);
       if (task) {
@@ -1136,7 +1136,7 @@ function parseTsvMatrix(rows) {
       continue;
     }
 
-    // 4. TÀI SẢN TRÍ TUỆ (ID = 4) - GẮN ĐÚNG TRỊNH MAI HƯƠNG LÀ CHUYÊN VIÊN CHỦ TRÌ
+    // 4. TÀI SẢN TRÍ TUỆ (ID = 4) - GẮN ĐÚNG TRỊNH MAI HƯƠNG LÀ CHỦ TRÌ
     if ((rowNorm.includes("taisantritue") || rowNorm.includes("tritue") || candNorm.includes("taisantritue")) && (rowNorm.includes("huong") || currentGroupName === "Nhóm Techport")) {
       let task = items.find(t => t.id === 4);
       if (task) {
@@ -1150,7 +1150,37 @@ function parseTsvMatrix(rows) {
       continue;
     }
 
-    // 5. BÀI VIẾT TRUYỀN THÔNG (ID = 10)
+    // 5. ĐƠN VỊ CUNG ỨNG (ID = 5) - GẮN ĐÚNG TRỊNH MAI HƯƠNG LÀ CHỦ TRÌ CHO CẢ VIỆN TRƯỜNG & DOANH NGHIỆP
+    if (rowNorm.includes("cungung") || candNorm.includes("cungung") || inTaskContextId === 5) {
+      inTaskContextId = 5;
+      let task = items.find(t => t.id === 5);
+      if (task) {
+        let { tgt, mData } = extractRowData();
+        // Dòng Viện trường
+        if (rowNorm.includes("vientruong") || rowNorm.includes("vien")) {
+          let vtRow = task.rows.find(x => x.key === "tp_cu_vt" && x.isLead === true);
+          if (vtRow) {
+            if (tgt > 0) vtRow.target = tgt;
+            vtRow.months = mData;
+          }
+        }
+        // Dòng Doanh nghiệp
+        if (rowNorm.includes("doanhnghiep")) {
+          let dnRow = task.rows.find(x => x.key === "tp_cu_dn" && x.isLead === true);
+          if (dnRow) {
+            if (tgt > 0) dnRow.target = tgt;
+            dnRow.months = mData;
+          }
+        }
+      }
+      if (candNorm.includes("luottruycap") || rowNorm.includes("truycap")) {
+        inTaskContextId = 0;
+      } else {
+        continue;
+      }
+    }
+
+    // 6. BÀI VIẾT TRUYỀN THÔNG (ID = 10)
     if (rowNorm.includes("baiviet") || candNorm.includes("baiviet")) {
       inTaskContextId = 10;
     } else if (candNorm.includes("techmart") || rowNorm.includes("techmart") || currentGroupName !== "Nhóm Techport") {
@@ -1179,9 +1209,9 @@ function parseTsvMatrix(rows) {
       continue;
     }
 
-    // 6. ĐỐI SOÁT CÁC NHIỆM VỤ KHÁC
+    // 7. ĐỐI SOÁT CÁC NHIỆM VỤ KHÁC
     items.forEach(task => {
-      if (task.group === currentGroupName && ![1, 2, 3, 4, 10].includes(task.id)) {
+      if (task.group === currentGroupName && ![1, 2, 3, 4, 5, 10].includes(task.id)) {
         let tNorm = normalizeVietnamese(task.noidung);
         let curTNorm = normalizeVietnamese(currentTaskName);
 
