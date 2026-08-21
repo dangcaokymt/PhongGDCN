@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v21 - Fix Day chuyen thiet bi -->
+<!-- VERSION: v22 - Chuan hoa Chuyen vien chu tri Day chuyen thiet bi -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v21)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v22)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -565,6 +565,7 @@ function parseNumeric(val) {
   if (typeof val === 'number') return isNaN(val) ? 0 : val;
   let s = String(val).trim().replace(/\s/g, '');
   if (!s || s === '-' || s.toLowerCase() === 'x') return 0;
+  // Xử lý định dạng dấu chấm hàng nghìn như 116.667 -> 116667
   if (s.includes('.') && !s.includes(',')) {
     let parts = s.split('.');
     if (parts.length === 2 && parts[1].length === 3) {
@@ -576,7 +577,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V21: CẬP NHẬT CHUẨN XÁC DÂY CHUYỀN/THIẾT BỊ
+// BỘ DỮ LIỆU ĐẦY ĐỦ V22: KHÓA CHUẨN TRỊNH MAI HƯƠNG LÀ CHỦ TRÌ CỦA DÂY CHUYỀN/THIẾT BỊ
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -599,7 +600,7 @@ const initialFullDataset = [
     id: 5, group: "Nhóm Techport", noidung: "Đơn vị cung ứng", 
     rows: [
       { key: "tp_cu_vt", isLead: true, staffName: "Trịnh Mai Hương (Viện trường)", target: 20, months: Array(12).fill(0) },
-      { key: "tp_cu_dn", isLead: true, staffName: "Trịnh Mai Hương (Doanh nghiệp)", target: 19, months: [0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0] }
+      { key: "tp_cu_dn", isLead: true, staffName: "Trịnh Mai Hương (Doanh nghiệp)", target: 19, months: [0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
     ] 
   },
   { 
@@ -1020,7 +1021,7 @@ function applyFilter() {
   renderTable(res);
 }
 
-// BỘ ĐỒNG BỘ TSV THỜI GIAN THỰC - ĐỐI SOÁT CHÍNH XÁC
+// BỘ ĐỒNG BỘ TSV THỜI GIAN THỰC
 function parseTsvMatrix(rows) {
   if (!rows || rows.length < 5) return false;
 
@@ -1107,13 +1108,16 @@ function parseTsvMatrix(rows) {
       continue;
     }
 
-    // 2. DÂY CHUYỀN/THIẾT BỊ (ID = 2) - KHÓA NHẬN DIỆN CHUẨN XÁC TUYỆT ĐỐI THEO DAYCHUYEN & HUONG
+    // 2. DÂY CHUYỀN/THIẾT BỊ (ID = 2) - GẮN ĐÚNG TRỊNH MAI HƯƠNG LÀ CHUYÊN VIÊN CHỦ TRÌ
     if ((rowNorm.includes("daychuyen") || candNorm.includes("daychuyen")) && (rowNorm.includes("huong") || currentGroupName === "Nhóm Techport")) {
       let task = items.find(t => t.id === 2);
-      if (task && task.rows[0]) {
-        let { tgt, mData } = extractRowData();
-        if (tgt > 0) task.rows[0].target = tgt;
-        task.rows[0].months = mData;
+      if (task) {
+        let leadRow = task.rows.find(r => r.key === "tp_dc" && r.isLead === true);
+        if (leadRow) {
+          let { tgt, mData } = extractRowData();
+          if (tgt > 0) leadRow.target = tgt;
+          leadRow.months = mData;
+        }
       }
       continue;
     }
