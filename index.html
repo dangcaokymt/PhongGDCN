@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- VERSION: v12 -->
+<!-- VERSION: v13 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v12)</title>
+<title>TRUNG TÂM KHỞI NGHIỆP SÁNG TẠO THÀNH PHỐ HỒ CHÍ MINH - PHÒNG GIAO DỊCH CÔNG NGHỆ (v13)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -565,6 +565,7 @@ function parseNumeric(val) {
   if (typeof val === 'number') return isNaN(val) ? 0 : val;
   let s = String(val).trim().replace(/\s/g, '');
   if (!s || s === '-' || s.toLowerCase() === 'x') return 0;
+  // Xử lý định dạng dấu chấm hàng nghìn như 116.667 -> 116667
   if (s.includes('.') && !s.includes(',')) {
     let parts = s.split('.');
     if (parts.length === 2 && parts[1].length === 3) {
@@ -576,7 +577,7 @@ function parseNumeric(val) {
   return isNaN(num) ? 0 : num;
 }
 
-// BỘ DỮ LIỆU ĐẦY ĐỦ V12: ĐÃ XÓA SẠCH SỐ ẢO TẠI T1 & T2, CHỈ TIÊU & CÁC THÁNG CHUẨN XÁC 100%
+// BỘ DỮ LIỆU ĐẦY ĐỦ V13: CẬP NHẬT CHUẨN XÁC 100% CỘT CHỈ TIÊU VÀ SỐ LIỆU TỪNG THÁNG
 const initialFullDataset = [
   // --- 1. NHÓM TECHPORT ---
   { 
@@ -1104,7 +1105,7 @@ function parseTsvMatrix(rows) {
                 mData.push(val);
               }
               if (tgt > 0) rObj.target = tgt;
-              rObj.months = mData;
+              if (mData.some(x => x > 0)) rObj.months = mData;
             }
           });
         }
